@@ -7,8 +7,8 @@ Terminal to experiment with some devices using some ports, like serial port.
 
 For some cases, we have to interact with a device.
 
-Some uses [RS232 serial ports](https://en.wikipedia.org/wiki/RS-232),
-other [USB-TMC](https://www.usb.org/document-library/test-measurement-class-specification),
+Some uses [RS-232 serial ports](https://en.wikipedia.org/wiki/RS-232),
+other [USBTMC](https://www.usb.org/document-library/test-measurement-class-specification),
 and many more.
 
 Before we can write our application,
@@ -22,4 +22,4 @@ and don't work if we send bytes at the normal predefined rate
 
 # Status
 
-Currently, I only work on RS232 serial port.
+Currently, I only work on RS-232 serial port.
