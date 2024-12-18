@@ -1,6 +1,9 @@
 
 add_subdirectory(SerialPort)
-add_subdirectory(Catch2)
 
 # TODO: maybe make optional
 add_subdirectory(SerialPort_Widgets)
+
+if(BUILD_TESTS OR BUILD_BENCHMARKS)
+  add_subdirectory(Catch2)
+endif()
