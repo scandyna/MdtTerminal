@@ -1,0 +1,12 @@
+@startuml
+!include Qt/Core/QIODevice.puml
+!include QSerialPortInfo.puml
+
+class QSerialPort {
+}
+
+QIODevice <|-- QSerialPort
+
+QSerialPort .. QSerialPortInfo
+
+@enduml
