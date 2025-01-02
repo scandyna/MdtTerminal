@@ -26,5 +26,7 @@ void MainWindow::setupSerialPort()
 {
   Mdt::SerialPort::SettingsDialog dialog(this);
 
+  dialog.setSettings( Mdt::SerialPort::Settings::defaultSettings() );
+
   dialog.exec();
 }

@@ -1,0 +1,9 @@
+@startuml
+!include Mdt/SerialPort/Settings.puml
+
+class SettingsRawData {
+}
+
+SettingsRawData ..> Settings
+
+@enduml

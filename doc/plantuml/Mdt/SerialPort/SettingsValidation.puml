@@ -1,0 +1,11 @@
+@startuml
+!include Mdt/SerialPort/Settings.puml
+!include Mdt/SerialPort/SettingsRawData.puml
+
+class SettingsValidation {
+}
+
+SettingsValidation ..> Settings
+SettingsValidation ..> SettingsRawData
+
+@enduml

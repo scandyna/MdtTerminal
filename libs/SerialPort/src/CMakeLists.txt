@@ -3,7 +3,10 @@ include(GenerateExportHeader)
 include(MdtInstallLibrary)
 
 add_library(Mdt_SerialPort
+  Mdt/SerialPort/BaudRateListTableModel.cpp
   Mdt/SerialPort/Settings.cpp
+  Mdt/SerialPort/SettingsRawData.cpp
+  Mdt/SerialPort/SettingsBuilder.cpp
   Mdt/SerialPort/SerialPort.cpp
 )
 
@@ -30,6 +33,7 @@ target_link_libraries(Mdt_SerialPort
   PUBLIC
     Qt5::Core
     Qt5::SerialPort
+    Mdt0::ItemModel
 )
 
 generate_export_header(Mdt_SerialPort)

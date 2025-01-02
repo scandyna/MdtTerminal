@@ -12,18 +12,19 @@
 
 #include "mdt_serialport_export.h"
 #include <QString>
+#include <QtGlobal>
 
 namespace Mdt{ namespace SerialPort{
 
   /*! \brief Serial port settings
+   *
+   * Settings is a set of attributes required to open a serial port.
    */
   class MDT_SERIALPORT_EXPORT Settings
   {
-   public:
+    friend class SettingsBuilder;
 
-    /*! \brief Set the port name
-     */
-    void setPortName(const QString & name) noexcept;
+   public:
 
     /*! \brief Get the port name
      */
@@ -32,9 +33,43 @@ namespace Mdt{ namespace SerialPort{
       return mPortName;
     }
 
+    /*! \brief Get the baud rate
+     */
+    qint32 baudRate() const noexcept
+    {
+      return mBaudRate;
+    }
+
+    /*! \brief Check if given baud rate has minimal validity
+     *
+     * Returns true if given \a rate is > 0
+     * \note A real validation requires to open the serial port
+     */
+    static
+    bool baudRateHasMinimalValidity(qint32 rate) noexcept;
+
+    /*! \brief Get default settings
+     */
+    static
+    Settings defaultSettings() noexcept;
+
    private:
 
+    Settings() noexcept = default;
+
+    /*! \brief Set the port name
+     */
+    void setPortName(const QString & name) noexcept;
+
+    /*! \brief Get the baud rate
+     *
+     * \pre \a rate must have a minimal validity
+     * \sa baudRateHasMinimalValidity()
+     */
+    void setBaudRate(qint32 rate) noexcept;
+
     QString mPortName;
+    qint32 mBaudRate = 0;
   };
 
 }} // namespace Mdt{ namespace SerialPort{

@@ -1,0 +1,34 @@
+
+/*! \page SerialPort_dox Serial port library
+ *
+ * \todo Talk about attributes enumerations, available ports, etc..
+ *
+ * Getting informations about available serial ports
+ *
+ * QSerialPortInfo provides information about existing serial ports.
+ *
+ * To list the available serial ports, for example in a QComboBox
+ * (or maybe in a QTableView),
+ * the Mdt::SerialPort::PortInfoListTableModel can be used.
+ *
+ * \section SerialPort_Settings Serial port settings
+ *
+ * Settings is a set of attributes required to open a serial port.
+ *
+ * \startuml "Serial port settings overview"
+ * !include ClassDiagrams/SerialPortSettingsOverview.puml
+ * \enduml
+ *
+ * \sa Mdt::SerialPort::Settings
+ * \sa Mdt::SerialPort::SettingsBuilder
+ * \sa Mdt::SerialPort::SettingsDialog
+ */
+
+namespace Mdt{
+
+  /*! \brief Mdt::SerialPort namespace
+   */
+  namespace SerialPort {
+  }
+
+}

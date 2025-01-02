@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later
 /****************************************************************************************
  **
- ** MdtTerminal
- ** Terminal to experiment with some devices using some ports, like serial port.
+ ** MdtSerialPort
+ ** Provides some functionality to configure and interact with serial ports.
  **
  ** Copyright (C) 2024-2024 Philippe Steinmann.
  **
@@ -28,11 +28,22 @@ SettingsDialog::SettingsDialog(QWidget* parent)
   connect(mUi->serialPortListBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
           this, &SettingsDialog::showPortInfoForRow);
 
+  mUi->baudRateBox->setModel( mEditor.baudRateListModelForView() );
+  mUi->baudRateBox->setModelColumn(0);
+
+  connect(&mEditor, &SettingsEditor::baudRateListCurrentRowChanged, mUi->baudRateBox, &QComboBox::setCurrentIndex);
+  connect(mUi->baudRateBox, &QComboBox::currentIndexChanged, &mEditor, &SettingsEditor::setBaudRateListCurrentRowFromUi);
+
   fetchAvailablePorts();
   fillAvailablePortSettings();
 }
 
 SettingsDialog::~SettingsDialog() noexcept = default;
+
+void SettingsDialog::setSettings(const Settings & settings)
+{
+  mEditor.setSettings(settings);
+}
 
 void SettingsDialog::fetchAvailablePorts()
 {
@@ -62,18 +73,20 @@ void SettingsDialog::showPortInfoForRow(int row) noexcept
 
 void SettingsDialog::fillAvailablePortSettings() noexcept
 {
-  fillAvailableBaudRates();
+  mEditor.fetchAvailablePortSettings();
+
+  // fillAvailableBaudRates();
   fillAvailableDataBits();
   fillAvailableParities();
   fillAvailableStopBits();
   fillAvailableFlowControls();
 }
 
-void SettingsDialog::fillAvailableBaudRates() noexcept
-{
-  mUi->baudRateBox->addItem(QLatin1String("4800"), QSerialPort::Baud4800);
-  mUi->baudRateBox->addItem(QLatin1String("9600"), QSerialPort::Baud9600);
-}
+// void SettingsDialog::fillAvailableBaudRates() noexcept
+// {
+//   mUi->baudRateBox->addItem(QLatin1String("4800"), QSerialPort::Baud4800);
+//   mUi->baudRateBox->addItem(QLatin1String("9600"), QSerialPort::Baud9600);
+// }
 
 void SettingsDialog::fillAvailableDataBits() noexcept
 {

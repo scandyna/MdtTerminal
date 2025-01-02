@@ -99,10 +99,12 @@ endif()
 
 find_package(Threads REQUIRED)
 find_package(Qt5 REQUIRED COMPONENTS Core SerialPort)
+find_package(Mdt0 REQUIRED COMPONENTS ItemModel)
 
-if(BUILD_APPS)
+# TODO: adapt once decided if Widgets dependend libs are optional
+# if(BUILD_APPS)
   find_package(Qt5 REQUIRED COMPONENTS Widgets)
-endif()
+# endif()
 
 # For header only library,no component is defined.
 # https://cmake.org/pipermail/cmake/2013-September/055941.html

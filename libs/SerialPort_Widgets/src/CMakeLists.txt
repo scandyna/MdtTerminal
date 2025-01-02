@@ -3,6 +3,7 @@ include(GenerateExportHeader)
 include(MdtInstallLibrary)
 
 add_library(Mdt_SerialPort_Widgets
+  Mdt/SerialPort/SettingsEditor.cpp
   Mdt/SerialPort/SettingsDialog.cpp
 )
 
