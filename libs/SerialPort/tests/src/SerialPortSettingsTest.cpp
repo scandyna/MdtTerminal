@@ -27,10 +27,17 @@ TEST_CASE("dataBitsHasMinimalValidity")
   CHECK( Settings::dataBitsHasMinimalValidity(QSerialPort::Data5) );
 }
 
+TEST_CASE("parityHasMinimalValidity")
+{
+  CHECK( !Settings::parityHasMinimalValidity(QSerialPort::UnknownParity) );
+  CHECK( Settings::parityHasMinimalValidity(QSerialPort::OddParity) );
+}
+
 TEST_CASE("defaultSettings")
 {
   auto settings = Settings::defaultSettings();
 
   CHECK( settings.baudRate() == 9600 );
   CHECK( settings.dataBits() == QSerialPort::Data8 );
+  CHECK( settings.parity() == QSerialPort::NoParity );
 }

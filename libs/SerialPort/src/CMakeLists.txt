@@ -6,6 +6,8 @@ add_library(Mdt_SerialPort
   Mdt/SerialPort/QRuntimeError.cpp
   Mdt/SerialPort/BaudRateListTableModel.cpp
   Mdt/SerialPort/DataBitsListTableModel.cpp
+  Mdt/SerialPort/ParityStringFormat.cpp
+  Mdt/SerialPort/ParityListTableModel.cpp
   Mdt/SerialPort/Settings.cpp
   Mdt/SerialPort/SettingsRawData.cpp
   Mdt/SerialPort/SettingsValidationError.cpp

@@ -40,6 +40,12 @@ SettingsDialog::SettingsDialog(QWidget* parent)
   connect(&mEditor, &SettingsEditor::dataBitsListCurrentRowChanged, mUi->dataBitsBox, &QComboBox::setCurrentIndex);
   connect(mUi->dataBitsBox, &QComboBox::currentIndexChanged, &mEditor, &SettingsEditor::setDataBitsListCurrentRowFromUi);
 
+  mUi->parityBox->setModel( mEditor.parityListModelForView() );
+  mUi->parityBox->setModelColumn(0);
+
+  connect(&mEditor, &SettingsEditor::parityListCurrentRowChanged, mUi->parityBox, &QComboBox::setCurrentIndex);
+  connect(mUi->parityBox, &QComboBox::currentIndexChanged, &mEditor, &SettingsEditor::setParityListCurrentRowFromUi);
+
   fetchAvailablePorts();
   fillAvailablePortSettings();
 }
@@ -81,18 +87,8 @@ void SettingsDialog::fillAvailablePortSettings() noexcept
 {
   mEditor.fetchAvailablePortSettings();
 
-  fillAvailableParities();
   fillAvailableStopBits();
   fillAvailableFlowControls();
-}
-
-void SettingsDialog::fillAvailableParities() noexcept
-{
-  mUi->parityBox->addItem(tr("None"), QSerialPort::NoParity);
-  mUi->parityBox->addItem(tr("Even"), QSerialPort::EvenParity);
-  mUi->parityBox->addItem(tr("Odd"), QSerialPort::OddParity);
-  mUi->parityBox->addItem(tr("Mark"), QSerialPort::MarkParity);
-  mUi->parityBox->addItem(tr("Space"), QSerialPort::SpaceParity);
 }
 
 void SettingsDialog::fillAvailableStopBits() noexcept

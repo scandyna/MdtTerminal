@@ -30,6 +30,7 @@ void SettingsEditor::setSettings(const Settings & settings)
 
   setCurrentBaudRate(settings);
   setCurrentDataBits(settings);
+  setCurrentParity(settings);
 }
 
 void SettingsEditor::setBaudRateListCurrentRowFromUi(int row) noexcept
@@ -46,6 +47,13 @@ void SettingsEditor::setDataBitsListCurrentRowFromUi(int row) noexcept
   assert( mDataBitsListTableModel.rowIndexIsInRange(row) );
 
   mDataBitsListCurrentRow = row;
+}
+
+void SettingsEditor::setParityListCurrentRowFromUi(int row) noexcept
+{
+  assert( mParityListTableModel.rowIndexIsInRange(row) );
+
+  mParityListCurrentRow = row;
 }
 
 void SettingsEditor::fetchStandardBaudRates()
@@ -75,6 +83,18 @@ void SettingsEditor::setCurrentDataBits(const Settings & settings)
 
   mDataBitsListCurrentRow = row;
   emit dataBitsListCurrentRowChanged(row);
+}
+
+void SettingsEditor::setCurrentParity(const Settings & settings)
+{
+  const int row = mParityListTableModel.findRowOfParity( settings.parity() );
+  assert( mParityListTableModel.rowIndexIsInRange(row) );
+  if(row == mParityListCurrentRow){
+    return;
+  }
+
+  mParityListCurrentRow = row;
+  emit parityListCurrentRowChanged(row);
 }
 
 }} // namespace Mdt{ namespace SerialPort{

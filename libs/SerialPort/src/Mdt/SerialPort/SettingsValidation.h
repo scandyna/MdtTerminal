@@ -45,6 +45,13 @@ namespace Mdt{ namespace SerialPort{
      */
     static
     void validateDataBits(QSerialPort::DataBits bits);
+
+    /*! \brief Validate parity
+     *
+     * \exception SettingsValidationError
+     */
+    static
+    void validateParity(QSerialPort::Parity parity);
   };
 
 }} // namespace Mdt{ namespace SerialPort{

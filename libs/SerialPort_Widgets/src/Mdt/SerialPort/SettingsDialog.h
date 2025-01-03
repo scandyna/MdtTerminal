@@ -52,7 +52,6 @@ namespace Mdt{ namespace SerialPort{
    private:
 
     void fillAvailablePortSettings() noexcept;
-    void fillAvailableParities() noexcept;
     void fillAvailableStopBits() noexcept;
     void fillAvailableFlowControls() noexcept;
 

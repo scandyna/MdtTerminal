@@ -20,6 +20,7 @@ Settings SettingsBuilder::settingsFromRawData(const SettingsRawData & data)
 
   settings.setBaudRate(data.baudRate);
   settings.setDataBits(data.dataBits);
+  settings.setParity(data.parity);
 
   return settings;
 }

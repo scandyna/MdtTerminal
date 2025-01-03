@@ -22,12 +22,18 @@ bool Settings::dataBitsHasMinimalValidity(QSerialPort::DataBits bits) noexcept
   return bits != QSerialPort::UnknownDataBits;
 }
 
+bool Settings::parityHasMinimalValidity(QSerialPort::Parity parity) noexcept
+{
+  return parity != QSerialPort::UnknownParity;
+}
+
 Settings Settings::defaultSettings() noexcept
 {
   Settings settings;
 
   settings.setBaudRate(9600);
   settings.setDataBits(QSerialPort::Data8);
+  settings.setParity(QSerialPort::NoParity);
 
   return settings;
 }
@@ -44,6 +50,13 @@ void Settings::setDataBits(QSerialPort::DataBits bits) noexcept
   assert( dataBitsHasMinimalValidity(bits) );
 
   mDataBits = bits;
+}
+
+void Settings::setParity(QSerialPort::Parity parity) noexcept
+{
+  assert( parityHasMinimalValidity(parity) );
+
+  mParity = parity;
 }
 
 }} // namespace Mdt{ namespace SerialPort{

@@ -18,6 +18,22 @@ mdt_add_test(
 )
 
 mdt_add_test(
+  NAME ParityStringFormatTest
+  TARGET parityStringFormatTest
+  DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/ParityStringFormatTest.cpp
+)
+
+mdt_add_test(
+  NAME ParityListTableModelTest
+  TARGET parityListTableModelTest
+  DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/ParityListTableModelTest.cpp
+)
+
+mdt_add_test(
   NAME SerialPortSettingsTest
   TARGET serialPortSettingsTest
   DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt

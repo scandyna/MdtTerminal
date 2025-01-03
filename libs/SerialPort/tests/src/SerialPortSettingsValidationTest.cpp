@@ -27,6 +27,7 @@ TEST_CASE("validateSettings")
   {
     data.baudRate = 4800;
     data.dataBits = QSerialPort::Data7;
+    data.parity = QSerialPort::MarkParity;
 
     SettingsValidation::validateSettings(data);
   }
@@ -55,5 +56,18 @@ TEST_CASE("validateDataBits")
   SECTION("5 data bits is ok")
   {
     SettingsValidation::validateDataBits(QSerialPort::Data5);
+  }
+}
+
+TEST_CASE("validateParity")
+{
+  SECTION("Invalid parity")
+  {
+    REQUIRE_THROWS_AS( SettingsValidation::validateParity(QSerialPort::UnknownParity), SettingsValidationError );
+  }
+
+  SECTION("Even parity is ok")
+  {
+    SettingsValidation::validateParity(QSerialPort::EvenParity);
   }
 }

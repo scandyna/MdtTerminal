@@ -8,6 +8,7 @@
  **
  *****************************************************************************************/
 #include "SettingsValidation.h"
+#include "ParityStringFormat.h"
 #include "Settings.h"
 #include <QString>
 
@@ -17,6 +18,7 @@ void SettingsValidation::validateSettings(const SettingsRawData & data)
 {
   validateBaudRate(data.baudRate);
   validateDataBits(data.dataBits);
+  validateParity(data.parity);
 }
 
 void SettingsValidation::validateBaudRate(qint32 rate)
@@ -34,6 +36,15 @@ void SettingsValidation::validateDataBits(QSerialPort::DataBits bits)
     const int bitsValue = static_cast<int>(bits);
     const QString msg = tr("Data bits %1 is not valid")
                         .arg(bitsValue);
+    throw SettingsValidationError(msg);
+  }
+}
+
+void SettingsValidation::validateParity(QSerialPort::Parity parity)
+{
+  if( !Settings::parityHasMinimalValidity(parity) ){
+    QString msg = tr("parity %1 is not valid")
+                  .arg( ParityStringFormat::parityToString(parity) );
     throw SettingsValidationError(msg);
   }
 }

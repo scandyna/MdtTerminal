@@ -48,6 +48,13 @@ namespace Mdt{ namespace SerialPort{
       return mDataBits;
     }
 
+    /*! \brief Get the parity
+     */
+    QSerialPort::Parity parity() const noexcept
+    {
+      return mParity;
+    }
+
     /*! \brief Check if given baud rate has minimal validity
      *
      * Returns true if given \a rate is > 0
@@ -65,6 +72,15 @@ namespace Mdt{ namespace SerialPort{
     static
     bool dataBitsHasMinimalValidity(QSerialPort::DataBits bits) noexcept;
 
+    /*! \brief Check if given parity has minimal validity
+     *
+     * Returns true if given \a parity is in a documented range
+     * \note A real validation requires to open the serial port
+     * \sa https://doc.qt.io/qt-6/qserialport.html#Parity-enum
+     */
+    static
+    bool parityHasMinimalValidity(QSerialPort::Parity parity) noexcept;
+
     /*! \brief Get default settings
      */
     static
@@ -78,23 +94,31 @@ namespace Mdt{ namespace SerialPort{
      */
     void setPortName(const QString & name) noexcept;
 
-    /*! \brief Get the baud rate
+    /*! \brief Set the baud rate
      *
      * \pre \a rate must have a minimal validity
      * \sa baudRateHasMinimalValidity()
      */
     void setBaudRate(qint32 rate) noexcept;
 
-    /*! \brief Get the data bits
+    /*! \brief Set the data bits
      *
      * \pre \a bits must have a minimal validity
      * \sa dataBitsHasMinimalValidity()
      */
     void setDataBits(QSerialPort::DataBits bits) noexcept;
 
+    /*! \brief Set the parity
+     *
+     * \pre \a parity must have a minimal validity
+     * \sa parityHasMinimalValidity()
+     */
+    void setParity(QSerialPort::Parity parity) noexcept;
+
     QString mPortName;
     qint32 mBaudRate = 0;
     QSerialPort::DataBits mDataBits = QSerialPort::UnknownDataBits;
+    QSerialPort::Parity mParity = QSerialPort::UnknownParity;
   };
 
 }} // namespace Mdt{ namespace SerialPort{

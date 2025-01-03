@@ -22,6 +22,7 @@ int DataBitsListTableModel::findRowOfDataBits(QSerialPort::DataBits dataBits) co
   /*
    * UnknownDataBits is not documented, so consider it does no exist
    * Qt doc: https://doc.qt.io/qt-6/qserialport.html#DataBits-enum
+   * NOTE: it was deprecated in Qt5
    */
   assert(dataBits != QSerialPort::UnknownDataBits);
 

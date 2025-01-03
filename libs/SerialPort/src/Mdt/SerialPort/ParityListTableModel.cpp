@@ -8,6 +8,7 @@
  **
  *****************************************************************************************/
 #include "ParityListTableModel.h"
+#include "ParityStringFormat.h"
 
 namespace Mdt{ namespace SerialPort{
 
@@ -69,20 +70,7 @@ QVariant ParityListTableModel::displayRoleData(const QModelIndex & index) const 
 {
   assert( indexIsValidAndInRange(index) );
 
-  switch( index.row() ){
-    case 0:
-      return tr("None");
-    case 1:
-      return tr("Even");
-    case 2:
-      return tr("Odd");
-    case 3:
-      return tr("Space");
-    case 4:
-      return tr("Mark");
-  }
-
-  return QVariant();
+  return ParityStringFormat::parityToString( parityAtRow( index.row() ) );
 }
 
 }} // namespace Mdt{ namespace SerialPort{
