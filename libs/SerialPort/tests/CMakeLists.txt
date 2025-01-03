@@ -10,6 +10,14 @@ mdt_add_test(
 )
 
 mdt_add_test(
+  NAME DataBitsListTableModelTest
+  TARGET dataBitsListTableModelTest
+  DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/DataBitsListTableModelTest.cpp
+)
+
+mdt_add_test(
   NAME SerialPortSettingsTest
   TARGET serialPortSettingsTest
   DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
@@ -26,12 +34,29 @@ mdt_add_test(
 )
 
 mdt_add_test(
+  NAME SerialPortSettingsValidationTest
+  TARGET serialPortSettingsValidationTest
+  DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/SerialPortSettingsValidationTest.cpp
+)
+
+mdt_add_test(
   NAME SerialPortSettingsBuilderTest
   TARGET serialPortSettingsBuilderTest
   DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
   SOURCE_FILES
     src/SerialPortSettingsBuilderTest.cpp
 )
+
+mdt_add_test(
+  NAME SerialPortSettingsBuilderErrorTest
+  TARGET serialPortSettingsBuilderErrorTest
+  DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/SerialPortSettingsBuilderErrorTest.cpp
+)
+
 
 mdt_add_test(
   NAME SerialPortTest

@@ -3,9 +3,13 @@ include(GenerateExportHeader)
 include(MdtInstallLibrary)
 
 add_library(Mdt_SerialPort
+  Mdt/SerialPort/QRuntimeError.cpp
   Mdt/SerialPort/BaudRateListTableModel.cpp
+  Mdt/SerialPort/DataBitsListTableModel.cpp
   Mdt/SerialPort/Settings.cpp
   Mdt/SerialPort/SettingsRawData.cpp
+  Mdt/SerialPort/SettingsValidationError.cpp
+  Mdt/SerialPort/SettingsValidation.cpp
   Mdt/SerialPort/SettingsBuilder.cpp
   Mdt/SerialPort/SerialPort.cpp
 )

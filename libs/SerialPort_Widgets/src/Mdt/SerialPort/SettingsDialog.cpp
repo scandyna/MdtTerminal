@@ -34,6 +34,12 @@ SettingsDialog::SettingsDialog(QWidget* parent)
   connect(&mEditor, &SettingsEditor::baudRateListCurrentRowChanged, mUi->baudRateBox, &QComboBox::setCurrentIndex);
   connect(mUi->baudRateBox, &QComboBox::currentIndexChanged, &mEditor, &SettingsEditor::setBaudRateListCurrentRowFromUi);
 
+  mUi->dataBitsBox->setModel( mEditor.dataBitsListModelForView() );
+  mUi->dataBitsBox->setModelColumn(0);
+
+  connect(&mEditor, &SettingsEditor::dataBitsListCurrentRowChanged, mUi->dataBitsBox, &QComboBox::setCurrentIndex);
+  connect(mUi->dataBitsBox, &QComboBox::currentIndexChanged, &mEditor, &SettingsEditor::setDataBitsListCurrentRowFromUi);
+
   fetchAvailablePorts();
   fillAvailablePortSettings();
 }
@@ -75,25 +81,9 @@ void SettingsDialog::fillAvailablePortSettings() noexcept
 {
   mEditor.fetchAvailablePortSettings();
 
-  // fillAvailableBaudRates();
-  fillAvailableDataBits();
   fillAvailableParities();
   fillAvailableStopBits();
   fillAvailableFlowControls();
-}
-
-// void SettingsDialog::fillAvailableBaudRates() noexcept
-// {
-//   mUi->baudRateBox->addItem(QLatin1String("4800"), QSerialPort::Baud4800);
-//   mUi->baudRateBox->addItem(QLatin1String("9600"), QSerialPort::Baud9600);
-// }
-
-void SettingsDialog::fillAvailableDataBits() noexcept
-{
-  mUi->dataBitsBox->addItem(QLatin1String("5"), QSerialPort::Data5);
-  mUi->dataBitsBox->addItem(QLatin1String("6"), QSerialPort::Data6);
-  mUi->dataBitsBox->addItem(QLatin1String("7"), QSerialPort::Data7);
-  mUi->dataBitsBox->addItem(QLatin1String("8"), QSerialPort::Data8);
 }
 
 void SettingsDialog::fillAvailableParities() noexcept

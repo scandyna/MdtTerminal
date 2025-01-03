@@ -29,6 +29,7 @@ void SettingsEditor::setSettings(const Settings & settings)
   qDebug() << "SettingsEditor::setSettings() ...";
 
   setCurrentBaudRate(settings);
+  setCurrentDataBits(settings);
 }
 
 void SettingsEditor::setBaudRateListCurrentRowFromUi(int row) noexcept
@@ -38,6 +39,13 @@ void SettingsEditor::setBaudRateListCurrentRowFromUi(int row) noexcept
   qDebug() << "SettingsEditor::setBaudRateListCurrentRowFromUi() row: " << row;
 
   mBaudRateListCurrentRow = row;
+}
+
+void SettingsEditor::setDataBitsListCurrentRowFromUi(int row) noexcept
+{
+  assert( mDataBitsListTableModel.rowIndexIsInRange(row) );
+
+  mDataBitsListCurrentRow = row;
 }
 
 void SettingsEditor::fetchStandardBaudRates()
@@ -54,7 +62,19 @@ void SettingsEditor::setCurrentBaudRate(const Settings & settings)
 
   mBaudRateListCurrentRow = row;
   /// \todo If row < 0, its a custom baud rate - Implement this
-  emit baudRateListCurrentRowChanged(mBaudRateListCurrentRow);
+  emit baudRateListCurrentRowChanged(row);
+}
+
+void SettingsEditor::setCurrentDataBits(const Settings & settings)
+{
+  const int row = mDataBitsListTableModel.findRowOfDataBits( settings.dataBits() );
+  assert( mDataBitsListTableModel.rowIndexIsInRange(row) );
+  if(row == mDataBitsListCurrentRow){
+    return;
+  }
+
+  mDataBitsListCurrentRow = row;
+  emit dataBitsListCurrentRowChanged(row);
 }
 
 }} // namespace Mdt{ namespace SerialPort{

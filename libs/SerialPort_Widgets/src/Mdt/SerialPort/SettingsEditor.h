@@ -12,6 +12,7 @@
 
 #include "Mdt/SerialPort/Settings.h"
 #include "Mdt/SerialPort/BaudRateListTableModel.h"
+#include "Mdt/SerialPort/DataBitsListTableModel.h"
 #include "mdt_serialport_widgets_export.h"
 #include <QAbstractTableModel>
 #include <QObject>
@@ -43,11 +44,28 @@ namespace Mdt{ namespace SerialPort{
       return &mBaudRateListTableModel;
     }
 
+    /*! \brief Get the data bits list table model for the view
+     *
+     * \warning The returned pointer is only valid as long as this editor is.
+     * \post Returns a valid pointer.
+     */
+    QAbstractTableModel *dataBitsListModelForView() noexcept
+    {
+      return &mDataBitsListTableModel;
+    }
+
     /*! \brief Get the current row in the baud rate list model
      */
     int baudRateListCurrentRow() const noexcept
     {
       return mBaudRateListCurrentRow;
+    }
+
+    /*! \brief Get the current row in the data bits list model
+     */
+    int dataBitsListCurrentRow() const noexcept
+    {
+      return mDataBitsListCurrentRow;
     }
 
     /*! \brief Fetch available port settings
@@ -64,6 +82,10 @@ namespace Mdt{ namespace SerialPort{
      */
     void setBaudRateListCurrentRowFromUi(int row) noexcept;
 
+    /*! \brief Set the current row in the data bits list model
+     */
+    void setDataBitsListCurrentRowFromUi(int row) noexcept;
+
    Q_SIGNALS:
 
     /*! \brief Emitted when the current row in the baud rate list model changed
@@ -72,6 +94,12 @@ namespace Mdt{ namespace SerialPort{
      */
     void baudRateListCurrentRowChanged(int row) const;
 
+    /*! \brief Emitted when the current row in the data bits list model changed
+     *
+     * \note This signal is not emitted by setDataBitsListCurrentRowFromUi()
+     */
+    void dataBitsListCurrentRowChanged(int row) const;
+
    private:
 
     /*! \brief Fetch the available standard baud rates supported by the target platform
@@ -79,9 +107,12 @@ namespace Mdt{ namespace SerialPort{
     void fetchStandardBaudRates();
 
     void setCurrentBaudRate(const Settings & settings);
+    void setCurrentDataBits(const Settings & settings);
 
     int mBaudRateListCurrentRow = -1;
+    int mDataBitsListCurrentRow = 0;
     BaudRateListTableModel mBaudRateListTableModel;
+    DataBitsListTableModel mDataBitsListTableModel;
   };
 
 }} // namespace Mdt{ namespace SerialPort{

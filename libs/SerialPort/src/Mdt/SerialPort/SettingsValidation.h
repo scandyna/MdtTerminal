@@ -7,10 +7,9 @@
  ** Copyright (C) 2024-2024 Philippe Steinmann.
  **
  *****************************************************************************************/
-#ifndef MDT_SERIAL_PORT_SETTINGS_BUILDER_H
-#define MDT_SERIAL_PORT_SETTINGS_BUILDER_H
+#ifndef MDT_SERIAL_PORT_SETTINGS_VALIDATION_H
+#define MDT_SERIAL_PORT_SETTINGS_VALIDATION_H
 
-#include "Mdt/SerialPort/Settings.h"
 #include "Mdt/SerialPort/SettingsRawData.h"
 #include "Mdt/SerialPort/SettingsValidationError.h"
 #include "mdt_serialport_export.h"
@@ -18,26 +17,36 @@
 
 namespace Mdt{ namespace SerialPort{
 
-  /*! \brief Settings builder
-   *
-   * \sa Settings
-   * \sa SettingsRawData
-   * \sa SettingsValidation
+  /*! \brief Offers some minimal validation to create settings
    */
-  class MDT_SERIALPORT_EXPORT SettingsBuilder : public QObject
+  class MDT_SERIALPORT_EXPORT SettingsValidation : public QObject
   {
     Q_OBJECT
 
    public:
 
-    /*! \brief Get settings from given raw data
+    /*! \brief Validate given settings
      *
      * \exception SettingsValidationError
      */
     static
-    Settings settingsFromRawData(const SettingsRawData & data);
+    void validateSettings(const SettingsRawData & data);
+
+    /*! \brief Validate given baud rate
+     *
+     * \exception SettingsValidationError
+     */
+    static
+    void validateBaudRate(qint32 rate);
+
+    /*! \brief Validate data bits
+     *
+     * \exception SettingsValidationError
+     */
+    static
+    void validateDataBits(QSerialPort::DataBits bits);
   };
 
 }} // namespace Mdt{ namespace SerialPort{
 
-#endif // #ifndef MDT_SERIAL_PORT_SETTINGS_BUILDER_H
+#endif // #ifndef MDT_SERIAL_PORT_SETTINGS_VALIDATION_H

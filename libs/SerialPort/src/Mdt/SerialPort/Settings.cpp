@@ -17,11 +17,17 @@ bool Settings::baudRateHasMinimalValidity(qint32 rate) noexcept
   return rate > 0;
 }
 
+bool Settings::dataBitsHasMinimalValidity(QSerialPort::DataBits bits) noexcept
+{
+  return bits != QSerialPort::UnknownDataBits;
+}
+
 Settings Settings::defaultSettings() noexcept
 {
   Settings settings;
 
   settings.setBaudRate(9600);
+  settings.setDataBits(QSerialPort::Data8);
 
   return settings;
 }
@@ -31,6 +37,13 @@ void Settings::setBaudRate(qint32 rate) noexcept
   assert( baudRateHasMinimalValidity(rate) );
 
   mBaudRate = rate;
+}
+
+void Settings::setDataBits(QSerialPort::DataBits bits) noexcept
+{
+  assert( dataBitsHasMinimalValidity(bits) );
+
+  mDataBits = bits;
 }
 
 }} // namespace Mdt{ namespace SerialPort{

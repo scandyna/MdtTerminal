@@ -31,6 +31,8 @@ TEST_CASE("default_constructed")
 
   CHECK( editor.baudRateListModelForView()->rowCount() == 0 );
   CHECK( editor.baudRateListCurrentRow() == -1 );
+  CHECK( editor.dataBitsListModelForView()->rowCount() == 4 );
+  CHECK( editor.dataBitsListCurrentRow() == 0 );
 }
 
 TEST_CASE("fetchAvailablePortSettings")
@@ -53,9 +55,11 @@ TEST_CASE("setSettings")
 
   SettingsRawData data;
   data.baudRate = 4800;
+  data.dataBits = QSerialPort::Data6;
 
   const Settings settings = SettingsBuilder::settingsFromRawData(data);
   editor.setSettings(settings);
 
   CHECK( getModelData(*editor.baudRateListModelForView(), editor.baudRateListCurrentRow(), 0).toInt() == 4800 );
+  CHECK( getModelData(*editor.dataBitsListModelForView(), editor.dataBitsListCurrentRow(), 0).toInt() == 6 );
 }

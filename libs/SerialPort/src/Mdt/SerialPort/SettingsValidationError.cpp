@@ -7,21 +7,8 @@
  ** Copyright (C) 2024-2024 Philippe Steinmann.
  **
  *****************************************************************************************/
-#include "SettingsBuilder.h"
-#include "SettingsValidation.h"
+#include "SettingsValidationError.h"
 
 namespace Mdt{ namespace SerialPort{
-
-Settings SettingsBuilder::settingsFromRawData(const SettingsRawData & data)
-{
-  SettingsValidation::validateSettings(data);
-
-  Settings settings;
-
-  settings.setBaudRate(data.baudRate);
-  settings.setDataBits(data.dataBits);
-
-  return settings;
-}
 
 }} // namespace Mdt{ namespace SerialPort{

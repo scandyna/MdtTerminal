@@ -14,15 +14,9 @@
 using namespace Mdt::SerialPort;
 
 
-TEST_CASE("settingsFromRawData")
+TEST_CASE("settingsFromEmptyRawData")
 {
   SettingsRawData data;
 
-  data.baudRate = 4800;
-  data.dataBits = QSerialPort::Data6;
-
-  const Settings settings = SettingsBuilder::settingsFromRawData(data);
-
-  CHECK( settings.baudRate() == 4800 );
-  CHECK( settings.dataBits() == QSerialPort::Data6 );
+  REQUIRE_THROWS_AS( SettingsBuilder::settingsFromRawData(data), SettingsValidationError );
 }

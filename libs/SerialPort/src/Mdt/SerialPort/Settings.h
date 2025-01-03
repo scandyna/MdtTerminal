@@ -11,6 +11,7 @@
 #define MDT_SERIAL_PORT_SETTINGS_H
 
 #include "mdt_serialport_export.h"
+#include <QSerialPort>
 #include <QString>
 #include <QtGlobal>
 
@@ -40,6 +41,13 @@ namespace Mdt{ namespace SerialPort{
       return mBaudRate;
     }
 
+    /*! \brief Get the data bits
+     */
+    QSerialPort::DataBits dataBits() const noexcept
+    {
+      return mDataBits;
+    }
+
     /*! \brief Check if given baud rate has minimal validity
      *
      * Returns true if given \a rate is > 0
@@ -47,6 +55,15 @@ namespace Mdt{ namespace SerialPort{
      */
     static
     bool baudRateHasMinimalValidity(qint32 rate) noexcept;
+
+    /*! \brief Check if given data bits has minimal validity
+     *
+     * Returns true if given \a bits is in a documented range
+     * \note A real validation requires to open the serial port
+     * \sa https://doc.qt.io/qt-6/qserialport.html#DataBits-enum
+     */
+    static
+    bool dataBitsHasMinimalValidity(QSerialPort::DataBits bits) noexcept;
 
     /*! \brief Get default settings
      */
@@ -68,8 +85,16 @@ namespace Mdt{ namespace SerialPort{
      */
     void setBaudRate(qint32 rate) noexcept;
 
+    /*! \brief Get the data bits
+     *
+     * \pre \a bits must have a minimal validity
+     * \sa dataBitsHasMinimalValidity()
+     */
+    void setDataBits(QSerialPort::DataBits bits) noexcept;
+
     QString mPortName;
     qint32 mBaudRate = 0;
+    QSerialPort::DataBits mDataBits = QSerialPort::UnknownDataBits;
   };
 
 }} // namespace Mdt{ namespace SerialPort{

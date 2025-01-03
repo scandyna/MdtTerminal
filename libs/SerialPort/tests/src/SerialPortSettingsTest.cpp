@@ -21,9 +21,16 @@ TEST_CASE("baudRateHasMinimalValidity")
   CHECK( Settings::baudRateHasMinimalValidity(1) );
 }
 
+TEST_CASE("dataBitsHasMinimalValidity")
+{
+  CHECK( !Settings::dataBitsHasMinimalValidity(QSerialPort::UnknownDataBits) );
+  CHECK( Settings::dataBitsHasMinimalValidity(QSerialPort::Data5) );
+}
+
 TEST_CASE("defaultSettings")
 {
   auto settings = Settings::defaultSettings();
 
   CHECK( settings.baudRate() == 9600 );
+  CHECK( settings.dataBits() == QSerialPort::Data8 );
 }

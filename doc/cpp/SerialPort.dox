@@ -3,6 +3,8 @@
  *
  * \todo Talk about attributes enumerations, available ports, etc..
  *
+ * \todo Also talk about available table models
+ *
  * Getting informations about available serial ports
  *
  * QSerialPortInfo provides information about existing serial ports.
