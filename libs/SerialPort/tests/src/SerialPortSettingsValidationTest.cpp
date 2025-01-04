@@ -28,6 +28,7 @@ TEST_CASE("validateSettings")
     data.baudRate = 4800;
     data.dataBits = QSerialPort::Data7;
     data.parity = QSerialPort::MarkParity;
+    data.flowControl = QSerialPort::NoFlowControl;
 
     SettingsValidation::validateSettings(data);
   }
@@ -69,5 +70,18 @@ TEST_CASE("validateParity")
   SECTION("Even parity is ok")
   {
     SettingsValidation::validateParity(QSerialPort::EvenParity);
+  }
+}
+
+TEST_CASE("validateFlowControl")
+{
+  SECTION("Invalid flow control")
+  {
+    REQUIRE_THROWS_AS( SettingsValidation::validateFlowControl(QSerialPort::UnknownFlowControl), SettingsValidationError );
+  }
+
+  SECTION("No flow control is ok")
+  {
+    SettingsValidation::validateFlowControl(QSerialPort::NoFlowControl);
   }
 }

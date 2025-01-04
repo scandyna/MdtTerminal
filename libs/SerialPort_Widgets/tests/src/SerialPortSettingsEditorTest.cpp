@@ -10,6 +10,7 @@
 #include "Mdt/SerialPort/SettingsEditor.h"
 #include "Mdt/SerialPort/SettingsBuilder.h"
 #include "Mdt/SerialPort/ParityStringFormat.h"
+#include "Mdt/SerialPort/FlowControlStringFormat.h"
 #include <Mdt/ItemModel/Helpers.h>
 #include "catch2/catch.hpp"
 #include "Catch2QString.h"
@@ -36,6 +37,8 @@ TEST_CASE("default_constructed")
   CHECK( editor.dataBitsListCurrentRow() == 0 );
   CHECK( editor.parityListModelForView()->rowCount() == 5 );
   CHECK( editor.parityListCurrentRow() == 0 );
+  CHECK( editor.flowControlListModelForView()->rowCount() == 3 );
+  CHECK( editor.flowControlListCurrentRow() == 0 );
 }
 
 TEST_CASE("fetchAvailablePortSettings")
@@ -60,6 +63,7 @@ TEST_CASE("setSettings")
   data.baudRate = 4800;
   data.dataBits = QSerialPort::Data6;
   data.parity = QSerialPort::MarkParity;
+  data.flowControl = QSerialPort::HardwareControl;
 
   const Settings settings = SettingsBuilder::settingsFromRawData(data);
   editor.setSettings(settings);
@@ -68,4 +72,6 @@ TEST_CASE("setSettings")
   CHECK( getModelData(*editor.dataBitsListModelForView(), editor.dataBitsListCurrentRow(), 0).toInt() == 6 );
   const QString expectedParityStr = ParityStringFormat::parityToString( settings.parity() );
   CHECK( getModelData(*editor.parityListModelForView(), editor.parityListCurrentRow(), 0).toString() == expectedParityStr );
+  const QString expectedFlowControlStr = FlowControlStringFormat::flowControlToString(QSerialPort::HardwareControl);
+  CHECK( getModelData(*editor.flowControlListModelForView(), editor.flowControlListCurrentRow(), 0).toString() == expectedFlowControlStr );
 }

@@ -8,6 +8,8 @@ add_library(Mdt_SerialPort
   Mdt/SerialPort/DataBitsListTableModel.cpp
   Mdt/SerialPort/ParityStringFormat.cpp
   Mdt/SerialPort/ParityListTableModel.cpp
+  Mdt/SerialPort/FlowControlStringFormat.cpp
+  Mdt/SerialPort/FlowControlListTableModel.cpp
   Mdt/SerialPort/Settings.cpp
   Mdt/SerialPort/SettingsRawData.cpp
   Mdt/SerialPort/SettingsValidationError.cpp

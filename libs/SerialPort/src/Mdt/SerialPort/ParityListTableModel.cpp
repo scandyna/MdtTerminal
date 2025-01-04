@@ -9,6 +9,7 @@
  *****************************************************************************************/
 #include "ParityListTableModel.h"
 #include "ParityStringFormat.h"
+#include <cassert>
 
 namespace Mdt{ namespace SerialPort{
 

@@ -30,6 +30,7 @@ namespace Mdt{ namespace SerialPort{
     qint32 baudRate = 0;
     QSerialPort::DataBits dataBits = QSerialPort::UnknownDataBits;
     QSerialPort::Parity parity = QSerialPort::UnknownParity;
+    QSerialPort::FlowControl flowControl = QSerialPort::UnknownFlowControl;
   };
 
 }} // namespace Mdt{ namespace SerialPort{

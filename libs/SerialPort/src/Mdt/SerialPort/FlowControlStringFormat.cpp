@@ -7,23 +7,24 @@
  ** Copyright (C) 2024-2024 Philippe Steinmann.
  **
  *****************************************************************************************/
-#include "SettingsBuilder.h"
-#include "SettingsValidation.h"
+#include "FlowControlStringFormat.h"
 
 namespace Mdt{ namespace SerialPort{
 
-Settings SettingsBuilder::settingsFromRawData(const SettingsRawData & data)
+QString FlowControlStringFormat::flowControlToString(QSerialPort::FlowControl control) noexcept
 {
-  SettingsValidation::validateSettings(data);
+  switch(control){
+    case QSerialPort::NoFlowControl:
+      return tr("None");
+    case QSerialPort::HardwareControl:
+      return tr("Hardware (RTS/CTS)");
+    case QSerialPort::SoftwareControl:
+      return tr("Software (XON/XOFF)");
+    case QSerialPort::UnknownFlowControl:
+      return tr("Unknown");
+  }
 
-  Settings settings;
-
-  settings.setBaudRate(data.baudRate);
-  settings.setDataBits(data.dataBits);
-  settings.setParity(data.parity);
-  settings.setFlowControl(data.flowControl);
-
-  return settings;
+  return QString();
 }
 
 }} // namespace Mdt{ namespace SerialPort{

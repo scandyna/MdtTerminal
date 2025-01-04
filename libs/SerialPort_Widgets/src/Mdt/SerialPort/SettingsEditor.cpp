@@ -31,6 +31,7 @@ void SettingsEditor::setSettings(const Settings & settings)
   setCurrentBaudRate(settings);
   setCurrentDataBits(settings);
   setCurrentParity(settings);
+  setCurrentFlowControl(settings);
 }
 
 void SettingsEditor::setBaudRateListCurrentRowFromUi(int row) noexcept
@@ -54,6 +55,13 @@ void SettingsEditor::setParityListCurrentRowFromUi(int row) noexcept
   assert( mParityListTableModel.rowIndexIsInRange(row) );
 
   mParityListCurrentRow = row;
+}
+
+void SettingsEditor::setFlowControlListCurrentRowFromUi(int row) noexcept
+{
+  assert( mFlowControlListTableModel.rowIndexIsInRange(row) );
+
+  mFlowControlListCurrentRow = row;
 }
 
 void SettingsEditor::fetchStandardBaudRates()
@@ -95,6 +103,18 @@ void SettingsEditor::setCurrentParity(const Settings & settings)
 
   mParityListCurrentRow = row;
   emit parityListCurrentRowChanged(row);
+}
+
+void SettingsEditor::setCurrentFlowControl(const Settings & settings)
+{
+  const int row = mFlowControlListTableModel.findRowOfFlowControl( settings.flowControl() );
+  assert( mFlowControlListTableModel.rowIndexIsInRange(row) );
+  if(row == mFlowControlListCurrentRow){
+    return;
+  }
+
+  mFlowControlListCurrentRow = row;
+  emit flowControlListCurrentRowChanged(row);
 }
 
 }} // namespace Mdt{ namespace SerialPort{

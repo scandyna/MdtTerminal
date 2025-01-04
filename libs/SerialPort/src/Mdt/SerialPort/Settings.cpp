@@ -27,6 +27,11 @@ bool Settings::parityHasMinimalValidity(QSerialPort::Parity parity) noexcept
   return parity != QSerialPort::UnknownParity;
 }
 
+bool Settings::flowControlHasMinimalValidity(QSerialPort::FlowControl control) noexcept
+{
+  return control != QSerialPort::UnknownFlowControl;
+}
+
 Settings Settings::defaultSettings() noexcept
 {
   Settings settings;
@@ -34,6 +39,7 @@ Settings Settings::defaultSettings() noexcept
   settings.setBaudRate(9600);
   settings.setDataBits(QSerialPort::Data8);
   settings.setParity(QSerialPort::NoParity);
+  settings.setFlowControl(QSerialPort::NoFlowControl);
 
   return settings;
 }
@@ -57,6 +63,13 @@ void Settings::setParity(QSerialPort::Parity parity) noexcept
   assert( parityHasMinimalValidity(parity) );
 
   mParity = parity;
+}
+
+void Settings::setFlowControl(QSerialPort::FlowControl control) noexcept
+{
+  assert( flowControlHasMinimalValidity(control) );
+
+  mFlowControl = control;
 }
 
 }} // namespace Mdt{ namespace SerialPort{

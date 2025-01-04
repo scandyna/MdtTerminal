@@ -34,6 +34,14 @@ mdt_add_test(
 )
 
 mdt_add_test(
+  NAME FlowControlListTableModelTest
+  TARGET flowControlListTableModelTest
+  DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/FlowControlListTableModelTest.cpp
+)
+
+mdt_add_test(
   NAME SerialPortSettingsTest
   TARGET serialPortSettingsTest
   DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt

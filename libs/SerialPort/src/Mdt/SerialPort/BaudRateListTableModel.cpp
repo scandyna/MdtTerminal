@@ -18,14 +18,6 @@ BaudRateListTableModel::BaudRateListTableModel(QObject *parent)
 {
 }
 
-// int BaudRateListTableModel::rowCountWithoutParentIndex() const noexcept
-// {
-// }
-// 
-// int BaudRateListTableModel::columnCountWithoutParentIndex() const noexcept
-// {
-// }
-
 void BaudRateListTableModel::fetchStandardBaudRates()
 {
   beginResetModel();

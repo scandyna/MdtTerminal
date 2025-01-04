@@ -55,6 +55,13 @@ namespace Mdt{ namespace SerialPort{
       return mParity;
     }
 
+    /*! \brief Get the flow control
+     */
+    QSerialPort::FlowControl flowControl() const noexcept
+    {
+      return mFlowControl;
+    }
+
     /*! \brief Check if given baud rate has minimal validity
      *
      * Returns true if given \a rate is > 0
@@ -80,6 +87,15 @@ namespace Mdt{ namespace SerialPort{
      */
     static
     bool parityHasMinimalValidity(QSerialPort::Parity parity) noexcept;
+
+    /*! \brief Check if given flow control has minimal validity
+     *
+     * Returns true if given \a control is in a documented range
+     * \note A real validation requires to open the serial port
+     * \sa https://doc.qt.io/qt-6/qserialport.html#FlowControl-enum
+     */
+    static
+    bool flowControlHasMinimalValidity(QSerialPort::FlowControl control) noexcept;
 
     /*! \brief Get default settings
      */
@@ -115,10 +131,18 @@ namespace Mdt{ namespace SerialPort{
      */
     void setParity(QSerialPort::Parity parity) noexcept;
 
+    /*! \brief Set the flow control
+     *
+     * \pre \a control must have a minimal validity
+     * \sa flowControlHasMinimalValidity()
+     */
+    void setFlowControl(QSerialPort::FlowControl control) noexcept;
+
     QString mPortName;
     qint32 mBaudRate = 0;
     QSerialPort::DataBits mDataBits = QSerialPort::UnknownDataBits;
     QSerialPort::Parity mParity = QSerialPort::UnknownParity;
+    QSerialPort::FlowControl mFlowControl = QSerialPort::UnknownFlowControl;
   };
 
 }} // namespace Mdt{ namespace SerialPort{

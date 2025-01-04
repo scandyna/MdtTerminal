@@ -52,6 +52,13 @@ namespace Mdt{ namespace SerialPort{
      */
     static
     void validateParity(QSerialPort::Parity parity);
+
+    /*! \brief Validate flow control
+     *
+     * \exception SettingsValidationError
+     */
+    static
+    void validateFlowControl(QSerialPort::FlowControl control);
   };
 
 }} // namespace Mdt{ namespace SerialPort{

@@ -33,6 +33,12 @@ TEST_CASE("parityHasMinimalValidity")
   CHECK( Settings::parityHasMinimalValidity(QSerialPort::OddParity) );
 }
 
+TEST_CASE("flowControlHasMinimalValidity")
+{
+  CHECK( !Settings::flowControlHasMinimalValidity(QSerialPort::UnknownFlowControl) );
+  CHECK( Settings::flowControlHasMinimalValidity(QSerialPort::SoftwareControl) );
+}
+
 TEST_CASE("defaultSettings")
 {
   auto settings = Settings::defaultSettings();
@@ -40,4 +46,5 @@ TEST_CASE("defaultSettings")
   CHECK( settings.baudRate() == 9600 );
   CHECK( settings.dataBits() == QSerialPort::Data8 );
   CHECK( settings.parity() == QSerialPort::NoParity );
+  CHECK( settings.flowControl() == QSerialPort::NoFlowControl );
 }

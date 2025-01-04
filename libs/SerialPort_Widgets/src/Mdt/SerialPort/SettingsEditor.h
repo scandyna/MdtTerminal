@@ -14,6 +14,7 @@
 #include "Mdt/SerialPort/BaudRateListTableModel.h"
 #include "Mdt/SerialPort/DataBitsListTableModel.h"
 #include "Mdt/SerialPort/ParityListTableModel.h"
+#include "Mdt/SerialPort/FlowControlListTableModel.h"
 #include "mdt_serialport_widgets_export.h"
 #include <QAbstractTableModel>
 #include <QObject>
@@ -65,6 +66,16 @@ namespace Mdt{ namespace SerialPort{
       return &mParityListTableModel;
     }
 
+    /*! \brief Get the flow control list table model for the view
+     *
+     * \warning The returned pointer is only valid as long as this editor is.
+     * \post Returns a valid pointer.
+     */
+    QAbstractTableModel *flowControlListModelForView() noexcept
+    {
+      return &mFlowControlListTableModel;
+    }
+
     /*! \brief Get the current row in the baud rate list model
      */
     int baudRateListCurrentRow() const noexcept
@@ -84,6 +95,13 @@ namespace Mdt{ namespace SerialPort{
     int parityListCurrentRow() const noexcept
     {
       return mParityListCurrentRow;
+    }
+
+    /*! \brief Get the current row in the flow control list model
+     */
+    int flowControlListCurrentRow() const noexcept
+    {
+      return mFlowControlListCurrentRow;
     }
 
     /*! \brief Fetch available port settings
@@ -108,6 +126,10 @@ namespace Mdt{ namespace SerialPort{
      */
     void setParityListCurrentRowFromUi(int row) noexcept;
 
+    /*! \brief Set the current row in the flow control list model
+     */
+    void setFlowControlListCurrentRowFromUi(int row) noexcept;
+
    Q_SIGNALS:
 
     /*! \brief Emitted when the current row in the baud rate list model changed
@@ -128,6 +150,12 @@ namespace Mdt{ namespace SerialPort{
      */
     void parityListCurrentRowChanged(int row) const;
 
+    /*! \brief Emitted when the current row in the flow control list model changed
+     *
+     * \note This signal is not emitted by setFlowControlListCurrentRowFromUi()
+     */
+    void flowControlListCurrentRowChanged(int row) const;
+
    private:
 
     /*! \brief Fetch the available standard baud rates supported by the target platform
@@ -137,13 +165,16 @@ namespace Mdt{ namespace SerialPort{
     void setCurrentBaudRate(const Settings & settings);
     void setCurrentDataBits(const Settings & settings);
     void setCurrentParity(const Settings & settings);
+    void setCurrentFlowControl(const Settings & settings);
 
     int mBaudRateListCurrentRow = -1;
     int mDataBitsListCurrentRow = 0;
     int mParityListCurrentRow = 0;
+    int mFlowControlListCurrentRow = 0;
     BaudRateListTableModel mBaudRateListTableModel;
     DataBitsListTableModel mDataBitsListTableModel;
     ParityListTableModel mParityListTableModel;
+    FlowControlListTableModel mFlowControlListTableModel;
   };
 
 }} // namespace Mdt{ namespace SerialPort{
