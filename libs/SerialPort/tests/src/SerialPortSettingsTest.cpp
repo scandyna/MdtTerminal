@@ -39,6 +39,17 @@ TEST_CASE("flowControlHasMinimalValidity")
   CHECK( Settings::flowControlHasMinimalValidity(QSerialPort::SoftwareControl) );
 }
 
+TEST_CASE("stopBitsHasMinimalValidity")
+{
+  CHECK( !Settings::stopBitsHasMinimalValidity(QSerialPort::UnknownStopBits) );
+  CHECK( Settings::stopBitsHasMinimalValidity(QSerialPort::TwoStop) );
+  if constexpr( oneAndHalfStopBitsIsSupported() ){
+    CHECK( Settings::stopBitsHasMinimalValidity(QSerialPort::OneAndHalfStop) );
+  }else{
+    CHECK( !Settings::stopBitsHasMinimalValidity(QSerialPort::OneAndHalfStop) );
+  }
+}
+
 TEST_CASE("defaultSettings")
 {
   auto settings = Settings::defaultSettings();
@@ -47,4 +58,5 @@ TEST_CASE("defaultSettings")
   CHECK( settings.dataBits() == QSerialPort::Data8 );
   CHECK( settings.parity() == QSerialPort::NoParity );
   CHECK( settings.flowControl() == QSerialPort::NoFlowControl );
+  CHECK( settings.stopBits() == QSerialPort::OneStop );
 }

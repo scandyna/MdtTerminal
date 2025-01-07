@@ -3,6 +3,7 @@ include(GenerateExportHeader)
 include(MdtInstallLibrary)
 
 add_library(Mdt_SerialPort
+  Mdt/SerialPort/Platform.cpp
   Mdt/SerialPort/QRuntimeError.cpp
   Mdt/SerialPort/BaudRateListTableModel.cpp
   Mdt/SerialPort/DataBitsListTableModel.cpp
@@ -10,6 +11,8 @@ add_library(Mdt_SerialPort
   Mdt/SerialPort/ParityListTableModel.cpp
   Mdt/SerialPort/FlowControlStringFormat.cpp
   Mdt/SerialPort/FlowControlListTableModel.cpp
+  Mdt/SerialPort/StopBitsStringFormat.cpp
+  Mdt/SerialPort/StopBitsListTableModel.cpp
   Mdt/SerialPort/Settings.cpp
   Mdt/SerialPort/SettingsRawData.cpp
   Mdt/SerialPort/SettingsValidationError.cpp

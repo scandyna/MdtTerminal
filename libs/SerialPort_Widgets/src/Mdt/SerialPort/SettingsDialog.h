@@ -52,8 +52,6 @@ namespace Mdt{ namespace SerialPort{
    private:
 
     void fillAvailablePortSettings() noexcept;
-    void fillAvailableStopBits() noexcept;
-    // void fillAvailableFlowControls() noexcept;
 
     static
     QString formatVid(const QSerialPortInfo & portInfo) noexcept;

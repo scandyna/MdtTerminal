@@ -42,6 +42,14 @@ mdt_add_test(
 )
 
 mdt_add_test(
+  NAME StopBitsListTableModelTest
+  TARGET stopBitsListTableModelTest
+  DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/StopBitsListTableModelTest.cpp
+)
+
+mdt_add_test(
   NAME SerialPortSettingsTest
   TARGET serialPortSettingsTest
   DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt

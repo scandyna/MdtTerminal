@@ -10,6 +10,7 @@
 #include "SettingsValidation.h"
 #include "ParityStringFormat.h"
 #include "FlowControlStringFormat.h"
+#include "StopBitsStringFormat.h"
 #include "Settings.h"
 #include <QString>
 
@@ -21,6 +22,7 @@ void SettingsValidation::validateSettings(const SettingsRawData & data)
   validateDataBits(data.dataBits);
   validateParity(data.parity);
   validateFlowControl(data.flowControl);
+  validateStopBits(data.stopBits);
 }
 
 void SettingsValidation::validateBaudRate(qint32 rate)
@@ -56,6 +58,15 @@ void SettingsValidation::validateFlowControl(QSerialPort::FlowControl control)
   if( !Settings::flowControlHasMinimalValidity(control) ){
     QString msg = tr("flow control %1 is not valid")
                   .arg( FlowControlStringFormat::flowControlToString(control) );
+    throw SettingsValidationError(msg);
+  }
+}
+
+void SettingsValidation::validateStopBits(QSerialPort::StopBits bits)
+{
+  if( !Settings::stopBitsHasMinimalValidity(bits) ){
+    QString msg = tr("stop bits %1 is not valid")
+                  .arg( StopBitsStringFormat::stopBitsToString(bits) );
     throw SettingsValidationError(msg);
   }
 }

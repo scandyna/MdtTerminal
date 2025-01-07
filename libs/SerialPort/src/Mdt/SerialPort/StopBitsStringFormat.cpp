@@ -7,24 +7,25 @@
  ** Copyright (C) 2024-2024 Philippe Steinmann.
  **
  *****************************************************************************************/
-#include "SettingsBuilder.h"
-#include "SettingsValidation.h"
+#include "StopBitsStringFormat.h"
+#include <QLatin1String>
 
 namespace Mdt{ namespace SerialPort{
 
-Settings SettingsBuilder::settingsFromRawData(const SettingsRawData & data)
+QString StopBitsStringFormat::stopBitsToString(QSerialPort::StopBits bits) noexcept
 {
-  SettingsValidation::validateSettings(data);
+  switch(bits){
+    case QSerialPort::OneStop:
+      return QLatin1String("1");
+    case QSerialPort::OneAndHalfStop:
+      return QLatin1String("1.5");
+    case QSerialPort::TwoStop:
+      return QLatin1String("2");
+    case QSerialPort::UnknownStopBits:
+      return tr("Unknown");
+  }
 
-  Settings settings;
-
-  settings.setBaudRate(data.baudRate);
-  settings.setDataBits(data.dataBits);
-  settings.setParity(data.parity);
-  settings.setFlowControl(data.flowControl);
-  settings.setStopBits(data.stopBits);
-
-  return settings;
+  return QString();
 }
 
 }} // namespace Mdt{ namespace SerialPort{

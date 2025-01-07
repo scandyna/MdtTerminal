@@ -59,6 +59,14 @@ namespace Mdt{ namespace SerialPort{
      */
     static
     void validateFlowControl(QSerialPort::FlowControl control);
+
+    /*! \brief Validate stop bits
+     *
+     * \exception SettingsValidationError
+     * \sa Settings::stopBitsHasMinimalValidity()
+     */
+    static
+    void validateStopBits(QSerialPort::StopBits bits);
   };
 
 }} // namespace Mdt{ namespace SerialPort{

@@ -32,6 +32,14 @@ bool Settings::flowControlHasMinimalValidity(QSerialPort::FlowControl control) n
   return control != QSerialPort::UnknownFlowControl;
 }
 
+bool Settings::stopBitsHasMinimalValidity(QSerialPort::StopBits bits) noexcept
+{
+  if(bits == QSerialPort::OneAndHalfStop){
+    return oneAndHalfStopBitsIsSupported();
+  }
+  return bits != QSerialPort::UnknownStopBits;
+}
+
 Settings Settings::defaultSettings() noexcept
 {
   Settings settings;
@@ -40,6 +48,7 @@ Settings Settings::defaultSettings() noexcept
   settings.setDataBits(QSerialPort::Data8);
   settings.setParity(QSerialPort::NoParity);
   settings.setFlowControl(QSerialPort::NoFlowControl);
+  settings.setStopBits(QSerialPort::OneStop);
 
   return settings;
 }
@@ -70,6 +79,13 @@ void Settings::setFlowControl(QSerialPort::FlowControl control) noexcept
   assert( flowControlHasMinimalValidity(control) );
 
   mFlowControl = control;
+}
+
+void Settings::setStopBits(QSerialPort::StopBits bits) noexcept
+{
+  assert( stopBitsHasMinimalValidity(bits) );
+
+  mStopBits = bits;
 }
 
 }} // namespace Mdt{ namespace SerialPort{

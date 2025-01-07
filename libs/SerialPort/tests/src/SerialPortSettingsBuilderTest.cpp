@@ -22,6 +22,7 @@ TEST_CASE("settingsFromRawData")
   data.dataBits = QSerialPort::Data6;
   data.parity = QSerialPort::SpaceParity;
   data.flowControl = QSerialPort::SoftwareControl;
+  data.stopBits = QSerialPort::TwoStop;
 
   const Settings settings = SettingsBuilder::settingsFromRawData(data);
 
@@ -29,4 +30,5 @@ TEST_CASE("settingsFromRawData")
   CHECK( settings.dataBits() == QSerialPort::Data6 );
   CHECK( settings.parity() == QSerialPort::SpaceParity );
   CHECK( settings.flowControl() == QSerialPort::SoftwareControl );
+  CHECK( settings.stopBits() == QSerialPort::TwoStop );
 }

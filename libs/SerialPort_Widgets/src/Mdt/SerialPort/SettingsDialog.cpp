@@ -52,6 +52,12 @@ SettingsDialog::SettingsDialog(QWidget* parent)
   connect(&mEditor, &SettingsEditor::flowControlListCurrentRowChanged, mUi->flowControlBox, &QComboBox::setCurrentIndex);
   connect(mUi->flowControlBox, &QComboBox::currentIndexChanged, &mEditor, &SettingsEditor::setFlowControlListCurrentRowFromUi);
 
+  mUi->stopBitsBox->setModel( mEditor.stopBitsListModelForView() );
+  mUi->stopBitsBox->setModelColumn(0);
+
+  connect(&mEditor, &SettingsEditor::stopBitsListCurrentRowChanged, mUi->stopBitsBox, &QComboBox::setCurrentIndex);
+  connect(mUi->stopBitsBox, &QComboBox::currentIndexChanged, &mEditor, &SettingsEditor::setStopBitsListCurrentRowFromUi);
+
   fetchAvailablePorts();
   fillAvailablePortSettings();
 }
@@ -92,26 +98,7 @@ void SettingsDialog::showPortInfoForRow(int row) noexcept
 void SettingsDialog::fillAvailablePortSettings() noexcept
 {
   mEditor.fetchAvailablePortSettings();
-
-  fillAvailableStopBits();
-  // fillAvailableFlowControls();
 }
-
-void SettingsDialog::fillAvailableStopBits() noexcept
-{
-  mUi->stopBitsBox->addItem(QLatin1String("1"), QSerialPort::OneStop);
-#ifdef Q_OS_WIN
-  mUi->stopBitsBox->addItem(QLatin1String("1.5"), QSerialPort::OneAndHalfStop);
-#endif
-  mUi->stopBitsBox->addItem(QLatin1String("2"), QSerialPort::TwoStop);
-}
-
-// void SettingsDialog::fillAvailableFlowControls() noexcept
-// {
-//   mUi->flowControlBox->addItem(tr("None"), QSerialPort::NoFlowControl);
-//   mUi->flowControlBox->addItem(tr("RTS/CTS"), QSerialPort::HardwareControl);
-//   mUi->flowControlBox->addItem(tr("XON/XOFF"), QSerialPort::SoftwareControl);
-// }
 
 QString SettingsDialog::formatVid(const QSerialPortInfo & portInfo) noexcept
 {

@@ -10,6 +10,7 @@
 #ifndef MDT_SERIAL_PORT_SETTINGS_H
 #define MDT_SERIAL_PORT_SETTINGS_H
 
+#include "Mdt/SerialPort/Platform.h"
 #include "mdt_serialport_export.h"
 #include <QSerialPort>
 #include <QString>
@@ -17,9 +18,23 @@
 
 namespace Mdt{ namespace SerialPort{
 
+  /*! \brief Check if 1.5 stop bits is supported
+   *
+   * Returns true on Windows
+   * \sa osIsWindows()
+   */
+  constexpr
+  bool oneAndHalfStopBitsIsSupported() noexcept
+  {
+    return osIsWindows();
+  }
+
   /*! \brief Serial port settings
    *
    * Settings is a set of attributes required to open a serial port.
+   *
+   * \todo I think the default constructor should provide default settings ?
+   * What about port name ?
    */
   class MDT_SERIALPORT_EXPORT Settings
   {
@@ -62,6 +77,13 @@ namespace Mdt{ namespace SerialPort{
       return mFlowControl;
     }
 
+    /*! \brief Get the stop bits
+     */
+    QSerialPort::StopBits stopBits() const noexcept
+    {
+      return mStopBits;
+    }
+
     /*! \brief Check if given baud rate has minimal validity
      *
      * Returns true if given \a rate is > 0
@@ -96,6 +118,18 @@ namespace Mdt{ namespace SerialPort{
      */
     static
     bool flowControlHasMinimalValidity(QSerialPort::FlowControl control) noexcept;
+
+    /*! \brief Check if given stop bits has minimal validity
+     *
+     * Returns true if given \a bits is supported for the platform.
+     * In general, 1 or 2 stop bits is valid.
+     * On Windows, 1.5 stop bits is also supported.
+     * \note A real validation requires to open the serial port
+     * \sa https://doc.qt.io/qt-6/qserialport.html#FlowControl-enum
+     * \sa oneAndHalfStopBitsIsSupported()
+     */
+    static
+    bool stopBitsHasMinimalValidity(QSerialPort::StopBits bits) noexcept;
 
     /*! \brief Get default settings
      */
@@ -138,11 +172,19 @@ namespace Mdt{ namespace SerialPort{
      */
     void setFlowControl(QSerialPort::FlowControl control) noexcept;
 
+    /*! \brief Set the stop bits
+     *
+     * \pre \a bits must have a minimal validity
+     * \sa stopBitsHasMinimalValidity()
+     */
+    void setStopBits(QSerialPort::StopBits bits) noexcept;
+
     QString mPortName;
     qint32 mBaudRate = 0;
     QSerialPort::DataBits mDataBits = QSerialPort::UnknownDataBits;
     QSerialPort::Parity mParity = QSerialPort::UnknownParity;
     QSerialPort::FlowControl mFlowControl = QSerialPort::UnknownFlowControl;
+    QSerialPort::StopBits mStopBits = QSerialPort::UnknownStopBits;
   };
 
 }} // namespace Mdt{ namespace SerialPort{

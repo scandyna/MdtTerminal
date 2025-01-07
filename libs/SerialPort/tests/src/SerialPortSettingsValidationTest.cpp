@@ -29,6 +29,7 @@ TEST_CASE("validateSettings")
     data.dataBits = QSerialPort::Data7;
     data.parity = QSerialPort::MarkParity;
     data.flowControl = QSerialPort::NoFlowControl;
+    data.stopBits = QSerialPort::TwoStop;
 
     SettingsValidation::validateSettings(data);
   }
@@ -83,5 +84,18 @@ TEST_CASE("validateFlowControl")
   SECTION("No flow control is ok")
   {
     SettingsValidation::validateFlowControl(QSerialPort::NoFlowControl);
+  }
+}
+
+TEST_CASE("validateStopBits")
+{
+  SECTION("Invalid stop bits")
+  {
+    REQUIRE_THROWS_AS( SettingsValidation::validateStopBits(QSerialPort::UnknownStopBits), SettingsValidationError );
+  }
+
+  SECTION("2 stop bits is ok")
+  {
+    SettingsValidation::validateStopBits(QSerialPort::TwoStop);
   }
 }

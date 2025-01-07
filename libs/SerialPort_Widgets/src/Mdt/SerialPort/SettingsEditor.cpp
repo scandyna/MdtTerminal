@@ -10,7 +10,7 @@
 #include "SettingsEditor.h"
 #include <cassert>
 
-#include <QDebug>
+// #include <QDebug>
 
 namespace Mdt{ namespace SerialPort{
 
@@ -26,19 +26,16 @@ void SettingsEditor::fetchAvailablePortSettings()
 
 void SettingsEditor::setSettings(const Settings & settings)
 {
-  qDebug() << "SettingsEditor::setSettings() ...";
-
   setCurrentBaudRate(settings);
   setCurrentDataBits(settings);
   setCurrentParity(settings);
   setCurrentFlowControl(settings);
+  setCurrentStopBits(settings);
 }
 
 void SettingsEditor::setBaudRateListCurrentRowFromUi(int row) noexcept
 {
   /// assert( mBaudRateListTableModel.rowIndexIsInRange(row) );
-
-  qDebug() << "SettingsEditor::setBaudRateListCurrentRowFromUi() row: " << row;
 
   mBaudRateListCurrentRow = row;
 }
@@ -62,6 +59,13 @@ void SettingsEditor::setFlowControlListCurrentRowFromUi(int row) noexcept
   assert( mFlowControlListTableModel.rowIndexIsInRange(row) );
 
   mFlowControlListCurrentRow = row;
+}
+
+void SettingsEditor::setStopBitsListCurrentRowFromUi(int row) noexcept
+{
+  assert( mStopBitsListTableModel.rowIndexIsInRange(row) );
+
+  mStopBitsListCurrentRow = row;
 }
 
 void SettingsEditor::fetchStandardBaudRates()
@@ -115,6 +119,18 @@ void SettingsEditor::setCurrentFlowControl(const Settings & settings)
 
   mFlowControlListCurrentRow = row;
   emit flowControlListCurrentRowChanged(row);
+}
+
+void SettingsEditor::setCurrentStopBits(const Settings & settings)
+{
+  const int row = mStopBitsListTableModel.findRowOfStopBits( settings.stopBits() );
+  assert( mStopBitsListTableModel.rowIndexIsInRange(row) );
+  if(row == mStopBitsListCurrentRow){
+    return;
+  }
+
+  mStopBitsListCurrentRow = row;
+  emit stopBitsListCurrentRowChanged(row);
 }
 
 }} // namespace Mdt{ namespace SerialPort{

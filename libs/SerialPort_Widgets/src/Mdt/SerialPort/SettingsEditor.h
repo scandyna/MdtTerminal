@@ -15,6 +15,7 @@
 #include "Mdt/SerialPort/DataBitsListTableModel.h"
 #include "Mdt/SerialPort/ParityListTableModel.h"
 #include "Mdt/SerialPort/FlowControlListTableModel.h"
+#include "Mdt/SerialPort/StopBitsListTableModel.h"
 #include "mdt_serialport_widgets_export.h"
 #include <QAbstractTableModel>
 #include <QObject>
@@ -76,6 +77,16 @@ namespace Mdt{ namespace SerialPort{
       return &mFlowControlListTableModel;
     }
 
+    /*! \brief Get the stop bits list table model for the view
+     *
+     * \warning The returned pointer is only valid as long as this editor is.
+     * \post Returns a valid pointer.
+     */
+    QAbstractTableModel *stopBitsListModelForView() noexcept
+    {
+      return &mStopBitsListTableModel;
+    }
+
     /*! \brief Get the current row in the baud rate list model
      */
     int baudRateListCurrentRow() const noexcept
@@ -104,6 +115,13 @@ namespace Mdt{ namespace SerialPort{
       return mFlowControlListCurrentRow;
     }
 
+    /*! \brief Get the current row in the stop bits list model
+     */
+    int stopBitsListCurrentRow() const noexcept
+    {
+      return mStopBitsListCurrentRow;
+    }
+
     /*! \brief Fetch available port settings
      */
     void fetchAvailablePortSettings();
@@ -129,6 +147,10 @@ namespace Mdt{ namespace SerialPort{
     /*! \brief Set the current row in the flow control list model
      */
     void setFlowControlListCurrentRowFromUi(int row) noexcept;
+
+    /*! \brief Set the current row in the stop bits list model
+     */
+    void setStopBitsListCurrentRowFromUi(int row) noexcept;
 
    Q_SIGNALS:
 
@@ -156,6 +178,12 @@ namespace Mdt{ namespace SerialPort{
      */
     void flowControlListCurrentRowChanged(int row) const;
 
+    /*! \brief Emitted when the current row in the stop bits list model changed
+     *
+     * \note This signal is not emitted by setStopBitsListCurrentRowFromUi()
+     */
+    void stopBitsListCurrentRowChanged(int row) const;
+
    private:
 
     /*! \brief Fetch the available standard baud rates supported by the target platform
@@ -166,15 +194,18 @@ namespace Mdt{ namespace SerialPort{
     void setCurrentDataBits(const Settings & settings);
     void setCurrentParity(const Settings & settings);
     void setCurrentFlowControl(const Settings & settings);
+    void setCurrentStopBits(const Settings & settings);
 
     int mBaudRateListCurrentRow = -1;
     int mDataBitsListCurrentRow = 0;
     int mParityListCurrentRow = 0;
     int mFlowControlListCurrentRow = 0;
+    int mStopBitsListCurrentRow = 0;
     BaudRateListTableModel mBaudRateListTableModel;
     DataBitsListTableModel mDataBitsListTableModel;
     ParityListTableModel mParityListTableModel;
     FlowControlListTableModel mFlowControlListTableModel;
+    StopBitsListTableModel mStopBitsListTableModel;
   };
 
 }} // namespace Mdt{ namespace SerialPort{
