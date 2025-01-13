@@ -1,17 +1,37 @@
 
 /*! \page SerialPort_dox Serial port library
  *
+ * \section SerialPort_SettingsList_TableModels Serial port settings list table models
+ *
  * \todo Talk about attributes enumerations, available ports, etc..
  *
  * \todo Also talk about available table models
  *
- * Getting informations about available serial ports
+ * \sa Mdt::SerialPort::BaudRateListTableModel
+ * \sa Mdt::SerialPort::DataBitsListTableModel
+ * \sa Mdt::SerialPort::FlowControlListTableModel
+ * \sa Mdt::SerialPort::ParityListTableModel
+ * \sa Mdt::SerialPort::StopBitsListTableModel
+ *
+ * \section SerialPort_PortInfo Serial port info
+ *
+ * Getting informations about available serial ports.
  *
  * QSerialPortInfo provides information about existing serial ports.
  *
  * To list the available serial ports, for example in a QComboBox
  * (or maybe in a QTableView),
  * the Mdt::SerialPort::PortInfoListTableModel can be used.
+ *
+ * While QSerialPortInfo can only be constructed for an existing port on the system,
+ * we have to be able to test the access model without any port available (f.ex. CI):
+ *
+ * \startuml "Serial port info list table model"
+ * !include ClassDiagrams/SerialPortInfoListTableModel.puml
+ * \enduml
+ *
+ * \sa https://doc.qt.io/qt-6/qserialportinfo.html
+ * \sa Mdt::SerialPort::PortInfoListTableModel
  *
  * \section SerialPort_Settings Serial port settings
  *
@@ -21,9 +41,19 @@
  * !include ClassDiagrams/SerialPortSettingsOverview.puml
  * \enduml
  *
+ * \startuml "Serial port settings editor"
+ * !include ClassDiagrams/SettingsEditor.puml
+ * \enduml
+ *
  * \sa Mdt::SerialPort::Settings
  * \sa Mdt::SerialPort::SettingsBuilder
  * \sa Mdt::SerialPort::SettingsDialog
+ *
+ *
+ * \section SerialPort_TestLib Serial port test lib
+ *
+ * \sa Mdt::SerialPort::TestLib::TestPortInfoListTableModel
+ * \sa Mdt::SerialPort::TestLib
  */
 
 namespace Mdt{
@@ -31,6 +61,12 @@ namespace Mdt{
   /*! \brief Mdt::SerialPort namespace
    */
   namespace SerialPort {
+
+    /*! \brief Mdt::SerialPort::TestLib namespace
+     */
+    namespace TestLib {
+    }
+
   }
 
 }

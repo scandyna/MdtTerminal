@@ -13,6 +13,9 @@ add_library(Mdt_SerialPort
   Mdt/SerialPort/FlowControlListTableModel.cpp
   Mdt/SerialPort/StopBitsStringFormat.cpp
   Mdt/SerialPort/StopBitsListTableModel.cpp
+  Mdt/SerialPort/PortInfoStringFormat.cpp
+  Mdt/SerialPort/AbstractPortInfoListTableModel.cpp
+  Mdt/SerialPort/PortInfoListTableModel.cpp
   Mdt/SerialPort/Settings.cpp
   Mdt/SerialPort/SettingsRawData.cpp
   Mdt/SerialPort/SettingsValidationError.cpp

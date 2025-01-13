@@ -37,6 +37,9 @@ set(CMAKE_VISIBILITY_INLINES_HIDDEN YES)
 
 option(BUILD_APPS "Build the applications (tools)" OFF)
 option(BUILD_TESTS "Build the tests" OFF)
+# TODO: should use dependent option to enable BUILD_TESTS if one or both is selected ?
+option(BUILD_TESTS_WITH_HW_SERIAL_PORT "Build tests that require the presence of at least 1 HW serial port on the system" OFF)
+option(BUILD_TESTS_WITH_BRIDGE_PLUG "Build tests that require a bridge plug (also requires HW serial port on the system)" OFF)
 option(BUILD_BENCHMARKS "Build the benchmarks" OFF)
 option(BUILD_DOCS "Build the documentations" OFF)
 mdt_set_available_build_types(Release Debug RelWithDebInfo MinSizeRel Instrumented)

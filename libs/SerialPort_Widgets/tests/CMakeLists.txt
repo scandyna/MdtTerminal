@@ -6,5 +6,6 @@ mdt_add_test(
   TARGET serialPortSettingsEditorTest
   DEPENDENCIES Mdt::SerialPort_Widgets Mdt::Catch2Main Mdt::Catch2Qt
   SOURCE_FILES
+    src/TestSettingsEditor.cpp
     src/SerialPortSettingsEditorTest.cpp
 )

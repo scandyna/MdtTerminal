@@ -50,6 +50,14 @@ mdt_add_test(
 )
 
 mdt_add_test(
+  NAME TestPortInfoListTableModelTest
+  TARGET testPortInfoListTableModelTest
+  DEPENDENCIES Mdt::SerialPort Mdt::SerialPortTestLib Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/PortInfoListTableModelTest.cpp
+)
+
+mdt_add_test(
   NAME SerialPortSettingsTest
   TARGET serialPortSettingsTest
   DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt

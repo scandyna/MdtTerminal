@@ -1,0 +1,10 @@
+@startuml
+
+namespace Mdt.SerialPort {
+
+  class AbstractPortInfoListTableModel {
+  }
+
+}
+
+@enduml

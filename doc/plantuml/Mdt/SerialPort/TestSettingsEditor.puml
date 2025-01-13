@@ -1,0 +1,8 @@
+@startuml
+
+class TestSettingsEditor {
+}
+
+Mdt.SerialPort.AbstractSettingsEditor <|-- TestSettingsEditor
+
+@enduml

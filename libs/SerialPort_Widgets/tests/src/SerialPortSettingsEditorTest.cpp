@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2024 Philippe Steinmann.
+ ** Copyright (C) 2024-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "Mdt/SerialPort/SettingsEditor.h"
@@ -26,6 +26,13 @@ using Mdt::ItemModel::getModelData;
  * after a model reset, with the index to the first enabled item.
  * For more details, see QComboBoxPrivate::_q_modelReset()
  * and QComboBoxPrivate::trySetValidIndex()
+ */
+
+/*! \todo Should also create SerialPortSettingsEditor_With_HW_SerialPort_Test
+ *
+ * AbstractSettingsEditor
+ * SettingsEditor
+ * TestSettingsEditor
  */
 
 TEST_CASE("default_constructed")

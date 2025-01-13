@@ -1,0 +1,12 @@
+@startuml
+!include Mdt/SerialPort/AbstractSettingsEditor.puml
+
+namespace Mdt.SerialPort {
+
+  class SettingsEditor {
+  }
+
+  AbstractSettingsEditor <|-- SettingsEditor
+}
+
+@enduml

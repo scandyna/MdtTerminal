@@ -1,0 +1,5 @@
+@startuml
+!include Mdt/SerialPort/PortInfoListTableModel.puml
+!include Mdt/SerialPort/TestLib/TestPortInfoListTableModel.puml
+
+@enduml
