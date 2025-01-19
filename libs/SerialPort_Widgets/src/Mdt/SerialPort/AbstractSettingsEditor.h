@@ -143,10 +143,7 @@ namespace Mdt{ namespace SerialPort{
 
     /*! \brief Fetch available ports
      */
-    void fetchAvailablePorts()
-    {
-      doFetchAvailablePorts();
-    }
+    void fetchAvailablePorts();
 
     /*! \brief Fetch available port settings
      */

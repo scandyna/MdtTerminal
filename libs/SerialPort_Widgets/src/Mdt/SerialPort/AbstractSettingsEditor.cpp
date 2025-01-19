@@ -23,6 +23,11 @@ int AbstractSettingsEditor::portNameColumnInPortInfoListModelForView() const noe
   return AbstractPortInfoListTableModel::portNameColumnIndex();
 }
 
+void AbstractSettingsEditor::fetchAvailablePorts()
+{
+  doFetchAvailablePorts();
+}
+
 void AbstractSettingsEditor::fetchAvailablePortSettings()
 {
   fetchStandardBaudRates();
@@ -41,13 +46,15 @@ void AbstractSettingsEditor::setPortInfoListCurrentRowFromUi(int row) noexcept
 {
   assert( row < portInfoListModelForView()->rowCount() );
 
-  const bool shouldNotifyChange = mPortInfoListCurrentRow != row;
-
+  /*
+   * When a user plugs/unplugs a removable serial port (like UBS-serial interfaces),
+   * then refreshes the list of available ports,
+   * we can end up with the same row as before, but with another port info
+   * So, better notify changed everytime.
+   * (Views like QCombobox also has logic to emit currentIndexChanged the appropriate time)
+   */
   mPortInfoListCurrentRow = row;
-
-  if(shouldNotifyChange){
-    doNotifyPortInfoChanged(row);
-  }
+  doNotifyPortInfoChanged(row);
 }
 
 void AbstractSettingsEditor::setBaudRateListCurrentRowFromUi(int row) noexcept

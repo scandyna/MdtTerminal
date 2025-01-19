@@ -23,7 +23,24 @@
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
-         <widget class="QComboBox" name="serialPortListBox"/>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QComboBox" name="serialPortListBox"/>
+          </item>
+          <item>
+           <widget class="QToolButton" name="refreshSerialPortListButton">
+            <property name="toolTip">
+             <string>Refresh serial port list</string>
+            </property>
+            <property name="text">
+             <string>Refresh</string>
+            </property>
+            <property name="icon">
+             <iconset theme="view-refresh"/>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
         <item>
          <layout class="QFormLayout" name="formLayout">

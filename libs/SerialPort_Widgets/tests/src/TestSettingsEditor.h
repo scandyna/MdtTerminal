@@ -29,6 +29,8 @@ class TestSettingsEditor : public Mdt::SerialPort::AbstractSettingsEditor
     mPortInfoListTableModel.addAvailablePort(port);
   }
 
+  void removeAvailablePort(const Mdt::SerialPort::TestLib::TestPortInfo & port);
+
   Mdt::SerialPort::TestLib::TestPortInfo currentPortInfo() const
   {
     return mCurrentPortInfo;

@@ -14,6 +14,7 @@
 #include <QLatin1String>
 #include <QStringBuilder>
 #include <QSerialPort>
+#include <QToolButton>
 #include <cassert>
 
 namespace Mdt{ namespace SerialPort{
@@ -31,6 +32,8 @@ SettingsDialog::SettingsDialog(QWidget* parent)
   connect(&mEditor, &SettingsEditor::portInfoChanged, this, &SettingsDialog::showPortInfo);
   connect(mUi->serialPortListBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
           &mEditor, &SettingsEditor::setPortInfoListCurrentRowFromUi);
+
+  connect(mUi->refreshSerialPortListButton, &QToolButton::clicked, this, &SettingsDialog::fetchAvailablePorts);
 
   mUi->baudRateBox->setModel( mEditor.baudRateListModelForView() );
   mUi->baudRateBox->setModelColumn(0);

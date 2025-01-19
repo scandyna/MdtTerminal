@@ -52,17 +52,67 @@ TEST_CASE("fetchAvailablePorts")
 
   editor.fetchAvailablePorts();
 
-  Mdt::SerialPort::TestLib::TestPortInfo port;
-  port.portName = "ttyS0";
-  port.systemLocation = "/dev/ttyS0";
-  editor.addAvailablePort(port);
+  Mdt::SerialPort::TestLib::TestPortInfo ttyS0;
+  ttyS0.portName = "ttyS0";
+  ttyS0.systemLocation = "/dev/ttyS0";
 
-  editor.fetchAvailablePorts();
+  Mdt::SerialPort::TestLib::TestPortInfo ttyUSB0;
+  ttyUSB0.portName = "ttyUSB0";
+  ttyUSB0.systemLocation = "/dev/ttyUSB0";
 
-  CHECK( editor.portInfoListModelForView()->rowCount() == 1 );
-  // Emulate QComboBox setting its current index to the first element
-  editor.setPortInfoListCurrentRowFromUi(0);
-  CHECK( editor.portInfoListCurrentRow() == 0 );
+  SECTION("Initial state then system has 1 port")
+  {
+    editor.addAvailablePort(ttyS0);
+
+    editor.fetchAvailablePorts();
+
+    CHECK( editor.portInfoListModelForView()->rowCount() == 1 );
+    // Emulate QComboBox setting its current index to the first element
+    editor.setPortInfoListCurrentRowFromUi(0);
+    CHECK( editor.portInfoListCurrentRow() == 0 );
+    CHECK( editor.currentPortInfo().portName == "ttyS0" );
+  }
+
+  SECTION("We remove an USB serial port adapter then only 1 port remains")
+  {
+    editor.addAvailablePort(ttyUSB0);
+    editor.addAvailablePort(ttyS0);
+    editor.fetchAvailablePorts();
+    REQUIRE( editor.portInfoListModelForView()->rowCount() == 2 );
+    // Emulate QComboBox setting its current index to the first element
+    editor.setPortInfoListCurrentRowFromUi(0);
+    REQUIRE( editor.portInfoListCurrentRow() == 0 );
+    REQUIRE( editor.currentPortInfo().portName == "ttyUSB0" );
+
+    editor.removeAvailablePort(ttyUSB0);
+
+    editor.fetchAvailablePorts();
+    CHECK( editor.portInfoListModelForView()->rowCount() == 1 );
+    // Emulate QComboBox setting its current index to the first element
+    editor.setPortInfoListCurrentRowFromUi(0);
+    CHECK( editor.portInfoListCurrentRow() == 0 );
+    CHECK( editor.currentPortInfo().portName == "ttyS0" );
+  }
+
+  SECTION("We remove an USB serial port adapter then no port remains")
+  {
+    editor.addAvailablePort(ttyUSB0);
+    editor.fetchAvailablePorts();
+    REQUIRE( editor.portInfoListModelForView()->rowCount() == 1 );
+    // Emulate QComboBox setting its current index to the first element
+    editor.setPortInfoListCurrentRowFromUi(0);
+    REQUIRE( editor.portInfoListCurrentRow() == 0 );
+    REQUIRE( editor.currentPortInfo().portName == "ttyUSB0" );
+
+    editor.removeAvailablePort(ttyUSB0);
+
+    editor.fetchAvailablePorts();
+    CHECK( editor.portInfoListModelForView()->rowCount() == 0 );
+    // Emulate QComboBox setting its current index to the first element
+    editor.setPortInfoListCurrentRowFromUi(-1);
+    CHECK( editor.portInfoListCurrentRow() == -1 );
+    REQUIRE( editor.currentPortInfo().portName.isEmpty() );
+  }
 }
 
 TEST_CASE("fetchAvailablePortSettings")

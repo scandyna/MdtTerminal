@@ -17,6 +17,11 @@ TestSettingsEditor::TestSettingsEditor(QObject* parent)
 {
 }
 
+void TestSettingsEditor::removeAvailablePort(const Mdt::SerialPort::TestLib::TestPortInfo & port)
+{
+  mPortInfoListTableModel.removeAvailablePort(port);
+}
+
 void TestSettingsEditor::doNotifyPortInfoChanged(int row) const
 {
   if(row < 0){

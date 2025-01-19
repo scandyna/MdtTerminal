@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2024 Philippe Steinmann.
+ ** Copyright (C) 2024-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
 #ifndef MDT_SERIAL_PORT_TEST_LIB_TEST_PORT_INFO_LIST_TABLE_MODEL_H
@@ -48,6 +48,8 @@ namespace Mdt{ namespace SerialPort{ namespace TestLib{
     {
       mAvailablePortList.append(port);
     }
+
+    void removeAvailablePort(const TestPortInfo & port);
 
     const TestPortInfo & portInfoAtRow(int row) const noexcept;
 
