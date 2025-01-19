@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2024 Philippe Steinmann.
+ ** Copyright (C) 2024-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "PortInfoStringFormat.h"
@@ -21,7 +21,7 @@ QString PortInfoStringFormat::vendorIdentifierToString(quint16 vid) noexcept
 QString PortInfoStringFormat::vendorIdentifierToString(const QSerialPortInfo & portInfo) noexcept
 {
   if( portInfo.hasVendorIdentifier() ){
-    return vendorIdentifierToString( portInfo.hasVendorIdentifier() );
+    return vendorIdentifierToString( portInfo.vendorIdentifier() );
   }
 
   return QString();

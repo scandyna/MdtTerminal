@@ -7,7 +7,7 @@
  ** Copyright (C) 2024-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
-#include "Mdt/SerialPort/SettingsEditor.h"
+#include "TestSettingsEditor.h"
 #include "Mdt/SerialPort/SettingsBuilder.h"
 #include "Mdt/SerialPort/ParityStringFormat.h"
 #include "Mdt/SerialPort/FlowControlStringFormat.h"
@@ -28,17 +28,12 @@ using Mdt::ItemModel::getModelData;
  * and QComboBoxPrivate::trySetValidIndex()
  */
 
-/*! \todo Should also create SerialPortSettingsEditor_With_HW_SerialPort_Test
- *
- * AbstractSettingsEditor
- * SettingsEditor
- * TestSettingsEditor
- */
-
 TEST_CASE("default_constructed")
 {
-  SettingsEditor editor;
+  TestSettingsEditor editor;
 
+  CHECK( editor.portInfoListModelForView()->rowCount() == 0 );
+  CHECK( editor.portInfoListCurrentRow() == -1 );
   CHECK( editor.baudRateListModelForView()->rowCount() == 0 );
   CHECK( editor.baudRateListCurrentRow() == -1 );
   CHECK( editor.dataBitsListModelForView()->rowCount() == 4 );
@@ -51,9 +46,28 @@ TEST_CASE("default_constructed")
   CHECK( editor.stopBitsListCurrentRow() == 0 );
 }
 
+TEST_CASE("fetchAvailablePorts")
+{
+  TestSettingsEditor editor;
+
+  editor.fetchAvailablePorts();
+
+  Mdt::SerialPort::TestLib::TestPortInfo port;
+  port.portName = "ttyS0";
+  port.systemLocation = "/dev/ttyS0";
+  editor.addAvailablePort(port);
+
+  editor.fetchAvailablePorts();
+
+  CHECK( editor.portInfoListModelForView()->rowCount() == 1 );
+  // Emulate QComboBox setting its current index to the first element
+  editor.setPortInfoListCurrentRowFromUi(0);
+  CHECK( editor.portInfoListCurrentRow() == 0 );
+}
+
 TEST_CASE("fetchAvailablePortSettings")
 {
-  SettingsEditor editor;
+  TestSettingsEditor editor;
 
   editor.fetchAvailablePortSettings();
 
@@ -63,9 +77,47 @@ TEST_CASE("fetchAvailablePortSettings")
   CHECK( editor.baudRateListCurrentRow() == 0 );
 }
 
+TEST_CASE("setPortInfoListCurrentRowFromUi")
+{
+  TestSettingsEditor editor;
+
+  Mdt::SerialPort::TestLib::TestPortInfo ttyS0;
+  ttyS0.portName = "ttyS0";
+  ttyS0.systemLocation = "/dev/ttyS0";
+
+  SECTION("No port available")
+  {
+    editor.setPortInfoListCurrentRowFromUi(-1);
+  }
+
+  SECTION("Select first port")
+  {
+    editor.addAvailablePort(ttyS0);
+    editor.fetchAvailablePorts();
+
+    editor.setPortInfoListCurrentRowFromUi(0);
+
+    CHECK( editor.currentPortInfo().portName == "ttyS0" );
+  }
+
+  // This will happen when we refresh port list and no more port is available
+  SECTION("Select first port then none")
+  {
+    editor.addAvailablePort(ttyS0);
+    editor.fetchAvailablePorts();
+
+    editor.setPortInfoListCurrentRowFromUi(0);
+    CHECK( editor.currentPortInfo().portName == "ttyS0" );
+
+    editor.setPortInfoListCurrentRowFromUi(-1);
+
+    CHECK( editor.currentPortInfo().portName.isEmpty() );
+  }
+}
+
 TEST_CASE("setSettings")
 {
-  SettingsEditor editor;
+  TestSettingsEditor editor;
 
   editor.fetchAvailablePortSettings();
 

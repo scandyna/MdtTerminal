@@ -16,4 +16,11 @@ TestPortInfoListTableModel::TestPortInfoListTableModel(QObject *parent)
 {
 }
 
+const TestPortInfo & TestPortInfoListTableModel::portInfoAtRow(int row) const noexcept
+{
+  assert( rowIndexIsInRange(row) );
+
+  return mList.at(row);
+}
+
 }}} // namespace Mdt{ namespace SerialPort{ namespace TestLib{

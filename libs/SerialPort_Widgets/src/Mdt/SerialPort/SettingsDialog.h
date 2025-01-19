@@ -16,7 +16,6 @@
 #include <QString>
 #include <QDialog>
 #include <QSerialPortInfo>
-#include <QList>
 #include <memory>
 
 namespace Mdt{ namespace SerialPort{
@@ -44,26 +43,20 @@ namespace Mdt{ namespace SerialPort{
      */
     void setSettings(const Settings & settings);
 
-   private slots:
+   public Q_SLOTS:
+
+    void showPortInfo(const QSerialPortInfo & portInfo) noexcept;
+
+   private Q_SLOTS:
 
     void fetchAvailablePorts();
-    void showPortInfoForRow(int row) noexcept;
 
    private:
 
     void fillAvailablePortSettings() noexcept;
 
-    static
-    QString formatVid(const QSerialPortInfo & portInfo) noexcept;
-
-    static
-    QString formatPid(const QSerialPortInfo & portInfo) noexcept;
-
     SettingsEditor mEditor;
     std::unique_ptr<Ui::SettingsDialog> mUi;
-
-    /// \todo We should make a table model to access available ports
-    QList<QSerialPortInfo> mAvailablePorts;
   };
 
 }} // namespace Mdt{ namespace SerialPort{

@@ -49,6 +49,8 @@ namespace Mdt{ namespace SerialPort{ namespace TestLib{
       mAvailablePortList.append(port);
     }
 
+    const TestPortInfo & portInfoAtRow(int row) const noexcept;
+
   private:
 
     void doFetchAvailablePorts() override

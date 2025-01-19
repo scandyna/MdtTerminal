@@ -8,14 +8,13 @@
  **
  *****************************************************************************************/
 #include "SettingsDialog.h"
+#include "Mdt/SerialPort/PortInfoStringFormat.h"
 #include "ui_SettingsDialog.h"
 #include <QComboBox>
 #include <QLatin1String>
 #include <QStringBuilder>
 #include <QSerialPort>
 #include <cassert>
-
-// #include <QDebug>
 
 namespace Mdt{ namespace SerialPort{
 
@@ -25,8 +24,13 @@ SettingsDialog::SettingsDialog(QWidget* parent)
 {
   mUi->setupUi(this);
 
+  mUi->serialPortListBox->setModel( mEditor.portInfoListModelForView() );
+  mUi->serialPortListBox->setModelColumn( mEditor.portNameColumnInPortInfoListModelForView() );
+
+  connect(&mEditor, &SettingsEditor::portInfoListCurrentRowChanged, mUi->serialPortListBox, &QComboBox::setCurrentIndex);
+  connect(&mEditor, &SettingsEditor::portInfoChanged, this, &SettingsDialog::showPortInfo);
   connect(mUi->serialPortListBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
-          this, &SettingsDialog::showPortInfoForRow);
+          &mEditor, &SettingsEditor::setPortInfoListCurrentRowFromUi);
 
   mUi->baudRateBox->setModel( mEditor.baudRateListModelForView() );
   mUi->baudRateBox->setModelColumn(0);
@@ -69,51 +73,24 @@ void SettingsDialog::setSettings(const Settings & settings)
   mEditor.setSettings(settings);
 }
 
-void SettingsDialog::fetchAvailablePorts()
+void SettingsDialog::showPortInfo(const QSerialPortInfo & portInfo) noexcept
 {
-  mUi->serialPortListBox->clear();
-
-  mAvailablePorts = QSerialPortInfo::availablePorts();
-  for(const QSerialPortInfo & portInfo : mAvailablePorts){
-    mUi->serialPortListBox->addItem( portInfo.portName() );
-  }
-}
-
-void SettingsDialog::showPortInfoForRow(int row) noexcept
-{
-  if(row < 0){
-    return;
-  }
-  assert( row < mAvailablePorts.size() );
-
-  const QSerialPortInfo portInfo = mAvailablePorts.at(row);
   mUi->description->setText( portInfo.description() );
   mUi->manufacturer->setText( portInfo.manufacturer() );
   mUi->serialNumber->setText( portInfo.serialNumber() );
   mUi->location->setText( portInfo.systemLocation() );
-  mUi->vid->setText( formatVid(portInfo) );
-  mUi->pid->setText( formatPid(portInfo) );
+  mUi->vid->setText( PortInfoStringFormat::vendorIdentifierToString(portInfo) );
+  mUi->pid->setText( PortInfoStringFormat::productIdentifierToString(portInfo) );
+}
+
+void SettingsDialog::fetchAvailablePorts()
+{
+  mEditor.fetchAvailablePorts();
 }
 
 void SettingsDialog::fillAvailablePortSettings() noexcept
 {
   mEditor.fetchAvailablePortSettings();
-}
-
-QString SettingsDialog::formatVid(const QSerialPortInfo & portInfo) noexcept
-{
-  if( portInfo.hasVendorIdentifier() ){
-    return QLatin1String("0x") % QString::number(portInfo.vendorIdentifier(), 16);
-  }
-  return QString();
-}
-
-QString SettingsDialog::formatPid(const QSerialPortInfo& portInfo) noexcept
-{
-  if( portInfo.hasProductIdentifier() ){
-    return QLatin1String("0x") % QString::number(portInfo.productIdentifier(), 16);
-  }
-  return QString();
 }
 
 }} // namespace Mdt{ namespace SerialPort{
