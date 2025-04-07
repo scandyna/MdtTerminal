@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2024 Philippe Steinmann.
+ ** Copyright (C) 2024-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
 #ifndef MDT_SERIAL_PORT_PORT_INFO_STRING_FORMAT_H
@@ -14,6 +14,7 @@
 #include <QSerialPortInfo>
 #include <QObject>
 #include <QString>
+#include <optional>
 
 namespace Mdt{ namespace SerialPort{
 
@@ -29,11 +30,10 @@ namespace Mdt{ namespace SerialPort{
 
     /*! \brief Returns the string representation of given vendor identifier
      *
-     * Returns the string representation,
-     * regardless of given value.
+     * Returns an empty string if \a vid has no value
      */
     static
-    QString vendorIdentifierToString(quint16 vid) noexcept;
+    QString vendorIdentifierToString(std::optional<quint16> vid) noexcept;
 
     /*! \brief Returns the string representation of the vendor identifier
      *
@@ -44,11 +44,10 @@ namespace Mdt{ namespace SerialPort{
 
     /*! \brief Returns the string representation of given product identifier
      *
-     * Returns the string representation,
-     * regardless of given value.
+     * Returns an empty string if \a pid has no value
      */
     static
-    QString productIdentifierToString(quint16 pid) noexcept;
+    QString productIdentifierToString(std::optional<quint16> pid) noexcept;
 
     /*! \brief Returns the string representation of the product identifier
      *

@@ -8,16 +8,23 @@
  **
  *****************************************************************************************/
 #include "Mdt/SerialPort/TestLib/TestPortInfoListTableModel.h"
+#include "Mdt/SerialPort/PortInfoStringFormat.h"
 #include "Mdt/ItemModel/Helpers.h"
 #include "catch2/catch.hpp"
 #include "Catch2QString.h"
 
 
-// using namespace Mdt::SerialPort;
+using namespace Mdt::SerialPort;
 using namespace Mdt::SerialPort::TestLib;
 using Mdt::ItemModel::getModelData;
 
 constexpr int portNameColumn = TestPortInfoListTableModel::portNameColumnIndex();
+constexpr int systemLocationColumn = TestPortInfoListTableModel::systemLocationColumnIndex();
+constexpr int descriptionColumn = TestPortInfoListTableModel::descriptionColumnIndex();
+constexpr int manufacturerColumn = TestPortInfoListTableModel::manufacturerColumnIndex();
+constexpr int serialNumberColumn = TestPortInfoListTableModel::serialNumberColumnIndex();
+constexpr int vendorIdentifierColumn = TestPortInfoListTableModel::vendorIdentifierColumnIndex();
+constexpr int productIdentifierColumn = TestPortInfoListTableModel::productIdentifierColumnIndex();
 
 
 TEST_CASE("defaultConstructed")
@@ -26,6 +33,35 @@ TEST_CASE("defaultConstructed")
 
   REQUIRE( model.columnCount() == 7 );
   REQUIRE( model.rowCount() == 0 );
+}
+
+TEST_CASE("GetAttributes")
+{
+  TestPortInfoListTableModel model;
+
+  TestPortInfo ttyUSB0;
+  ttyUSB0.portName = "ttyUSB0";
+  ttyUSB0.systemLocation = "/dev/ttyUSB0";
+  ttyUSB0.description = "Some description";
+  ttyUSB0.manufacturer = "Some manufacturer";
+  ttyUSB0.serialNumber = "28546";
+  ttyUSB0.vid = 0x1234;
+  ttyUSB0.pid = 0x5678;
+
+  model.addAvailablePort(ttyUSB0);
+
+  model.fetchAvailablePorts();
+  REQUIRE( model.rowCount() == 1 );
+
+  CHECK( getModelData(model, 0, portNameColumn).toString() == "ttyUSB0" );
+  CHECK( getModelData(model, 0, systemLocationColumn).toString() == "/dev/ttyUSB0" );
+  CHECK( getModelData(model, 0, descriptionColumn).toString() == "Some description" );
+  CHECK( getModelData(model, 0, manufacturerColumn).toString() == "Some manufacturer" );
+  CHECK( getModelData(model, 0, serialNumberColumn).toString() == "28546" );
+  CHECK( getModelData(model, 0, vendorIdentifierColumn).toString() == PortInfoStringFormat::vendorIdentifierToString(0x1234) );
+  CHECK( getModelData(model, 0, productIdentifierColumn).toString() == PortInfoStringFormat::productIdentifierToString(0x5678) );
+  CHECK( model.vendorIdentifierAtRow(0) == 0x1234 );
+  CHECK( model.productIdentifierAtRow(0) == 0x5678 );
 }
 
 TEST_CASE("removeAvailablePort")

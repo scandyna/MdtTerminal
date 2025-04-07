@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2024 Philippe Steinmann.
+ ** Copyright (C) 2024-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "Mdt/SerialPort/PortInfoListTableModel.h"
@@ -59,4 +59,6 @@ TEST_CASE("getData")
   CHECK( getModelData(model, 0, serialNumberColumn).toString() == "ABCDE" );
   CHECK( getModelData(model, 0, vendorIdentifierColumn).toString() == PortInfoStringFormat::vendorIdentifierToString(0x1234) );
   CHECK( getModelData(model, 0, productIdentifierColumn).toString() == PortInfoStringFormat::productIdentifierToString(0x5678) );
+  CHECK( model.vendorIdentifierAtRow(0) == 0x1234 );
+  CHECK( model.productIdentifierAtRow(0) == 0x5678 );
 }

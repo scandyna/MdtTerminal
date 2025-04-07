@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2024 Philippe Steinmann.
+ ** Copyright (C) 2024-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "PortInfoListTableModel.h"
@@ -22,18 +22,26 @@ void PortInfoListTableModel::doFetchAvailablePorts()
   mList = QSerialPortInfo::availablePorts();
 }
 
-QString PortInfoListTableModel::doGetVendorIdentifierAtRow(int row) const noexcept
+std::optional<quint16> PortInfoListTableModel::doGetVendorIdentifierAtRow(int row) const noexcept
 {
   assert( rowIndexIsInRange(row) );
 
-  return PortInfoStringFormat::vendorIdentifierToString(mList[row]);
+  if( mList[row].hasVendorIdentifier() ){
+    return mList[row].vendorIdentifier();
+  }
+
+  return {};
 }
 
-QString PortInfoListTableModel::doGetProductIdentifierAtRow(int row) const noexcept
+std::optional<quint16> PortInfoListTableModel::doGetProductIdentifierAtRow(int row) const noexcept
 {
   assert( rowIndexIsInRange(row) );
 
-  return PortInfoStringFormat::productIdentifierToString(mList[row]);
+  if( mList[row].hasProductIdentifier() ){
+    return mList[row].productIdentifier();
+  }
+
+  return {};
 }
 
 }} // namespace Mdt{ namespace SerialPort{

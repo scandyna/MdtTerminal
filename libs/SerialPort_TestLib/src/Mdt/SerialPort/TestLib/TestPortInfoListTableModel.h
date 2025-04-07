@@ -39,7 +39,7 @@ namespace Mdt{ namespace SerialPort{ namespace TestLib{
   {
     Q_OBJECT
 
-  public:
+   public:
 
     explicit
     TestPortInfoListTableModel(QObject *parent = nullptr);
@@ -53,7 +53,7 @@ namespace Mdt{ namespace SerialPort{ namespace TestLib{
 
     const TestPortInfo & portInfoAtRow(int row) const noexcept;
 
-  private:
+   private:
 
     void doFetchAvailablePorts() override
     {
@@ -90,16 +90,16 @@ namespace Mdt{ namespace SerialPort{ namespace TestLib{
       return mList[row].serialNumber;
     }
 
-    QString doGetVendorIdentifierAtRow(int row) const noexcept override
+    std::optional<quint16> doGetVendorIdentifierAtRow(int row) const noexcept override
     {
       assert( rowIndexIsInRange(row) );
-      return Mdt::SerialPort::PortInfoStringFormat::vendorIdentifierToString(mList[row].vid);
+      return mList[row].vid;
     }
 
-    QString doGetProductIdentifierAtRow(int row) const noexcept override
+    std::optional<quint16> doGetProductIdentifierAtRow(int row) const noexcept override
     {
       assert( rowIndexIsInRange(row) );
-      return Mdt::SerialPort::PortInfoStringFormat::productIdentifierToString(mList[row].pid);
+      return mList[row].pid;
     }
 
     int rowCountWithoutParentIndex() const noexcept override

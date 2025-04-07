@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2024 Philippe Steinmann.
+ ** Copyright (C) 2024-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
 #ifndef MDT_SERIAL_PORT_ABSTRACT_PORT_INFO_LIST_TABLE_MODEL_H
@@ -14,6 +14,8 @@
 #include <Mdt/ItemModel/AbstractTableModel.h>
 #include <QVariant>
 #include <QString>
+#include <QtGlobal>
+#include <optional>
 
 namespace Mdt{ namespace SerialPort{
 
@@ -110,6 +112,14 @@ namespace Mdt{ namespace SerialPort{
      */
     void fetchAvailablePorts();
 
+    /*! \brief Get the vendor identifier at given row
+     */
+    std::optional<quint16> vendorIdentifierAtRow(int row) const noexcept;
+
+    /*! \brief Get the product identifier at given row
+     */
+    std::optional<quint16> productIdentifierAtRow(int row) const noexcept;
+
    private:
 
     virtual
@@ -131,10 +141,10 @@ namespace Mdt{ namespace SerialPort{
     QString doGetSerialNumberAtRow(int row) const noexcept = 0;
 
     virtual
-    QString doGetVendorIdentifierAtRow(int row) const noexcept = 0;
+    std::optional<quint16> doGetVendorIdentifierAtRow(int row) const noexcept = 0;
 
     virtual
-    QString doGetProductIdentifierAtRow(int row) const noexcept = 0;
+    std::optional<quint16> doGetProductIdentifierAtRow(int row) const noexcept = 0;
 
     int columnCountWithoutParentIndex() const noexcept override
     {

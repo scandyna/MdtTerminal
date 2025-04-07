@@ -4,10 +4,11 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2024 Philippe Steinmann.
+ ** Copyright (C) 2024-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "AbstractPortInfoListTableModel.h"
+#include "PortInfoStringFormat.h"
 #include <cassert>
 
 namespace Mdt{ namespace SerialPort{
@@ -22,6 +23,20 @@ void AbstractPortInfoListTableModel::fetchAvailablePorts()
   beginResetModel();
   doFetchAvailablePorts();
   endResetModel();
+}
+
+std::optional<quint16> AbstractPortInfoListTableModel::vendorIdentifierAtRow(int row) const noexcept
+{
+  assert( rowIndexIsInRange(row) );
+
+  return doGetVendorIdentifierAtRow(row);
+}
+
+std::optional<quint16> AbstractPortInfoListTableModel::productIdentifierAtRow(int row) const noexcept
+{
+  assert( rowIndexIsInRange(row) );
+
+  return doGetProductIdentifierAtRow(row);
 }
 
 QVariant AbstractPortInfoListTableModel::displayRoleData(const QModelIndex & index) const noexcept
@@ -41,9 +56,9 @@ QVariant AbstractPortInfoListTableModel::displayRoleData(const QModelIndex & ind
     case Column::SerialNumber:
       return doGetSerialNumberAtRow( index.row() );
     case Column::VendorIdentifier:
-      return doGetVendorIdentifierAtRow( index.row() );
+      return PortInfoStringFormat::vendorIdentifierToString( vendorIdentifierAtRow( index.row() ) );
     case Column::ProductIdentifier:
-      return doGetProductIdentifierAtRow( index.row() );
+      return PortInfoStringFormat::productIdentifierToString( productIdentifierAtRow( index.row() ) );
   }
 
   return QVariant();

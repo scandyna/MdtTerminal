@@ -13,9 +13,13 @@
 
 namespace Mdt{ namespace SerialPort{
 
-QString PortInfoStringFormat::vendorIdentifierToString(quint16 vid) noexcept
+QString PortInfoStringFormat::vendorIdentifierToString(std::optional<quint16> vid) noexcept
 {
-  return QLatin1String("0x") % QString::number(vid, 16);
+  if( vid.has_value() ){
+    return QLatin1String("0x") % QString::number(*vid, 16);
+  }
+
+  return QString();
 }
 
 QString PortInfoStringFormat::vendorIdentifierToString(const QSerialPortInfo & portInfo) noexcept
@@ -27,9 +31,13 @@ QString PortInfoStringFormat::vendorIdentifierToString(const QSerialPortInfo & p
   return QString();
 }
 
-QString PortInfoStringFormat::productIdentifierToString(quint16 pid) noexcept
+QString PortInfoStringFormat::productIdentifierToString(std::optional<quint16> pid) noexcept
 {
-  return QLatin1String("0x") % QString::number(pid, 16);
+  if( pid.has_value() ){
+    return QLatin1String("0x") % QString::number(*pid, 16);
+  }
+
+  return QString();
 }
 
 QString PortInfoStringFormat::productIdentifierToString(const QSerialPortInfo & portInfo) noexcept
