@@ -19,15 +19,15 @@ PortInfoListTableModel::PortInfoListTableModel(QObject *parent)
 
 void PortInfoListTableModel::doFetchAvailablePorts()
 {
-  mList = QSerialPortInfo::availablePorts();
+  mList.containerMutable() = QSerialPortInfo::availablePorts();
 }
 
 std::optional<quint16> PortInfoListTableModel::doGetVendorIdentifierAtRow(int row) const noexcept
 {
   assert( rowIndexIsInRange(row) );
 
-  if( mList[row].hasVendorIdentifier() ){
-    return mList[row].vendorIdentifier();
+  if( mList.atRow(row).hasVendorIdentifier() ){
+    return mList.atRow(row).vendorIdentifier();
   }
 
   return {};
@@ -37,8 +37,8 @@ std::optional<quint16> PortInfoListTableModel::doGetProductIdentifierAtRow(int r
 {
   assert( rowIndexIsInRange(row) );
 
-  if( mList[row].hasProductIdentifier() ){
-    return mList[row].productIdentifier();
+  if( mList.atRow(row).hasProductIdentifier() ){
+    return mList.atRow(row).productIdentifier();
   }
 
   return {};

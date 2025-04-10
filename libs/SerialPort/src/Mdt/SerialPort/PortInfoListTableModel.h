@@ -11,12 +11,42 @@
 #define MDT_SERIAL_PORT_PORT_INFO_LIST_TABLE_MODEL_H
 
 #include "Mdt/SerialPort/AbstractPortInfoListTableModel.h"
+#include <Mdt/ItemModel/StlContiguousContainerAdapter.h>
 #include "mdt_serialport_export.h"
 #include <QSerialPortInfo>
 #include <QList>
 #include <cassert>
 
 namespace Mdt{ namespace SerialPort{
+
+  /*! \internal
+   *
+   * In Qt5, QList uses int as size_type.
+   * In Qt6 it will be qsizetype, that will probably be a 64bit int.
+   * \sa https://doc.qt.io/qt-6/qttypes.html#qsizetype-typedef
+   *
+   * We keep using QList, to avoid copies in doFetchAvailablePorts().
+   * To be ready for Qt6, use an adapter to have somewhat safe int conversions.
+   */
+  struct MDT_SERIALPORT_EXPORT PortInfoListTableModelAdapterFunctionMap
+  {
+    using PortInfoList = QList<QSerialPortInfo>;
+
+    using size_type = PortInfoList::size_type;
+    using const_reference = const QSerialPortInfo &;
+
+    static
+    size_type size(const PortInfoList & list) noexcept
+    {
+      return list.size();
+    }
+
+    static
+    const_reference atIndex(const PortInfoList & list, size_type index) noexcept
+    {
+      return list[index];
+    }
+  };
 
   /*! \brief Access model to a list of port info
    */
@@ -39,7 +69,7 @@ namespace Mdt{ namespace SerialPort{
     {
       assert( rowIndexIsInRange(row) );
 
-      return mList.at(row);
+      return mList.atRow(row);
     }
 
    private:
@@ -49,31 +79,36 @@ namespace Mdt{ namespace SerialPort{
     QString doGetPortNameAtRow(int row) const noexcept override
     {
       assert( rowIndexIsInRange(row) );
-      return mList[row].portName();
+
+      return mList.atRow(row).portName();
     }
 
     QString doGetSystemLocationAtRow(int row) const noexcept override
     {
       assert( rowIndexIsInRange(row) );
-      return mList[row].systemLocation();
+
+      return mList.atRow(row).systemLocation();
     }
 
     QString doGetDescriptionAtRow(int row) const noexcept override
     {
       assert( rowIndexIsInRange(row) );
-      return mList[row].description();
+
+      return mList.atRow(row).description();
     }
 
     QString doGetManufacturerAtRow(int row) const noexcept override
     {
       assert( rowIndexIsInRange(row) );
-      return mList[row].manufacturer();
+
+      return mList.atRow(row).manufacturer();
     }
 
     QString doGetSerialNumberAtRow(int row) const noexcept override
     {
       assert( rowIndexIsInRange(row) );
-      return mList[row].serialNumber();
+
+      return mList.atRow(row).serialNumber();
     }
 
     std::optional<quint16> doGetVendorIdentifierAtRow(int row) const noexcept override;
@@ -81,10 +116,10 @@ namespace Mdt{ namespace SerialPort{
 
     int rowCountWithoutParentIndex() const noexcept override
     {
-      return mList.size();
+      return mList.rowCount();
     }
 
-    QList<QSerialPortInfo> mList;
+    Mdt::ItemModel::StlContiguousContainerAdapter<QList<QSerialPortInfo>, PortInfoListTableModelAdapterFunctionMap> mList;
   };
 
 }} // namespace Mdt{ namespace SerialPort{

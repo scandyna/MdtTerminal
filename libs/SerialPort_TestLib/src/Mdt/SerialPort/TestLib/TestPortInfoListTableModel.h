@@ -13,9 +13,10 @@
 #include "Mdt/SerialPort/AbstractPortInfoListTableModel.h"
 #include "Mdt/SerialPort/PortInfoStringFormat.h"
 #include "mdt_serialport_testlib_export.h"
+#include <Mdt/ItemModel/StlContiguousContainerAdapter.h>
 #include <QString>
 #include <QtGlobal>
-#include <QVector>
+#include <vector>
 #include <cassert>
 
 namespace Mdt{ namespace SerialPort{ namespace TestLib{
@@ -33,6 +34,28 @@ namespace Mdt{ namespace SerialPort{ namespace TestLib{
     quint16 pid = 0;
   };
 
+  /*! \internal
+   */
+  struct MDT_SERIALPORT_TESTLIB_EXPORT TestPortInfoListTableModelAdapterFunctionMap
+  {
+    using PortInfoList = std::vector<TestPortInfo>;
+
+    using size_type = PortInfoList::size_type;
+    using const_reference = const TestPortInfo &;
+
+    static
+    size_type size(const PortInfoList & list) noexcept
+    {
+      return list.size();
+    }
+
+    static
+    const_reference atIndex(const PortInfoList & list, size_type index) noexcept
+    {
+      return list[index];
+    }
+  };
+
   /*! \brief Port info list access model for tests
    */
   class MDT_SERIALPORT_TESTLIB_EXPORT TestPortInfoListTableModel : public Mdt::SerialPort::AbstractPortInfoListTableModel
@@ -46,7 +69,7 @@ namespace Mdt{ namespace SerialPort{ namespace TestLib{
 
     void addAvailablePort(const TestPortInfo & port)
     {
-      mAvailablePortList.append(port);
+      mAvailablePortList.push_back(port);
     }
 
     void removeAvailablePort(const TestPortInfo & port);
@@ -57,58 +80,67 @@ namespace Mdt{ namespace SerialPort{ namespace TestLib{
 
     void doFetchAvailablePorts() override
     {
-      mList = mAvailablePortList;
+      mList.containerMutable() = mAvailablePortList;
     }
 
     QString doGetPortNameAtRow(int row) const noexcept override
     {
       assert( rowIndexIsInRange(row) );
-      return mList[row].portName;
+
+      return mList.atRow(row).portName;
     }
 
     QString doGetSystemLocationAtRow(int row) const noexcept override
     {
       assert( rowIndexIsInRange(row) );
-      return mList[row].systemLocation;
+
+      return mList.atRow(row).systemLocation;
     }
 
     QString doGetDescriptionAtRow(int row) const noexcept override
     {
       assert( rowIndexIsInRange(row) );
-      return mList[row].description;
+
+      return mList.atRow(row).description;
     }
 
     QString doGetManufacturerAtRow(int row) const noexcept override
     {
       assert( rowIndexIsInRange(row) );
-      return mList[row].manufacturer;
+
+      return mList.atRow(row).manufacturer;
     }
 
     QString doGetSerialNumberAtRow(int row) const noexcept override
     {
       assert( rowIndexIsInRange(row) );
-      return mList[row].serialNumber;
+
+      return mList.atRow(row).serialNumber;
     }
 
     std::optional<quint16> doGetVendorIdentifierAtRow(int row) const noexcept override
     {
       assert( rowIndexIsInRange(row) );
-      return mList[row].vid;
+
+      return mList.atRow(row).vid;
     }
 
     std::optional<quint16> doGetProductIdentifierAtRow(int row) const noexcept override
     {
       assert( rowIndexIsInRange(row) );
-      return mList[row].pid;
+
+      return mList.atRow(row).pid;
     }
 
     int rowCountWithoutParentIndex() const noexcept override
     {
-      return mList.size();
+      return mList.rowCount();
     }
 
-    QVector<TestPortInfo> mList;
-    QVector<TestPortInfo> mAvailablePortList;
+    using PortInfoList = std::vector<TestPortInfo>;
+
+    Mdt::ItemModel::StlContiguousContainerAdapter<PortInfoList, TestPortInfoListTableModelAdapterFunctionMap> mList;
+    PortInfoList mAvailablePortList;
   };
 
 }}} // namespace Mdt{ namespace SerialPort{ namespace TestLib{

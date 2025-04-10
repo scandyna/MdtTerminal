@@ -28,27 +28,14 @@ void TestPortInfoListTableModel::removeAvailablePort(const TestPortInfo & port)
   const auto it = std::find_if(mAvailablePortList.cbegin(), mAvailablePortList.cend(), pred);
   assert( it != mAvailablePortList.cend() );
 
-  /*
-   * In Qt5, QVector::erase() expects an iterator, not a const_iterator.
-   * Passing iterator to find_if() could maybe detach ?
-   * So, lets get the index and use removeAt().
-   * Also, this is a test class, we should never have more than 10 elements,
-   * so simply cast the return type from std::distance() to int.
-   *
-   * A cleaner solution would be using an adapter, as proposed here:
-   * https://gitlab.com/scandyna/mdtmodelview/-/issues/1
-   */
-
-  const int index = static_cast<int>( std::distance(mAvailablePortList.cbegin(), it) );
-
-  mAvailablePortList.removeAt(index);
+  mAvailablePortList.erase(it);
 }
 
 const TestPortInfo & TestPortInfoListTableModel::portInfoAtRow(int row) const noexcept
 {
   assert( rowIndexIsInRange(row) );
 
-  return mList.at(row);
+  return mList.atRow(row);
 }
 
 }}} // namespace Mdt{ namespace SerialPort{ namespace TestLib{
