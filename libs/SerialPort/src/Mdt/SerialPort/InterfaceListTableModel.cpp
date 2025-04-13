@@ -1,0 +1,70 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later
+/****************************************************************************************
+ **
+ ** MdtSerialPort
+ ** Provides some functionality to configure and interact with serial ports.
+ **
+ ** Copyright (C) 2025-2025 Philippe Steinmann.
+ **
+ *****************************************************************************************/
+#include "InterfaceListTableModel.h"
+
+namespace Mdt{ namespace SerialPort{
+
+InterfaceListTableModel::InterfaceListTableModel(QObject *parent)
+ : AbstractTableModel(parent)
+{
+}
+
+void InterfaceListTableModel::setVendorIdentifierAndProductIdentifier(std::optional<quint16> vid, std::optional<quint16> pid)
+{
+  InterfaceList newList;
+
+  if( vid.has_value() && pid.has_value() ){
+    newList = InterfaceList::fromVendorIdentifierAndProductIdentifier(*vid, *pid);
+  }
+
+  bool shouldResetModel = true;
+
+  if( mList.container().has_value() ){
+    if( newList.count() == mList.container()->count() ){
+      shouldResetModel = false;
+    }
+  }
+
+  if(shouldResetModel){
+    beginResetModel();
+    mList.containerMutable() = newList;
+    endResetModel();
+  }else{
+    mList.containerMutable() = newList;
+    const int count = rowCount();
+    for(int row = 0; row < count; ++row){
+      emitRowDataChanged(row);
+    }
+  }
+}
+
+void InterfaceListTableModel::clear()
+{
+  beginResetModel();
+  mList.containerMutable().reset();
+  endResetModel();
+}
+
+QVariant InterfaceListTableModel::displayRoleData(const QModelIndex & index) const noexcept
+{
+  assert( indexIsValidAndInRange(index) );
+
+  const auto column = static_cast<Column>( index.column() );
+  switch(column){
+    case Column::Name:
+      return mList.atRow( index.row() ).name();
+    case Column::ParameterValue:
+      return mList.atRow( index.row() ).parameterValue();
+  }
+
+  return QVariant();
+}
+
+}} // namespace Mdt{ namespace SerialPort{

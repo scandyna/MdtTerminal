@@ -38,7 +38,7 @@ class TestSettingsEditor : public Mdt::SerialPort::AbstractSettingsEditor
 
  private:
 
-  QAbstractTableModel *doGetPortInfoListModelForView() noexcept override
+  Mdt::SerialPort::AbstractPortInfoListTableModel *portInfoListTableModel() noexcept override
   {
     return &mPortInfoListTableModel;
   }

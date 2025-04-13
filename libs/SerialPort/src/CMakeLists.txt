@@ -16,6 +16,10 @@ add_library(Mdt_SerialPort
   Mdt/SerialPort/PortInfoStringFormat.cpp
   Mdt/SerialPort/AbstractPortInfoListTableModel.cpp
   Mdt/SerialPort/PortInfoListTableModel.cpp
+  Mdt/SerialPort/InterfaceStringFormat.cpp
+  Mdt/SerialPort/Interface.cpp
+  Mdt/SerialPort/InterfaceList.cpp
+  Mdt/SerialPort/InterfaceListTableModel.cpp
   Mdt/SerialPort/Settings.cpp
   Mdt/SerialPort/SettingsRawData.cpp
   Mdt/SerialPort/SettingsValidationError.cpp

@@ -57,6 +57,38 @@ mdt_add_test(
     src/PortInfoListTableModelTest.cpp
 )
 
+# mdt_add_test(
+#   NAME SerialPortInterfaceStringFormatTest
+#   TARGET serialPortInterfaceStringFormatTest
+#   DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+#   SOURCE_FILES
+#     src/InterfaceStringFormatTest.cpp
+# )
+
+mdt_add_test(
+  NAME SerialPortInterfaceTest
+  TARGET serialPortInterfaceTest
+  DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/InterfaceTest.cpp
+)
+
+mdt_add_test(
+  NAME SerialPortInterfaceListTest
+  TARGET serialPortInterfaceListTest
+  DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/InterfaceListTest.cpp
+)
+
+mdt_add_test(
+  NAME SerialPortInterfaceListTableModelTest
+  TARGET serialPortInterfaceListTableModelTest
+  DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/InterfaceListTableModelTest.cpp
+)
+
 mdt_add_test(
   NAME SerialPortSettingsTest
   TARGET serialPortSettingsTest

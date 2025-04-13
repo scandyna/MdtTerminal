@@ -54,6 +54,7 @@ void AbstractSettingsEditor::setPortInfoListCurrentRowFromUi(int row) noexcept
    * (Views like QCombobox also has logic to emit currentIndexChanged the appropriate time)
    */
   mPortInfoListCurrentRow = row;
+  fetchPortSpecificAttributes();
   doNotifyPortInfoChanged(row);
 }
 
@@ -92,9 +93,34 @@ void AbstractSettingsEditor::setStopBitsListCurrentRowFromUi(int row) noexcept
   mStopBitsListCurrentRow = row;
 }
 
+void AbstractSettingsEditor::setInterfaceListCurrentRowFromUi(int row) noexcept
+{
+  assert( (row < 0) || mInterfaceListTableModel.rowIndexIsInRange(row) );
+
+  mInterfaceListCurrentRow = row;
+}
+
 void AbstractSettingsEditor::fetchStandardBaudRates()
 {
   mBaudRateListTableModel.fetchStandardBaudRates();
+}
+
+void AbstractSettingsEditor::fetchPortSpecificAttributes()
+{
+  const int row = mPortInfoListCurrentRow;
+  if(row < 0){
+    mInterfaceListTableModel.clear();
+    return;
+  }
+
+  const auto *model = portInfoListTableModel();
+  assert(model != nullptr);
+  assert( model->rowIndexIsInRange(row) );
+
+  const auto vid = model->vendorIdentifierAtRow(row);
+  const auto pid = model->productIdentifierAtRow(row);
+
+  mInterfaceListTableModel.setVendorIdentifierAndProductIdentifier(vid, pid);
 }
 
 void AbstractSettingsEditor::setCurrentBaudRate(const Settings & settings)

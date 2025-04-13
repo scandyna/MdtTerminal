@@ -1,17 +1,6 @@
 
 /*! \page SerialPort_dox Serial port library
  *
- * \section SerialPort_SettingsList_TableModels Serial port settings list table models
- *
- * \todo Talk about attributes enumerations, available ports, etc..
- *
- * \todo Also talk about available table models
- *
- * \sa Mdt::SerialPort::BaudRateListTableModel
- * \sa Mdt::SerialPort::DataBitsListTableModel
- * \sa Mdt::SerialPort::FlowControlListTableModel
- * \sa Mdt::SerialPort::ParityListTableModel
- * \sa Mdt::SerialPort::StopBitsListTableModel
  *
  * \section SerialPort_PortInfo Serial port info
  *
@@ -32,6 +21,25 @@
  *
  * \sa https://doc.qt.io/qt-6/qserialportinfo.html
  * \sa Mdt::SerialPort::PortInfoListTableModel
+ *
+ * \section SerialPort_Interface Serial port interface
+ *
+ *
+ * \sa Mdt::SerialPort::Interface
+ * \sa Mdt::SerialPort::InterfaceList
+ *
+ * \section SerialPort_SettingsList_TableModels Serial port settings list table models
+ *
+ * \todo Talk about attributes enumerations, available ports, etc..
+ *
+ * \todo Also talk about available table models
+ *
+ * \sa Mdt::SerialPort::BaudRateListTableModel
+ * \sa Mdt::SerialPort::DataBitsListTableModel
+ * \sa Mdt::SerialPort::FlowControlListTableModel
+ * \sa Mdt::SerialPort::ParityListTableModel
+ * \sa Mdt::SerialPort::StopBitsListTableModel
+ * \sa Mdt::SerialPort::InterfaceListTableModel
  *
  * \section SerialPort_Settings Serial port settings
  *
@@ -54,6 +62,20 @@
  *
  * \sa Mdt::SerialPort::TestLib::TestPortInfoListTableModel
  * \sa Mdt::SerialPort::TestLib
+ *
+ * \section SerialPort_PlatformSpecifics Platform sepcifics
+ *
+ * \todo AbstractEngine , UnixEngine, WindowsEngine
+ * Also Handle fromNativeHandle()
+ * OR: Engine and Engine_unix and Engine_Windows ?
+ *
+ * \subsection SerialPort_LinuxSpecifics Linux specifics
+ *
+ * \sa https://github.com/torvalds/linux/blob/master/include/uapi/linux/serial.h
+ *
+ * \subsection SerialPort_WindowsSpecifics Windows specifics
+ *
+ * \sa https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ntddser/ns-ntddser-_serial_commprop
  */
 
 namespace Mdt{

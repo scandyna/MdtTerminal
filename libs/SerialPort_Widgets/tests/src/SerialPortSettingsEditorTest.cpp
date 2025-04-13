@@ -44,6 +44,9 @@ TEST_CASE("default_constructed")
   CHECK( editor.flowControlListCurrentRow() == 0 );
   CHECK( editor.stopBitsListModelForView()->rowCount() > 0 );
   CHECK( editor.stopBitsListCurrentRow() == 0 );
+  // Serial port specific attributes
+  CHECK( editor.interfaceListModelForView()->rowCount() == 0 );
+  CHECK( editor.interfaceListCurrentRow() == -1 );
 }
 
 TEST_CASE("fetchAvailablePorts")
@@ -108,7 +111,7 @@ TEST_CASE("fetchAvailablePorts")
 
     editor.fetchAvailablePorts();
     CHECK( editor.portInfoListModelForView()->rowCount() == 0 );
-    // Emulate QComboBox setting its current index to the first element
+    // Emulate QComboBox setting its current index to -1
     editor.setPortInfoListCurrentRowFromUi(-1);
     CHECK( editor.portInfoListCurrentRow() == -1 );
     REQUIRE( editor.currentPortInfo().portName.isEmpty() );
@@ -125,6 +128,171 @@ TEST_CASE("fetchAvailablePortSettings")
   // Emulate QComboBox setting its current index to the first element
   editor.setBaudRateListCurrentRowFromUi(0);
   CHECK( editor.baudRateListCurrentRow() == 0 );
+}
+
+TEST_CASE("PortSpecificAttributes")
+{
+  TestSettingsEditor editor;
+
+  /*
+   * The port name is not important for this test
+   */
+  Mdt::SerialPort::TestLib::TestPortInfo ttyS0;
+  ttyS0.portName = "ttyS0";
+  ttyS0.systemLocation = "/dev/ttyS0";
+
+  SECTION("no serial port")
+  {
+    editor.fetchAvailablePorts();
+
+    // Emulate QComboBox setting its current index to -1
+    editor.setPortInfoListCurrentRowFromUi(-1);
+
+    CHECK( editor.interfaceListModelForView()->rowCount() == 0 );
+  }
+
+  SECTION("common port supporting RS-232 only")
+  {
+    editor.addAvailablePort(ttyS0);
+    editor.fetchAvailablePorts();
+
+    // Emulate QComboBox setting its current index to the first element
+    editor.setPortInfoListCurrentRowFromUi(0);
+
+    CHECK( editor.interfaceListModelForView()->rowCount() == 1 );
+  }
+
+  SECTION("Port supporting multiple interfaces")
+  {
+    /*
+     * Here we use a MOXA Uport 1250
+     */
+    ttyS0.vid = 0x110A;
+    ttyS0.pid = 0x1250;
+    editor.addAvailablePort(ttyS0);
+    editor.fetchAvailablePorts();
+
+    // Emulate QComboBox setting its current index to the first element
+    editor.setPortInfoListCurrentRowFromUi(0);
+
+    CHECK( editor.interfaceListModelForView()->rowCount() == 4 );
+  }
+}
+
+TEST_CASE("CurrentInterface")
+{
+  TestSettingsEditor editor;
+
+  /*
+   * The port name is not important for this test
+   */
+
+  Mdt::SerialPort::TestLib::TestPortInfo commonPort;
+  commonPort.portName = "ttyS0";
+  commonPort.systemLocation = "/dev/ttyS0";
+
+  Mdt::SerialPort::TestLib::TestPortInfo uport1250_1;
+  uport1250_1.portName = "ttyS1";
+  uport1250_1.systemLocation = "/dev/ttyS1";
+  uport1250_1.vid = 0x110A;
+  uport1250_1.pid = 0x1250;
+
+  Mdt::SerialPort::TestLib::TestPortInfo uport1250_2;
+  uport1250_2.portName = "ttyS2";
+  uport1250_2.systemLocation = "/dev/ttyS2";
+  uport1250_2.vid = 0x110A;
+  uport1250_2.pid = 0x1250;
+
+  SECTION("no serial port")
+  {
+    editor.fetchAvailablePorts();
+
+    // Emulate QComboBox setting its current index to -1
+    editor.setPortInfoListCurrentRowFromUi(-1);
+
+    REQUIRE( editor.interfaceListModelForView()->rowCount() == 0 );
+    CHECK( editor.interfaceListCurrentRow() == -1 );
+  }
+
+  SECTION("common port supporting RS-232 only")
+  {
+    editor.addAvailablePort(commonPort);
+    editor.fetchAvailablePorts();
+
+    // Emulate QComboBox setting its current index to the first element
+    editor.setPortInfoListCurrentRowFromUi(0);
+    editor.setInterfaceListCurrentRowFromUi(0);
+
+    REQUIRE( editor.interfaceListModelForView()->rowCount() == 1 );
+    CHECK( editor.interfaceListCurrentRow() == 0 );
+  }
+
+  SECTION("Port supporting multiple interfaces")
+  {
+    editor.addAvailablePort(uport1250_1);
+    editor.fetchAvailablePorts();
+
+    // Emulate QComboBox setting its current index to the first element
+    editor.setPortInfoListCurrentRowFromUi(0);
+    editor.setInterfaceListCurrentRowFromUi(0);
+
+    REQUIRE( editor.interfaceListModelForView()->rowCount() == 4 );
+    CHECK( editor.interfaceListCurrentRow() == 0 );
+
+    editor.setInterfaceListCurrentRowFromUi(3);
+    CHECK( editor.interfaceListCurrentRow() == 3 );
+  }
+
+  SECTION("change serial port")
+  {
+    editor.addAvailablePort(uport1250_1);
+    editor.addAvailablePort(uport1250_2);
+    editor.addAvailablePort(commonPort);
+    editor.fetchAvailablePorts();
+    // Emulate QComboBox setting its current index to the first element
+    editor.setPortInfoListCurrentRowFromUi(0);
+    editor.setInterfaceListCurrentRowFromUi(0);
+    REQUIRE( editor.interfaceListModelForView()->rowCount() == 4 );
+    REQUIRE( editor.interfaceListCurrentRow() == 0 );
+
+    /*
+     * Initially, this test was made after a bad feeling in the setting UI:
+     * Having a MOXA UPort 1250, with 2 serial ports, each supporting 4 interfaces.
+     * When selecting the RS-485 4 wire, then changing to the other port,
+     * current index changed to RS-232.
+     *
+     * The actual and simple solution was to change InterfaceListTableModel,
+     * so that it does not reset as long as the list stays the same size.
+     *
+     * If, in the future, some more sofisticated solution is required
+     * (like the consept of current protocol),
+     * this test should be adapted.
+     */
+    SECTION("select interface 3 - RS-485 4 wire")
+    {
+      editor.setInterfaceListCurrentRowFromUi(3);
+      REQUIRE( editor.interfaceListCurrentRow() == 3 );
+
+      SECTION("select second UPort 1250 - we should still have RS-485 4W selected")
+      {
+        editor.setPortInfoListCurrentRowFromUi(1);
+
+        // Here, InterfaceListTableModel will not reset
+
+        CHECK( editor.interfaceListCurrentRow() == 3 );
+      }
+
+      SECTION("select common port - RS-232 should be selected")
+      {
+        editor.setPortInfoListCurrentRowFromUi(2);
+
+        // Emulate QComboBox setting its current index to the first element (after model reset)
+        editor.setInterfaceListCurrentRowFromUi(0);
+
+        CHECK( editor.interfaceListCurrentRow() == 0 );
+      }
+    }
+  }
 }
 
 TEST_CASE("setPortInfoListCurrentRowFromUi")
@@ -189,4 +357,6 @@ TEST_CASE("setSettings")
   CHECK( getModelData(*editor.flowControlListModelForView(), editor.flowControlListCurrentRow(), 0).toString() == expectedFlowControlStr );
   const QString expectedStopBitsStr = StopBitsStringFormat::stopBitsToString(QSerialPort::TwoStop);
   CHECK( getModelData(*editor.stopBitsListModelForView(), editor.stopBitsListCurrentRow(), 0).toString() == expectedStopBitsStr );
+  /// \todo Interface
+  REQUIRE(false);
 }

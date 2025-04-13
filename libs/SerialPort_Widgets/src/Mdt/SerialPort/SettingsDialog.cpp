@@ -9,6 +9,7 @@
  *****************************************************************************************/
 #include "SettingsDialog.h"
 #include "Mdt/SerialPort/PortInfoStringFormat.h"
+#include "Mdt/SerialPort/InterfaceListTableModel.h"
 #include "ui_SettingsDialog.h"
 #include <QComboBox>
 #include <QLatin1String>
@@ -64,6 +65,12 @@ SettingsDialog::SettingsDialog(QWidget* parent)
 
   connect(&mEditor, &SettingsEditor::stopBitsListCurrentRowChanged, mUi->stopBitsBox, &QComboBox::setCurrentIndex);
   connect(mUi->stopBitsBox, &QComboBox::currentIndexChanged, &mEditor, &SettingsEditor::setStopBitsListCurrentRowFromUi);
+
+  mUi->interfaceBox->setModel( mEditor.interfaceListModelForView() );
+  mUi->interfaceBox->setModelColumn( InterfaceListTableModel::nameColumn() );
+
+  connect(&mEditor, &SettingsEditor::interfaceListCurrentRowChanged, mUi->interfaceBox, &QComboBox::setCurrentIndex);
+  connect(mUi->interfaceBox, &QComboBox::currentIndexChanged, &mEditor, &SettingsEditor::setInterfaceListCurrentRowFromUi);
 
   fetchAvailablePorts();
   fillAvailablePortSettings();

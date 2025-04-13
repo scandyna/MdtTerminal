@@ -42,7 +42,7 @@ namespace Mdt{ namespace SerialPort{
 
    private:
 
-    QAbstractTableModel *doGetPortInfoListModelForView() noexcept override
+    AbstractPortInfoListTableModel *portInfoListTableModel() noexcept override
     {
       return &mPortInfoListTableModel;
     }
