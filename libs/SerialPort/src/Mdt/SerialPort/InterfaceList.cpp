@@ -8,7 +8,6 @@
  **
  *****************************************************************************************/
 #include "InterfaceList.h"
-#include "InterfaceStringFormat.h"
 #include <algorithm>
 #include <iterator>
 #include <cassert>
@@ -16,7 +15,7 @@
 namespace Mdt{ namespace SerialPort{
 
 InterfaceList::InterfaceList()
- : mList{Interface::fromNameAndParameterValue(InterfaceStringFormat::rs232Name(), 0)}
+ : mList{Interface::fromStandardAndParameterValue(InterfaceStandard::RS_232, 0)}
 {
 }
 
@@ -69,10 +68,10 @@ InterfaceList InterfaceList::fromMoxaProductIdentifier(quint16 pid)
 InterfaceList InterfaceList::moxaUPort_1250_1450_1650()
 {
   return InterfaceList({
-    Interface::fromNameAndParameterValue(InterfaceStringFormat::rs232Name(), 0x00),
-    Interface::fromNameAndParameterValue(InterfaceStringFormat::rs485TwoWireName(), 0x01),
-    Interface::fromNameAndParameterValue(InterfaceStringFormat::rs422Name(), 0x02),
-    Interface::fromNameAndParameterValue(InterfaceStringFormat::rs485FourWireName(), 0x03)
+    Interface::fromStandardAndParameterValue(InterfaceStandard::RS_232, 0x00),
+    Interface::fromStandardAndParameterValue(InterfaceStandard::RS_485_2W, 0x01),
+    Interface::fromStandardAndParameterValue(InterfaceStandard::RS_422, 0x02),
+    Interface::fromStandardAndParameterValue(InterfaceStandard::RS_485_4W, 0x03)
   });
 }
 

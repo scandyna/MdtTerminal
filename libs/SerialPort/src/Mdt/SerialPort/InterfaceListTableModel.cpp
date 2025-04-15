@@ -8,6 +8,7 @@
  **
  *****************************************************************************************/
 #include "InterfaceListTableModel.h"
+#include "InterfaceStringFormat.h"
 
 namespace Mdt{ namespace SerialPort{
 
@@ -59,7 +60,7 @@ QVariant InterfaceListTableModel::displayRoleData(const QModelIndex & index) con
   const auto column = static_cast<Column>( index.column() );
   switch(column){
     case Column::Name:
-      return mList.atRow( index.row() ).name();
+      return InterfaceStringFormat::standardName( mList.atRow( index.row() ).standard() );
     case Column::ParameterValue:
       return mList.atRow( index.row() ).parameterValue();
   }

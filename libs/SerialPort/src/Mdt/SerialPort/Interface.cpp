@@ -11,13 +11,13 @@
 
 namespace Mdt{ namespace SerialPort{
 
-Interface Interface::fromNameAndParameterValue(const QString & name, unsigned int value) noexcept
+Interface Interface::fromStandardAndParameterValue(InterfaceStandard standard, unsigned int value) noexcept
 {
-  return Interface(name, value);
+  return Interface(standard, value);
 }
 
-Interface::Interface(const QString & name, unsigned int value) noexcept
- : mName(name),
+Interface::Interface(InterfaceStandard standard, unsigned int value) noexcept
+ : mStandard(standard),
    mParameterValue(value)
 {
 }

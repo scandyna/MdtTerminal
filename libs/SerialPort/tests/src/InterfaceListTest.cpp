@@ -8,7 +8,6 @@
  **
  *****************************************************************************************/
 #include "Mdt/SerialPort/InterfaceList.h"
-#include "Mdt/SerialPort/InterfaceStringFormat.h"
 #include "catch2/catch.hpp"
 #include "Catch2QString.h"
 
@@ -21,7 +20,7 @@ TEST_CASE("default_constructed")
 
   CHECK( list.count() == 1 );
   CHECK( !list.canSelectInterface() );
-  CHECK( list.interfaceAt(0).name() == InterfaceStringFormat::rs232Name() );
+  CHECK( list.interfaceAt(0).standard() == InterfaceStandard::RS_232 );
 }
 
 TEST_CASE("fromMoxaProductIdentifier")
@@ -39,7 +38,7 @@ TEST_CASE("fromMoxaProductIdentifier")
 
     CHECK( list.count() == 1 );
     CHECK( !list.canSelectInterface() );
-    CHECK( list.interfaceAt(0).name() == InterfaceStringFormat::rs232Name() );
+    CHECK( list.interfaceAt(0).standard() == InterfaceStandard::RS_232 );
   }
 }
 
@@ -49,13 +48,13 @@ TEST_CASE("moxaUPort_1250_1450_1650")
 
   CHECK( list.count() == 4 );
   CHECK( list.canSelectInterface() );
-  CHECK( list.interfaceAt(0).name() == InterfaceStringFormat::rs232Name() );
+  CHECK( list.interfaceAt(0).standard() == InterfaceStandard::RS_232 );
   CHECK( list.interfaceAt(0).parameterValue() == 0x00 );
-  CHECK( list.interfaceAt(1).name() == InterfaceStringFormat::rs485TwoWireName() );
+  CHECK( list.interfaceAt(1).standard() == InterfaceStandard::RS_485_2W );
   CHECK( list.interfaceAt(1).parameterValue() == 0x01 );
-  CHECK( list.interfaceAt(2).name() == InterfaceStringFormat::rs422Name() );
+  CHECK( list.interfaceAt(2).standard() == InterfaceStandard::RS_422 );
   CHECK( list.interfaceAt(2).parameterValue() == 0x02 );
-  CHECK( list.interfaceAt(3).name() == InterfaceStringFormat::rs485FourWireName() );
+  CHECK( list.interfaceAt(3).standard() == InterfaceStandard::RS_485_4W );
   CHECK( list.interfaceAt(3).parameterValue() == 0x03 );
 }
 
@@ -89,10 +88,10 @@ TEST_CASE("fromVendorIdentifierAndProductIdentifier")
 
     CHECK( list.count() == 4 );
     CHECK( list.canSelectInterface() );
-    CHECK( list.interfaceAt(0).name() == InterfaceStringFormat::rs232Name() );
-    CHECK( list.interfaceAt(1).name() == InterfaceStringFormat::rs485TwoWireName() );
-    CHECK( list.interfaceAt(2).name() == InterfaceStringFormat::rs422Name() );
-    CHECK( list.interfaceAt(3).name() == InterfaceStringFormat::rs485FourWireName() );
+    CHECK( list.interfaceAt(0).standard() == InterfaceStandard::RS_232 );
+    CHECK( list.interfaceAt(1).standard() == InterfaceStandard::RS_485_2W );
+    CHECK( list.interfaceAt(2).standard() == InterfaceStandard::RS_422 );
+    CHECK( list.interfaceAt(3).standard() == InterfaceStandard::RS_485_4W );
   }
 
   SECTION("unknown")
@@ -101,6 +100,6 @@ TEST_CASE("fromVendorIdentifierAndProductIdentifier")
 
     CHECK( list.count() == 1 );
     CHECK( !list.canSelectInterface() );
-    CHECK( list.interfaceAt(0).name() == InterfaceStringFormat::rs232Name() );
+    CHECK( list.interfaceAt(0).standard() == InterfaceStandard::RS_232 );
   }
 }

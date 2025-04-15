@@ -10,6 +10,7 @@
 #ifndef MDT_SERIAL_PORT_INTERFACE_STRING_FORMAT_H
 #define MDT_SERIAL_PORT_INTERFACE_STRING_FORMAT_H
 
+#include "Mdt/SerialPort/InterfaceStandard.h"
 #include "mdt_serialport_export.h"
 #include <QObject>
 #include <QString>
@@ -25,6 +26,11 @@ namespace Mdt{ namespace SerialPort{
    public:
 
     InterfaceStringFormat(QObject *parent) = delete;
+
+    /*! \brief Get the name for given standard
+     */
+    static
+    QString standardName(InterfaceStandard standard) noexcept;
 
     /*! \brief Get the RS-232 name
      */

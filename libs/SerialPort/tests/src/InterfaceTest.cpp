@@ -13,11 +13,10 @@
 
 using namespace Mdt::SerialPort;
 
-
-TEST_CASE("fromNameAndParameterValue")
+TEST_CASE("fromStandardAndParameterValue")
 {
-  const auto rs422 = Interface::fromNameAndParameterValue("RS-422", 1);
+  const auto rs422 = Interface::fromStandardAndParameterValue(InterfaceStandard::RS_422, 1);
 
-  CHECK( rs422.name() == "RS-422" );
+  CHECK( rs422.standard() == InterfaceStandard::RS_422 );
   CHECK( rs422.parameterValue() == 1 );
 }

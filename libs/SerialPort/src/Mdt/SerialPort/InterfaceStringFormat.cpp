@@ -12,6 +12,22 @@
 
 namespace Mdt{ namespace SerialPort{
 
+QString InterfaceStringFormat::standardName(InterfaceStandard standard) noexcept
+{
+  switch(standard){
+    case InterfaceStandard::RS_232:
+      return rs232Name();
+    case InterfaceStandard::RS_422:
+      return rs422Name();
+    case InterfaceStandard::RS_485_2W:
+      return rs485TwoWireName();
+    case InterfaceStandard::RS_485_4W:
+      return rs485TwoWireName();
+  }
+
+  return QString();
+}
+
 QString InterfaceStringFormat::rs232Name() noexcept
 {
   return QLatin1String("RS-232");

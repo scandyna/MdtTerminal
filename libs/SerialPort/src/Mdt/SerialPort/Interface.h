@@ -10,8 +10,8 @@
 #ifndef MDT_SERIAL_PORT_INTERFACE_H
 #define MDT_SERIAL_PORT_INTERFACE_H
 
+#include "Mdt/SerialPort/InterfaceStandard.h"
 #include "mdt_serialport_export.h"
-#include <QString>
 
 namespace Mdt{ namespace SerialPort{
 
@@ -25,11 +25,11 @@ namespace Mdt{ namespace SerialPort{
 
     Interface() = delete;
 
-    /*! \brief Get the name of this interface
+    /*! \brief Get the standard of this interface
      */
-    QString name() const noexcept
+    InterfaceStandard standard() const noexcept
     {
-      return mName;
+      return mStandard;
     }
 
     /*! \brief Get the parameter value for this interface
@@ -42,13 +42,13 @@ namespace Mdt{ namespace SerialPort{
     /*! \brief Build an interface from given name and parameter value
      */
     static
-    Interface fromNameAndParameterValue(const QString & name, unsigned int value) noexcept;
+    Interface fromStandardAndParameterValue(InterfaceStandard standard, unsigned int value) noexcept;
 
    private:
 
-    Interface(const QString & name, unsigned int value) noexcept;
+    Interface(InterfaceStandard standard, unsigned int value) noexcept;
 
-    QString mName;
+    InterfaceStandard mStandard;
     unsigned int mParameterValue = 0;
   };
 
