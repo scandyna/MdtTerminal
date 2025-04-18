@@ -11,6 +11,7 @@
 #define MDT_SERIAL_PORT_ABSTRACT_SETTINGS_EDITOR_H
 
 #include "Mdt/SerialPort/Settings.h"
+#include "Mdt/SerialPort/InterfaceStandard.h"
 #include "Mdt/SerialPort/AbstractPortInfoListTableModel.h"
 #include "Mdt/SerialPort/BaudRateListTableModel.h"
 #include "Mdt/SerialPort/DataBitsListTableModel.h"
@@ -261,6 +262,9 @@ namespace Mdt{ namespace SerialPort{
     void setCurrentParity(const Settings & settings);
     void setCurrentFlowControl(const Settings & settings);
     void setCurrentStopBits(const Settings & settings);
+    void setCurrentInterfaceStandard(InterfaceStandard standard);
+
+    bool rowIsMinusOneOrInRangeOfInterfaceList(int row) const noexcept;
 
     virtual
     AbstractPortInfoListTableModel *portInfoListTableModel() noexcept = 0;

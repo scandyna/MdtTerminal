@@ -53,6 +53,20 @@ void InterfaceListTableModel::clear()
   endResetModel();
 }
 
+int InterfaceListTableModel::findRowOfStandard(InterfaceStandard standard) const
+{
+  if( !mList.container().has_value() ){
+    return -1;
+  }
+
+  const auto index = mList.container()->findIndexOfStandard(standard);
+  if( index.has_value() ){
+    return mList.rowFromIndex(*index);
+  }
+
+  return -1;
+}
+
 QVariant InterfaceListTableModel::displayRoleData(const QModelIndex & index) const noexcept
 {
   assert( indexIsValidAndInRange(index) );

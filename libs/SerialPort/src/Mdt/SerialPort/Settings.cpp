@@ -88,4 +88,9 @@ void Settings::setStopBits(QSerialPort::StopBits bits) noexcept
   mStopBits = bits;
 }
 
+void Settings::setInterfaceStandard(InterfaceStandard standard) noexcept
+{
+  mInterfaceStandard = standard;
+}
+
 }} // namespace Mdt{ namespace SerialPort{

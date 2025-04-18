@@ -11,6 +11,7 @@
 #define MDT_SERIAL_PORT_SETTINGS_H
 
 #include "Mdt/SerialPort/Platform.h"
+#include "Mdt/SerialPort/InterfaceStandard.h"
 #include "mdt_serialport_export.h"
 #include <QSerialPort>
 #include <QString>
@@ -82,6 +83,13 @@ namespace Mdt{ namespace SerialPort{
     QSerialPort::StopBits stopBits() const noexcept
     {
       return mStopBits;
+    }
+
+    /*! \brief Get the interface standard
+     */
+    InterfaceStandard interfaceStandard() const noexcept
+    {
+      return mInterfaceStandard;
     }
 
     /*! \brief Check if given baud rate has minimal validity
@@ -179,12 +187,17 @@ namespace Mdt{ namespace SerialPort{
      */
     void setStopBits(QSerialPort::StopBits bits) noexcept;
 
+    /*! \brief Set the interface standard
+     */
+    void setInterfaceStandard(InterfaceStandard standard) noexcept;
+
     QString mPortName;
     qint32 mBaudRate = 0;
     QSerialPort::DataBits mDataBits = QSerialPort::UnknownDataBits;
     QSerialPort::Parity mParity = QSerialPort::UnknownParity;
     QSerialPort::FlowControl mFlowControl = QSerialPort::UnknownFlowControl;
     QSerialPort::StopBits mStopBits = QSerialPort::UnknownStopBits;
+    InterfaceStandard mInterfaceStandard = InterfaceStandard::RS_232;
   };
 
 }} // namespace Mdt{ namespace SerialPort{

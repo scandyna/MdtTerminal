@@ -357,6 +357,124 @@ TEST_CASE("setSettings")
   CHECK( getModelData(*editor.flowControlListModelForView(), editor.flowControlListCurrentRow(), 0).toString() == expectedFlowControlStr );
   const QString expectedStopBitsStr = StopBitsStringFormat::stopBitsToString(QSerialPort::TwoStop);
   CHECK( getModelData(*editor.stopBitsListModelForView(), editor.stopBitsListCurrentRow(), 0).toString() == expectedStopBitsStr );
-  /// \todo Interface
-  REQUIRE(false);
+}
+
+TEST_CASE("setSettings_PortSpecificSettings")
+{
+  TestSettingsEditor editor;
+
+  SettingsRawData settingsData;
+  settingsData.baudRate = 4800;
+  settingsData.dataBits = QSerialPort::Data6;
+  settingsData.parity = QSerialPort::MarkParity;
+  settingsData.flowControl = QSerialPort::HardwareControl;
+  settingsData.stopBits = QSerialPort::TwoStop;
+
+  Mdt::SerialPort::TestLib::TestPortInfo commonPort;
+  commonPort.portName = "ttyS0";
+  commonPort.systemLocation = "/dev/ttyS0";
+
+  Mdt::SerialPort::TestLib::TestPortInfo uport1250_1;
+  uport1250_1.portName = "ttyS1";
+  uport1250_1.systemLocation = "/dev/ttyS1";
+  uport1250_1.vid = 0x110A;
+  uport1250_1.pid = 0x1250;
+
+  /*
+   * TODO What should be the behaviour ?
+   * Admit we request an interface supporting RS-232.
+   * We have no serial port.
+   * Should the editor present an empty list with no selected interface ?
+   * Later, the user plugs-in as USB-Serial device, then refreshes the list.
+   * Then, the RS-232 interface becomes available.
+   *
+   * Current behaviour is to display an empty list,
+   * and no current interface (index: -1).
+   * Once a clear behaviour is known, this test should be adapted.
+   */
+  SECTION("no serial port")
+  {
+    editor.fetchAvailablePorts();
+    // Emulate QComboBox setting its current index to -1
+    editor.setPortInfoListCurrentRowFromUi(-1);
+    editor.setInterfaceListCurrentRowFromUi(-1);
+
+      settingsData.interfaceStandard = InterfaceStandard::RS_232;
+      const Settings settings = SettingsBuilder::settingsFromRawData(settingsData);
+
+      editor.setSettings(settings);
+
+      CHECK( editor.interfaceListCurrentRow() == -1 );
+  }
+
+  SECTION("common port supporting RS-232 only")
+  {
+    editor.addAvailablePort(commonPort);
+    editor.fetchAvailablePorts();
+    // Emulate QComboBox setting its current index to the first element
+    editor.setPortInfoListCurrentRowFromUi(0);
+    editor.setInterfaceListCurrentRowFromUi(0);
+
+    SECTION("RS-232")
+    {
+      settingsData.interfaceStandard = InterfaceStandard::RS_232;
+      const Settings settings = SettingsBuilder::settingsFromRawData(settingsData);
+
+      editor.setSettings(settings);
+
+      CHECK( editor.interfaceListCurrentRow() == 0 );
+    }
+
+    /*
+     * TODO What should be the behaviour ?
+     *
+     * Current behaviour is to display the RS-232 interface.
+     * This means, we ignore the request settings (is this really a problem ?)
+     * If the user then selects another serial port adapter,
+     * that supports the requested interface standard,
+     * the user will have to choose it.
+     *
+     * See also the remark in CurrentInterface test.
+     *
+     * Once a clear behaviour is known, this test should be adapted.
+     */
+    SECTION("Try RS-485 2W")
+    {
+      settingsData.interfaceStandard = InterfaceStandard::RS_485_2W;
+      const Settings settings = SettingsBuilder::settingsFromRawData(settingsData);
+
+      editor.setSettings(settings);
+
+      CHECK( editor.interfaceListCurrentRow() == 0 );
+    }
+  }
+
+  SECTION("Port supporting multiple interfaces")
+  {
+    editor.addAvailablePort(uport1250_1);
+    editor.fetchAvailablePorts();
+    // Emulate QComboBox setting its current index to the first element
+    editor.setPortInfoListCurrentRowFromUi(0);
+    editor.setInterfaceListCurrentRowFromUi(0);
+
+    SECTION("RS-232")
+    {
+      settingsData.interfaceStandard = InterfaceStandard::RS_232;
+      const Settings settings = SettingsBuilder::settingsFromRawData(settingsData);
+
+      editor.setSettings(settings);
+
+      CHECK( editor.interfaceListCurrentRow() == 0 );
+    }
+
+    SECTION("RS-485 2W")
+    {
+      settingsData.interfaceStandard = InterfaceStandard::RS_485_2W;
+      const Settings settings = SettingsBuilder::settingsFromRawData(settingsData);
+
+      editor.setSettings(settings);
+
+      CHECK( editor.interfaceListCurrentRow() == 1 );
+    }
+  }
 }

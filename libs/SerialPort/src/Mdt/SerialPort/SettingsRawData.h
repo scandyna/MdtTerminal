@@ -4,12 +4,13 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2024 Philippe Steinmann.
+ ** Copyright (C) 2024-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
 #ifndef MDT_SERIAL_PORT_SETTINGS_RAW_DATA_H
 #define MDT_SERIAL_PORT_SETTINGS_RAW_DATA_H
 
+#include "Mdt/SerialPort/InterfaceStandard.h"
 #include "mdt_serialport_export.h"
 #include <QSerialPort>
 #include <QtGlobal>
@@ -32,6 +33,7 @@ namespace Mdt{ namespace SerialPort{
     QSerialPort::Parity parity = QSerialPort::UnknownParity;
     QSerialPort::FlowControl flowControl = QSerialPort::UnknownFlowControl;
     QSerialPort::StopBits stopBits = QSerialPort::UnknownStopBits;
+    InterfaceStandard interfaceStandard = InterfaceStandard::RS_232;
   };
 
 }} // namespace Mdt{ namespace SerialPort{

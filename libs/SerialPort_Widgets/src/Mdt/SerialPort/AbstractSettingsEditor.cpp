@@ -40,6 +40,7 @@ void AbstractSettingsEditor::setSettings(const Settings & settings)
   setCurrentParity(settings);
   setCurrentFlowControl(settings);
   setCurrentStopBits(settings);
+  setCurrentInterfaceStandard( settings.interfaceStandard() );
 }
 
 void AbstractSettingsEditor::setPortInfoListCurrentRowFromUi(int row) noexcept
@@ -95,7 +96,8 @@ void AbstractSettingsEditor::setStopBitsListCurrentRowFromUi(int row) noexcept
 
 void AbstractSettingsEditor::setInterfaceListCurrentRowFromUi(int row) noexcept
 {
-  assert( (row < 0) || mInterfaceListTableModel.rowIndexIsInRange(row) );
+  /// assert( (row < 0) || mInterfaceListTableModel.rowIndexIsInRange(row) );
+  assert( rowIsMinusOneOrInRangeOfInterfaceList(row) );
 
   mInterfaceListCurrentRow = row;
 }
@@ -181,6 +183,34 @@ void AbstractSettingsEditor::setCurrentStopBits(const Settings & settings)
 
   mStopBitsListCurrentRow = row;
   emit stopBitsListCurrentRowChanged(row);
+}
+
+/*
+ * See remarks in the tests (SerialPortSettingsEditorTest.cpp)
+ */
+void AbstractSettingsEditor::setCurrentInterfaceStandard(InterfaceStandard standard)
+{
+  int row = mInterfaceListTableModel.findRowOfStandard(standard);
+  assert( rowIsMinusOneOrInRangeOfInterfaceList(row) );
+
+  if( (row == -1) && (mInterfaceListTableModel.rowCount() > 0) ){
+    row = 0;
+  }
+  if(row == mInterfaceListCurrentRow){
+    return;
+  }
+
+  mInterfaceListCurrentRow = row;
+  emit interfaceListCurrentRowChanged(row);
+}
+
+bool AbstractSettingsEditor::rowIsMinusOneOrInRangeOfInterfaceList(int row) const noexcept
+{
+  if(row == -1){
+    return true;
+  }
+
+  return mInterfaceListTableModel.rowIndexIsInRange(row);
 }
 
 }} // namespace Mdt{ namespace SerialPort{

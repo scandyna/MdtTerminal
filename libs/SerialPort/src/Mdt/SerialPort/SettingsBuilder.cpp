@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2024 Philippe Steinmann.
+ ** Copyright (C) 2024-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "SettingsBuilder.h"
@@ -23,6 +23,7 @@ Settings SettingsBuilder::settingsFromRawData(const SettingsRawData & data)
   settings.setParity(data.parity);
   settings.setFlowControl(data.flowControl);
   settings.setStopBits(data.stopBits);
+  settings.setInterfaceStandard(data.interfaceStandard);
 
   return settings;
 }

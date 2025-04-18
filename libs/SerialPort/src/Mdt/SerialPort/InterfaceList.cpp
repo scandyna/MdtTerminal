@@ -14,6 +14,25 @@
 
 namespace Mdt{ namespace SerialPort{
 
+template<typename Pred>
+std::optional<InterfaceList::size_type> findIndexInInterfaceList(const std::vector<Interface> & list, Pred pred) noexcept
+{
+  const auto it = std::find_if(list.cbegin(), list.cend(), pred);
+
+  if( it == list.cend() ){
+    return {};
+  }
+  const auto d = std::distance(list.cbegin(), it);
+  assert(d >= 0);
+
+  /*
+   * Can be safely casted to size_type
+   * See https://stackoverflow.com/questions/49610276/length-between-iterators-in-size-type
+   */
+  return d;
+}
+
+
 InterfaceList::InterfaceList()
  : mList{Interface::fromStandardAndParameterValue(InterfaceStandard::RS_232, 0)}
 {
@@ -26,19 +45,17 @@ std::optional<InterfaceList::size_type> InterfaceList::findIndexOfParameterValue
   const auto pred = [value](const Interface & interface) -> bool {
     return interface.parameterValue() == value;
   };
-  const auto it = std::find_if(mList.cbegin(), mList.cend(), pred);
 
-  if( it == mList.cend() ){
-    return {};
-  }
-  const auto d = std::distance(mList.cbegin(), it);
-  assert(d >= 0);
+  return findIndexInInterfaceList(mList, pred);
+}
 
-  /*
-   * Can be safely casted to size_type
-   * See https://stackoverflow.com/questions/49610276/length-between-iterators-in-size-type
-   */
-  return d;
+std::optional<InterfaceList::size_type> InterfaceList::findIndexOfStandard(InterfaceStandard standard) const noexcept
+{
+  const auto pred = [standard](const Interface & interface) -> bool {
+    return interface.standard() == standard;
+  };
+
+  return findIndexInInterfaceList(mList, pred);
 }
 
 InterfaceList InterfaceList::fromVendorIdentifierAndProductIdentifier(quint16 vid, quint16 pid)

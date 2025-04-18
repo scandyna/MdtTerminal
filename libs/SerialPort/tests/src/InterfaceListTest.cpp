@@ -103,3 +103,24 @@ TEST_CASE("fromVendorIdentifierAndProductIdentifier")
     CHECK( list.interfaceAt(0).standard() == InterfaceStandard::RS_232 );
   }
 }
+
+TEST_CASE("findIndexOfStandard")
+{
+  SECTION("Default list having only a RS-232 interface")
+  {
+    InterfaceList list;
+    REQUIRE( list.count() == 1 );
+
+    CHECK( list.findIndexOfStandard(InterfaceStandard::RS_232) == 0 );
+    CHECK( !list.findIndexOfStandard(InterfaceStandard::RS_485_2W).has_value() );
+  }
+
+  SECTION("Moxa UPort 1250")
+  {
+    const auto list = InterfaceList::fromVendorIdentifierAndProductIdentifier(0x110a, 0x1250);
+    REQUIRE( list.count() == 4 );
+
+    CHECK( list.findIndexOfStandard(InterfaceStandard::RS_232) == 0 );
+    CHECK( list.findIndexOfStandard(InterfaceStandard::RS_485_2W) == 1 );
+  }
+}

@@ -92,3 +92,34 @@ TEST_CASE("clear")
   CHECK( model.columnCount() == 2 );
   CHECK( model.rowCount() == 0 );
 }
+
+TEST_CASE("findRowOfStandard")
+{
+  InterfaceListTableModel model;
+
+  SECTION("No interface")
+  {
+    REQUIRE( model.rowCount() == 0 );
+
+    CHECK( model.findRowOfStandard(InterfaceStandard::RS_232) == -1 );
+    CHECK( model.findRowOfStandard(InterfaceStandard::RS_485_2W) == -1 );
+  }
+
+  SECTION("Common port supporting RS-232 only")
+  {
+    model.setVendorIdentifierAndProductIdentifier(0, 0);
+    REQUIRE( model.rowCount() == 1 );
+
+    CHECK( model.findRowOfStandard(InterfaceStandard::RS_232) == 0 );
+    CHECK( model.findRowOfStandard(InterfaceStandard::RS_485_2W) == -1 );
+  }
+
+  SECTION("MOXA UPort 1250 with 4 interfaces")
+  {
+    model.setVendorIdentifierAndProductIdentifier(0x110A, 0x1250);
+    REQUIRE( model.rowCount() == 4 );
+
+    CHECK( model.findRowOfStandard(InterfaceStandard::RS_232) == 0 );
+    CHECK( model.findRowOfStandard(InterfaceStandard::RS_485_2W) == 1 );
+  }
+}

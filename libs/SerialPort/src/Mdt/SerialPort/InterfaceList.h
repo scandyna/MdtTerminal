@@ -11,6 +11,7 @@
 #define MDT_SERIAL_PORT_INTERFACE_LIST_H
 
 #include "Mdt/SerialPort/Interface.h"
+#include "Mdt/SerialPort/InterfaceStandard.h"
 #include "mdt_serialport_export.h"
 #include <QtGlobal>
 #include <vector>
@@ -81,6 +82,15 @@ namespace Mdt{ namespace SerialPort{
      * \sa canSelectInterface()
      */
     std::optional<size_type> findIndexOfParameterValue(unsigned int value) const noexcept;
+
+    /*! \brief Find the index of given standard
+     *
+     * Return a valid index if an interface with given \a standard exists,
+     * otherwise an object without any index.
+     *
+     * \note This method can also be called if its not possible to select an interface.
+     */
+    std::optional<size_type> findIndexOfStandard(InterfaceStandard standard) const noexcept;
 
     /*! \brief Create an interface list from given vendor identifier and product identifier
      *

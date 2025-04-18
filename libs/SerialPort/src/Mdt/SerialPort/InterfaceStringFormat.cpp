@@ -22,7 +22,7 @@ QString InterfaceStringFormat::standardName(InterfaceStandard standard) noexcept
     case InterfaceStandard::RS_485_2W:
       return rs485TwoWireName();
     case InterfaceStandard::RS_485_4W:
-      return rs485TwoWireName();
+      return rs485FourWireName();
   }
 
   return QString();

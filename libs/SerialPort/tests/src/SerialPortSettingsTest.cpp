@@ -59,4 +59,5 @@ TEST_CASE("defaultSettings")
   CHECK( settings.parity() == QSerialPort::NoParity );
   CHECK( settings.flowControl() == QSerialPort::NoFlowControl );
   CHECK( settings.stopBits() == QSerialPort::OneStop );
+  CHECK( settings.interfaceStandard() == InterfaceStandard::RS_232 );
 }

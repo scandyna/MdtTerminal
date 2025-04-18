@@ -11,6 +11,7 @@
 #define MDT_SERIAL_PORT_INTERFACE_LIST_TABLE_MODEL_H
 
 #include "Mdt/SerialPort/Interface.h"
+#include "Mdt/SerialPort/InterfaceStandard.h"
 #include "Mdt/SerialPort/InterfaceList.h"
 #include "mdt_serialport_export.h"
 #include <Mdt/ItemModel/AbstractTableModel.h>
@@ -62,7 +63,9 @@ namespace Mdt{ namespace SerialPort{
       ParameterValue  /*!< Parameter value of the interface */
     };
 
-    /*! \brief Constructor
+    /*! \brief Construct a model without any interface
+     *
+     * \sa clear()
      */
     explicit
     InterfaceListTableModel(QObject *parent = nullptr);
@@ -107,6 +110,16 @@ namespace Mdt{ namespace SerialPort{
      * or no port is selected, for example.
      */
     void clear();
+
+    /*! \brief Get the row for given standard
+     *
+     * Return the row of given \a standard if it could be found,
+     * otherwise -1.
+     *
+     * \note If this model does not refer to any interface,
+     * -1 is also returned.
+     */
+    int findRowOfStandard(InterfaceStandard standard) const;
 
    private:
 

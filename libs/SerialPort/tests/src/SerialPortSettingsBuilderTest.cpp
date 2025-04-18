@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2024 Philippe Steinmann.
+ ** Copyright (C) 2024-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "Mdt/SerialPort/SettingsBuilder.h"
@@ -23,6 +23,7 @@ TEST_CASE("settingsFromRawData")
   data.parity = QSerialPort::SpaceParity;
   data.flowControl = QSerialPort::SoftwareControl;
   data.stopBits = QSerialPort::TwoStop;
+  data.interfaceStandard = InterfaceStandard::RS_422;
 
   const Settings settings = SettingsBuilder::settingsFromRawData(data);
 
@@ -31,4 +32,5 @@ TEST_CASE("settingsFromRawData")
   CHECK( settings.parity() == QSerialPort::SpaceParity );
   CHECK( settings.flowControl() == QSerialPort::SoftwareControl );
   CHECK( settings.stopBits() == QSerialPort::TwoStop );
+  CHECK( settings.interfaceStandard() == InterfaceStandard::RS_422 );
 }
