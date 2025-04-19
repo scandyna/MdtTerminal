@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2024 Philippe Steinmann.
+ ** Copyright (C) 2024-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "BaudRateListTableModel.h"
@@ -21,27 +21,32 @@ BaudRateListTableModel::BaudRateListTableModel(QObject *parent)
 void BaudRateListTableModel::fetchStandardBaudRates()
 {
   beginResetModel();
-  mList = QSerialPortInfo::standardBaudRates();
+  mList.containerMutable() = QSerialPortInfo::standardBaudRates();
   endResetModel();
 }
 
 void BaudRateListTableModel::setBaudRateList(const QList<qint32> & list)
 {
   beginResetModel();
-  mList = list;
+  mList.containerMutable() = list;
   endResetModel();
 }
 
 int BaudRateListTableModel::findRowOfBaudRate(qint32 baudRate) const noexcept
 {
-  return mList.indexOf(baudRate);
+  const auto index = mList.container().indexOf(baudRate);
+  if(index < 0){
+    return -1;
+  }
+
+  return mList.rowFromIndex(index);
 }
 
 QVariant BaudRateListTableModel::displayRoleData(const QModelIndex & index) const noexcept
 {
   assert( indexIsValidAndInRange(index) );
 
-  return mList[index.row()];
+  return mList.atRow( index.row() );
 }
 
 }} // namespace Mdt{ namespace SerialPort{
