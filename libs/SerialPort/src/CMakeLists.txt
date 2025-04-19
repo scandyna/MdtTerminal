@@ -5,6 +5,7 @@ include(MdtInstallLibrary)
 add_library(Mdt_SerialPort
   Mdt/SerialPort/Platform.cpp
   Mdt/SerialPort/QRuntimeError.cpp
+  Mdt/SerialPort/BaudRateStringFormat.cpp
   Mdt/SerialPort/BaudRateListTableModel.cpp
   Mdt/SerialPort/DataBitsListTableModel.cpp
   Mdt/SerialPort/ParityStringFormat.cpp

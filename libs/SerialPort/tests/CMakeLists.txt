@@ -10,6 +10,14 @@ mdt_add_test(
 )
 
 mdt_add_test(
+  NAME BaudRateStringFormatTest
+  TARGET baudRateStringFormatTest
+  DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/BaudRateStringFormatTest.cpp
+)
+
+mdt_add_test(
   NAME DataBitsListTableModelTest
   TARGET dataBitsListTableModelTest
   DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt

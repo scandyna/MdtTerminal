@@ -90,7 +90,6 @@ namespace Mdt{ namespace SerialPort{
 
     QVariant displayRoleData(const QModelIndex & index) const noexcept override;
 
-    // QList<qint32> mList;
     Mdt::ItemModel::StlContiguousContainerAdapter<QList<qint32>, BaudRateListTableModelAdapterFunctionMap> mList;
   };
 

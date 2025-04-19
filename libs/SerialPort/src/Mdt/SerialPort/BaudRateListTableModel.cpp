@@ -8,6 +8,7 @@
  **
  *****************************************************************************************/
 #include "BaudRateListTableModel.h"
+#include "BaudRateStringFormat.h"
 #include <QSerialPortInfo>
 #include <cassert>
 
@@ -46,7 +47,7 @@ QVariant BaudRateListTableModel::displayRoleData(const QModelIndex & index) cons
 {
   assert( indexIsValidAndInRange(index) );
 
-  return mList.atRow( index.row() );
+  return BaudRateStringFormat::toHumanFriendlyString( mList.atRow( index.row() ) );
 }
 
 }} // namespace Mdt{ namespace SerialPort{
