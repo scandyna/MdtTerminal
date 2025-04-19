@@ -38,9 +38,6 @@ namespace Mdt{ namespace SerialPort{
 
     static
     QString toHumanFriendlyString_Mbps(qint32 rate) noexcept;
-
-    static
-    QString number(qint32 n) noexcept;
   };
 
 }} // namespace Mdt{ namespace SerialPort{

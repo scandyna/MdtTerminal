@@ -41,20 +41,3 @@ TEST_CASE("toHumanFriendlyString")
     CHECK( BaudRateStringFormat::toHumanFriendlyString(4'000'000) == "4 Mb/s" );
   }
 }
-
-TEST_CASE("number")
-{
-  CHECK( BaudRateStringFormat::number(0) == "0" );
-  CHECK( BaudRateStringFormat::number(1) == "1" );
-  CHECK( BaudRateStringFormat::number(2) == "2" );
-  CHECK( BaudRateStringFormat::number(5) == "5" );
-  CHECK( BaudRateStringFormat::number(9) == "9" );
-  CHECK( BaudRateStringFormat::number(10) == "10" );
-  CHECK( BaudRateStringFormat::number(11) == "11" );
-  CHECK( BaudRateStringFormat::number(99) == "99" );
-  CHECK( BaudRateStringFormat::number(100) == "100" );
-  CHECK( BaudRateStringFormat::number(101) == "101" );
-  CHECK( BaudRateStringFormat::number(999) == "999" );
-  CHECK( BaudRateStringFormat::number(1'000) == "1000" );
-  CHECK( BaudRateStringFormat::number(1'001) == "1001" );
-}
