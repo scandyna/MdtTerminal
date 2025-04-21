@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2024 Philippe Steinmann.
+ ** Copyright (C) 2024-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "Mdt/SerialPort/SettingsValidation.h"
@@ -97,5 +97,23 @@ TEST_CASE("validateStopBits")
   SECTION("2 stop bits is ok")
   {
     SettingsValidation::validateStopBits(QSerialPort::TwoStop);
+  }
+}
+
+TEST_CASE("validateSendByteByByteSettings")
+{
+  SECTION("disable")
+  {
+    SettingsValidation::validateSendByteByByteSettings(false, 0);
+  }
+
+  SECTION("enable with invalid interval")
+  {
+    REQUIRE_THROWS_AS( SettingsValidation::validateSendByteByByteSettings(true, 0), SettingsValidationError );
+  }
+
+  SECTION("enable with valid interval")
+  {
+    SettingsValidation::validateSendByteByByteSettings(true, 50);
   }
 }

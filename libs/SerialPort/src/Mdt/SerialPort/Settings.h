@@ -12,10 +12,14 @@
 
 #include "Mdt/SerialPort/Platform.h"
 #include "Mdt/SerialPort/InterfaceStandard.h"
+#include "Mdt/SerialPort/SendByteByByteSettings.h"
 #include "mdt_serialport_export.h"
 #include <QSerialPort>
 #include <QString>
 #include <QtGlobal>
+#include <optional>
+#include <chrono>
+#include <cassert>
 
 namespace Mdt{ namespace SerialPort{
 
@@ -90,6 +94,34 @@ namespace Mdt{ namespace SerialPort{
     InterfaceStandard interfaceStandard() const noexcept
     {
       return mInterfaceStandard;
+    }
+
+    /*! \brief Get send byte by byte settings
+     */
+    const SendByteByByteSettings & sendByteByByteSettings() const noexcept
+    {
+      return mSendByteByByteSettings;
+    }
+
+    /*! \brief Check if sending byte by byte is enabled
+     *
+     * \sa sendByteByByteInterval()
+     */
+    bool sendByteByByteIsEnabled() const noexcept
+    {
+      return mSendByteByByteSettings.isEnabled();
+    }
+
+    /*! \brief Get the interval between bytes
+     *
+     * \pre send byte by byte must be enabled
+     * \sa sendByteByByteIsEnabled()
+     */
+    std::chrono::milliseconds sendByteByByteInterval() const noexcept
+    {
+      assert( sendByteByByteIsEnabled() );
+
+      return mSendByteByByteSettings.interval();
     }
 
     /*! \brief Check if given baud rate has minimal validity
@@ -191,6 +223,10 @@ namespace Mdt{ namespace SerialPort{
      */
     void setInterfaceStandard(InterfaceStandard standard) noexcept;
 
+    /*! \brief Set the send byte by byte settings
+     */
+    void setSendByteByByteSettings(const SendByteByByteSettings & s) noexcept;
+
     QString mPortName;
     qint32 mBaudRate = 0;
     QSerialPort::DataBits mDataBits = QSerialPort::UnknownDataBits;
@@ -198,6 +234,7 @@ namespace Mdt{ namespace SerialPort{
     QSerialPort::FlowControl mFlowControl = QSerialPort::UnknownFlowControl;
     QSerialPort::StopBits mStopBits = QSerialPort::UnknownStopBits;
     InterfaceStandard mInterfaceStandard = InterfaceStandard::RS_232;
+    SendByteByByteSettings mSendByteByByteSettings = SendByteByByteSettings::disabled();
   };
 
 }} // namespace Mdt{ namespace SerialPort{

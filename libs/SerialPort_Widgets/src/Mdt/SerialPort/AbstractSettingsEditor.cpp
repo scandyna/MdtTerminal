@@ -41,6 +41,10 @@ void AbstractSettingsEditor::setSettings(const Settings & settings)
   setCurrentFlowControl(settings);
   setCurrentStopBits(settings);
   setCurrentInterfaceStandard( settings.interfaceStandard() );
+  setSendByteByByteEnabled( settings.sendByteByByteIsEnabled() );
+  if( settings.sendByteByByteIsEnabled() ){
+    setSendByteByByteIntervalInMilliseconds( settings.sendByteByByteSettings().rawIntervalInMilliseconds() );
+  }
 }
 
 void AbstractSettingsEditor::setPortInfoListCurrentRowFromUi(int row) noexcept
@@ -96,10 +100,19 @@ void AbstractSettingsEditor::setStopBitsListCurrentRowFromUi(int row) noexcept
 
 void AbstractSettingsEditor::setInterfaceListCurrentRowFromUi(int row) noexcept
 {
-  /// assert( (row < 0) || mInterfaceListTableModel.rowIndexIsInRange(row) );
   assert( rowIsMinusOneOrInRangeOfInterfaceList(row) );
 
   mInterfaceListCurrentRow = row;
+}
+
+void AbstractSettingsEditor::setSendByteByByteEnabledFromUi(bool enabled) noexcept
+{
+  mSendByteByByteIsEnabled = enabled;
+}
+
+void AbstractSettingsEditor::setSendByteByByteIntervalInMillisecondsFromUi(int interval) noexcept
+{
+  mSendByteByByteIntervalInMilliseconds = interval;
 }
 
 void AbstractSettingsEditor::fetchStandardBaudRates()
@@ -202,6 +215,26 @@ void AbstractSettingsEditor::setCurrentInterfaceStandard(InterfaceStandard stand
 
   mInterfaceListCurrentRow = row;
   emit interfaceListCurrentRowChanged(row);
+}
+
+void AbstractSettingsEditor::setSendByteByByteEnabled(bool enabled)
+{
+  if(enabled == mSendByteByByteIsEnabled){
+    return;
+  }
+
+  mSendByteByByteIsEnabled = enabled;
+  emit sendByteByByteIsEnabledChanged(enabled);
+}
+
+void AbstractSettingsEditor::setSendByteByByteIntervalInMilliseconds(int interval)
+{
+  if(interval == mSendByteByByteIntervalInMilliseconds){
+    return;
+  }
+
+  mSendByteByByteIntervalInMilliseconds = interval;
+  emit sendByteByByteIntervalInMillisecondsChanged(interval);
 }
 
 bool AbstractSettingsEditor::rowIsMinusOneOrInRangeOfInterfaceList(int row) const noexcept

@@ -98,6 +98,14 @@ mdt_add_test(
 )
 
 mdt_add_test(
+  NAME SendByteByByteSettingsTest
+  TARGET sendByteByByteSettingsTest
+  DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/SendByteByByteSettingsTest.cpp
+)
+
+mdt_add_test(
   NAME SerialPortSettingsTest
   TARGET serialPortSettingsTest
   DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt

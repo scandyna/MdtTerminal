@@ -22,6 +22,7 @@ add_library(Mdt_SerialPort
   Mdt/SerialPort/Interface.cpp
   Mdt/SerialPort/InterfaceList.cpp
   Mdt/SerialPort/InterfaceListTableModel.cpp
+  Mdt/SerialPort/SendByteByByteSettings.cpp
   Mdt/SerialPort/Settings.cpp
   Mdt/SerialPort/SettingsRawData.cpp
   Mdt/SerialPort/SettingsValidationError.cpp

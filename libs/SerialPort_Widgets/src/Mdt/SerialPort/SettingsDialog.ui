@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>429</width>
+    <width>505</width>
     <height>329</height>
    </rect>
   </property>
@@ -36,7 +36,8 @@
              <string>Refresh</string>
             </property>
             <property name="icon">
-             <iconset theme="view-refresh"/>
+             <iconset theme="view-refresh">
+              <normaloff>.</normaloff>.</iconset>
             </property>
            </widget>
           </item>
@@ -189,13 +190,53 @@
         <item row="4" column="1">
          <widget class="QComboBox" name="flowControlBox"/>
         </item>
-        <item row="5" column="1">
-         <widget class="QComboBox" name="interfaceBox"/>
-        </item>
         <item row="5" column="0">
          <widget class="QLabel" name="interfaceLabel">
           <property name="text">
            <string>Interface:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QComboBox" name="interfaceBox"/>
+        </item>
+        <item row="7" column="1">
+         <widget class="QSpinBox" name="sendByteIntervalBox">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="suffix">
+           <string> ms</string>
+          </property>
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>500</number>
+          </property>
+          <property name="value">
+           <number>10</number>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="1">
+         <widget class="QCheckBox" name="sendByteByByteBox">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0">
+         <widget class="QLabel" name="sendByteByByteLabel">
+          <property name="text">
+           <string>Send byte by byte:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="0">
+         <widget class="QLabel" name="sendByteIntervalLabel">
+          <property name="text">
+           <string>Interval between bytes:</string>
           </property>
          </widget>
         </item>
@@ -247,6 +288,22 @@
     <hint type="destinationlabel">
      <x>286</x>
      <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sendByteByByteBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>sendByteIntervalBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>443</x>
+     <y>221</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>443</x>
+     <y>246</y>
     </hint>
    </hints>
   </connection>

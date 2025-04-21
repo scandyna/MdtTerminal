@@ -161,6 +161,24 @@ namespace Mdt{ namespace SerialPort{
       return mInterfaceListCurrentRow;
     }
 
+    /*! \brief Check if sending byte by byte is enabled
+     *
+     * \sa sendByteByByteIntervalInMilliseconds()
+     */
+    bool sendByteByByteIsEnabled() const noexcept
+    {
+      return mSendByteByByteIsEnabled;
+    }
+
+    /*! \brief Get the interval between bytes
+     *
+     * \sa sendByteByByteIsEnabled()
+     */
+    int sendByteByByteIntervalInMilliseconds() const noexcept
+    {
+      return mSendByteByByteIntervalInMilliseconds;
+    }
+
     /*! \brief Fetch available ports
      */
     void fetchAvailablePorts();
@@ -202,6 +220,14 @@ namespace Mdt{ namespace SerialPort{
     /*! \brief Set the current row in the interface list model
      */
     void setInterfaceListCurrentRowFromUi(int row) noexcept;
+
+    /*! \brief Enable or disable send byte by byte
+     */
+    void setSendByteByByteEnabledFromUi(bool enabled) noexcept;
+
+    /*! \brief Set the send byte by byte interval in milliseconds
+     */
+    void setSendByteByByteIntervalInMillisecondsFromUi(int interval) noexcept;
 
    Q_SIGNALS:
 
@@ -247,6 +273,18 @@ namespace Mdt{ namespace SerialPort{
      */
     void interfaceListCurrentRowChanged(int row) const;
 
+    /*! \brief Emitted when send byte by byte enabled changed
+     *
+     * \note This signal is not emitted by setSendByteByByteEnabledFromUi()
+     */
+    void sendByteByByteIsEnabledChanged(bool enabled) const;
+
+    /*! \brief Emitted when send byte by byte interval changed
+     *
+     * \note This signal is not emitted by setSendByteByByteIntervalInMillisecondsFromUi()
+     */
+    void sendByteByByteIntervalInMillisecondsChanged(int interval) const;
+
    private:
 
     /*! \brief Fetch the available standard baud rates supported by the target platform
@@ -263,6 +301,8 @@ namespace Mdt{ namespace SerialPort{
     void setCurrentFlowControl(const Settings & settings);
     void setCurrentStopBits(const Settings & settings);
     void setCurrentInterfaceStandard(InterfaceStandard standard);
+    void setSendByteByByteEnabled(bool enabled);
+    void setSendByteByByteIntervalInMilliseconds(int interval);
 
     bool rowIsMinusOneOrInRangeOfInterfaceList(int row) const noexcept;
 
@@ -289,6 +329,8 @@ namespace Mdt{ namespace SerialPort{
     int mFlowControlListCurrentRow = 0;
     int mStopBitsListCurrentRow = 0;
     int mInterfaceListCurrentRow = -1;
+    bool mSendByteByByteIsEnabled = false;
+    int mSendByteByByteIntervalInMilliseconds = 0;
     BaudRateListTableModel mBaudRateListTableModel;
     DataBitsListTableModel mDataBitsListTableModel;
     ParityListTableModel mParityListTableModel;

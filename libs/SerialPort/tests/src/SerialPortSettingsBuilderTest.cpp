@@ -10,8 +10,10 @@
 #include "Mdt/SerialPort/SettingsBuilder.h"
 #include "catch2/catch.hpp"
 #include "Catch2QString.h"
+#include <chrono>
 
 using namespace Mdt::SerialPort;
+using namespace std::chrono_literals;
 
 
 TEST_CASE("settingsFromRawData")
@@ -24,6 +26,8 @@ TEST_CASE("settingsFromRawData")
   data.flowControl = QSerialPort::SoftwareControl;
   data.stopBits = QSerialPort::TwoStop;
   data.interfaceStandard = InterfaceStandard::RS_422;
+  data.sendByteByByteIsEnabled = true;
+  data.sendByteByByteIntervalInMilliseconds = 50;
 
   const Settings settings = SettingsBuilder::settingsFromRawData(data);
 
@@ -33,4 +37,6 @@ TEST_CASE("settingsFromRawData")
   CHECK( settings.flowControl() == QSerialPort::SoftwareControl );
   CHECK( settings.stopBits() == QSerialPort::TwoStop );
   CHECK( settings.interfaceStandard() == InterfaceStandard::RS_422 );
+  CHECK( settings.sendByteByByteIsEnabled() );
+  CHECK( settings.sendByteByByteInterval() == 50ms );
 }

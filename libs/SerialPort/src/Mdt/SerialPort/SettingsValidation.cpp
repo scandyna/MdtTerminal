@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2024 Philippe Steinmann.
+ ** Copyright (C) 2024-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "SettingsValidation.h"
@@ -12,6 +12,7 @@
 #include "FlowControlStringFormat.h"
 #include "StopBitsStringFormat.h"
 #include "Settings.h"
+#include "SendByteByByteSettings.h"
 #include <QString>
 
 namespace Mdt{ namespace SerialPort{
@@ -23,6 +24,7 @@ void SettingsValidation::validateSettings(const SettingsRawData & data)
   validateParity(data.parity);
   validateFlowControl(data.flowControl);
   validateStopBits(data.stopBits);
+  validateSendByteByByteSettings(data.sendByteByByteIsEnabled, data.sendByteByByteIntervalInMilliseconds);
 }
 
 void SettingsValidation::validateBaudRate(qint32 rate)
@@ -67,6 +69,18 @@ void SettingsValidation::validateStopBits(QSerialPort::StopBits bits)
   if( !Settings::stopBitsHasMinimalValidity(bits) ){
     QString msg = tr("stop bits %1 is not valid")
                   .arg( StopBitsStringFormat::stopBitsToString(bits) );
+    throw SettingsValidationError(msg);
+  }
+}
+
+void SettingsValidation::validateSendByteByByteSettings(bool enable, int intervalInMilliseconds)
+{
+  if( !enable ){
+    return;
+  }
+  if( !SendByteByByteSettings::rawIntervalInMillisecondsIsValid(intervalInMilliseconds) ){
+    QString msg = tr("interval %1 ms is not valid to send byte by byte")
+                  .arg(intervalInMilliseconds);
     throw SettingsValidationError(msg);
   }
 }

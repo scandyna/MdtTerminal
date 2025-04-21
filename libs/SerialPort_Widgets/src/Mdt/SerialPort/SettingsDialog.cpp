@@ -10,12 +10,15 @@
 #include "SettingsDialog.h"
 #include "Mdt/SerialPort/PortInfoStringFormat.h"
 #include "Mdt/SerialPort/InterfaceListTableModel.h"
+#include "Mdt/SerialPort/SendByteByByteSettings.h"
 #include "ui_SettingsDialog.h"
 #include <QComboBox>
 #include <QLatin1String>
 #include <QStringBuilder>
 #include <QSerialPort>
 #include <QToolButton>
+#include <QCheckBox>
+#include <QSpinBox>
 #include <cassert>
 
 namespace Mdt{ namespace SerialPort{
@@ -71,6 +74,15 @@ SettingsDialog::SettingsDialog(QWidget* parent)
 
   connect(&mEditor, &SettingsEditor::interfaceListCurrentRowChanged, mUi->interfaceBox, &QComboBox::setCurrentIndex);
   connect(mUi->interfaceBox, &QComboBox::currentIndexChanged, &mEditor, &SettingsEditor::setInterfaceListCurrentRowFromUi);
+
+  mUi->sendByteIntervalBox->setMinimum( SendByteByByteSettings::minimumRawIntervalInMilliseconds() );
+  mUi->sendByteIntervalBox->setMaximum( SendByteByByteSettings::maximumRawIntervalInMilliseconds() );
+
+  connect(&mEditor, &SettingsEditor::sendByteByByteIsEnabledChanged, mUi->sendByteByByteBox, &QCheckBox::setChecked);
+  connect(mUi->sendByteByByteBox, &QCheckBox::clicked, &mEditor, &SettingsEditor::setSendByteByByteEnabledFromUi);
+
+  connect(&mEditor, &SettingsEditor::sendByteByByteIntervalInMillisecondsChanged, mUi->sendByteIntervalBox, &QSpinBox::setValue);
+  connect(mUi->sendByteIntervalBox, &QSpinBox::valueChanged, &mEditor, &SettingsEditor::setSendByteByByteIntervalInMillisecondsFromUi);
 
   fetchAvailablePorts();
   fillAvailablePortSettings();

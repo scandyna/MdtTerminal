@@ -93,4 +93,9 @@ void Settings::setInterfaceStandard(InterfaceStandard standard) noexcept
   mInterfaceStandard = standard;
 }
 
+void Settings::setSendByteByByteSettings(const SendByteByByteSettings & s) noexcept
+{
+  mSendByteByByteSettings = s;
+}
+
 }} // namespace Mdt{ namespace SerialPort{

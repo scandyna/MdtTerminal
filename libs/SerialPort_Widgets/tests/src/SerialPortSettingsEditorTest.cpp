@@ -12,6 +12,7 @@
 #include "Mdt/SerialPort/ParityStringFormat.h"
 #include "Mdt/SerialPort/FlowControlStringFormat.h"
 #include "Mdt/SerialPort/StopBitsStringFormat.h"
+#include "Mdt/SerialPort/BaudRateStringFormat.h"
 #include <Mdt/ItemModel/Helpers.h>
 #include "catch2/catch.hpp"
 #include "Catch2QString.h"
@@ -345,11 +346,13 @@ TEST_CASE("setSettings")
   data.parity = QSerialPort::MarkParity;
   data.flowControl = QSerialPort::HardwareControl;
   data.stopBits = QSerialPort::TwoStop;
+  data.sendByteByByteIsEnabled = true;
+  data.sendByteByByteIntervalInMilliseconds = 50;
 
   const Settings settings = SettingsBuilder::settingsFromRawData(data);
   editor.setSettings(settings);
 
-  CHECK( getModelData(*editor.baudRateListModelForView(), editor.baudRateListCurrentRow(), 0).toInt() == 4800 );
+  CHECK( getModelData(*editor.baudRateListModelForView(), editor.baudRateListCurrentRow(), 0) == BaudRateStringFormat::toHumanFriendlyString(4800) );
   CHECK( getModelData(*editor.dataBitsListModelForView(), editor.dataBitsListCurrentRow(), 0).toInt() == 6 );
   const QString expectedParityStr = ParityStringFormat::parityToString( settings.parity() );
   CHECK( getModelData(*editor.parityListModelForView(), editor.parityListCurrentRow(), 0).toString() == expectedParityStr );
@@ -357,6 +360,8 @@ TEST_CASE("setSettings")
   CHECK( getModelData(*editor.flowControlListModelForView(), editor.flowControlListCurrentRow(), 0).toString() == expectedFlowControlStr );
   const QString expectedStopBitsStr = StopBitsStringFormat::stopBitsToString(QSerialPort::TwoStop);
   CHECK( getModelData(*editor.stopBitsListModelForView(), editor.stopBitsListCurrentRow(), 0).toString() == expectedStopBitsStr );
+  CHECK( editor.sendByteByByteIsEnabled() );
+  CHECK( editor.sendByteByByteIntervalInMilliseconds() == 50 );
 }
 
 TEST_CASE("setSettings_PortSpecificSettings")

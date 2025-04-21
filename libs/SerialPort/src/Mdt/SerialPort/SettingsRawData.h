@@ -34,6 +34,8 @@ namespace Mdt{ namespace SerialPort{
     QSerialPort::FlowControl flowControl = QSerialPort::UnknownFlowControl;
     QSerialPort::StopBits stopBits = QSerialPort::UnknownStopBits;
     InterfaceStandard interfaceStandard = InterfaceStandard::RS_232;
+    bool sendByteByByteIsEnabled = false;
+    int sendByteByByteIntervalInMilliseconds = 0;
   };
 
 }} // namespace Mdt{ namespace SerialPort{

@@ -9,6 +9,7 @@
  *****************************************************************************************/
 #include "SettingsBuilder.h"
 #include "SettingsValidation.h"
+#include "SendByteByByteSettings.h"
 
 namespace Mdt{ namespace SerialPort{
 
@@ -24,6 +25,12 @@ Settings SettingsBuilder::settingsFromRawData(const SettingsRawData & data)
   settings.setFlowControl(data.flowControl);
   settings.setStopBits(data.stopBits);
   settings.setInterfaceStandard(data.interfaceStandard);
+
+  if( data.sendByteByByteIsEnabled ){
+    settings.setSendByteByByteSettings( SendByteByByteSettings::enabledWithRawIntervalInMilliseconds(data.sendByteByByteIntervalInMilliseconds) );
+  }else{
+    settings.setSendByteByByteSettings( SendByteByByteSettings::disabled() );
+  }
 
   return settings;
 }

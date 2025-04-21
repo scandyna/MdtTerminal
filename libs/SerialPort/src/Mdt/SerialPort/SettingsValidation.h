@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2024 Philippe Steinmann.
+ ** Copyright (C) 2024-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
 #ifndef MDT_SERIAL_PORT_SETTINGS_VALIDATION_H
@@ -67,6 +67,16 @@ namespace Mdt{ namespace SerialPort{
      */
     static
     void validateStopBits(QSerialPort::StopBits bits);
+
+    /*! \brief Validate send byte by byte settings
+     *
+     * The \a intervalInMilliseconds has only meaning if \a enable is true.
+     *
+     * \exception SettingsValidationError
+     * \sa SendByteByByteSettings::rawIntervalInMillisecondsIsValid()
+     */
+    static
+    void validateSendByteByByteSettings(bool enable, int intervalInMilliseconds);
   };
 
 }} // namespace Mdt{ namespace SerialPort{
