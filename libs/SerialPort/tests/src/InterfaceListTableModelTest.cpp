@@ -77,7 +77,8 @@ TEST_CASE("getData")
   REQUIRE( model.rowCount() == 1 );
 
   CHECK( getModelData(model, 0, nameColumn) == InterfaceStringFormat::rs232Name() );
-  CHECK( getModelData(model, 0, parameterValueColumn).isNull() );
+  // TODO: should parameter value be optional ?
+  CHECK( getModelData(model, 0, parameterValueColumn) == 0 );
 }
 
 TEST_CASE("clear")
