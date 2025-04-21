@@ -97,6 +97,21 @@ else()
 endif()
 
 #######################
+# Compilers issues
+#######################
+
+# https://gitlab.com/scandyna/mdtterminal/-/issues/2
+if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
+  add_compile_options(-Wno-error=maybe-uninitialized)
+endif()
+
+# Workaround for the "too many sections" error on some MinGW compiler
+# See: https://stackoverflow.com/questions/16596876/object-file-has-too-many-sections
+if(MINGW)
+  add_compile_options(-Wa,-mbig-obj)
+endif()
+
+#######################
 # Dependencies
 #######################
 
