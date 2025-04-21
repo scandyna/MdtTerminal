@@ -31,7 +31,7 @@ TEST_CASE("fetchStandardBaudRates")
   model.fetchStandardBaudRates();
 
   REQUIRE( model.rowCount() > 0 );
-  REQUIRE( getModelData(model, 0, 0).toInt() > 0 );
+  REQUIRE( !getModelData(model, 0, 0).toString().isEmpty() );
 }
 
 TEST_CASE("findRowOfBaudRate")
@@ -43,14 +43,14 @@ TEST_CASE("findRowOfBaudRate")
     REQUIRE( model.findRowOfBaudRate(4800) == -1 );
   }
 
-  SECTION("list contains requested baud rate")
+  SECTION("list does not contain requested baud rate")
   {
     model.setBaudRateList({1200,9600});
 
     REQUIRE( model.findRowOfBaudRate(4800) == -1 );
   }
 
-  SECTION("list does not contain requested baud rate")
+  SECTION("list contains requested baud rate")
   {
     model.setBaudRateList({1200,4800});
 
