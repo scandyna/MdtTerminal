@@ -76,6 +76,12 @@ namespace Mdt{ namespace SerialPort{
      */
     int findRowOfBaudRate(qint32 baudRate) const noexcept;
 
+    /*! \brief Get the baud rate at given row
+     *
+     * \pre \a row must be in range
+     */
+    qint32 baudRateAtRow(int row) const noexcept;
+
    private:
 
     int rowCountWithoutParentIndex() const noexcept override

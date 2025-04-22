@@ -43,6 +43,13 @@ int BaudRateListTableModel::findRowOfBaudRate(qint32 baudRate) const noexcept
   return mList.rowFromIndex(index);
 }
 
+qint32 BaudRateListTableModel::baudRateAtRow(int row) const noexcept
+{
+  assert( rowIndexIsInRange(row) );
+
+  return mList.atRow(row);
+}
+
 QVariant BaudRateListTableModel::displayRoleData(const QModelIndex & index) const noexcept
 {
   assert( indexIsValidAndInRange(index) );

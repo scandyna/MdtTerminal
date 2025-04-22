@@ -57,3 +57,14 @@ TEST_CASE("findRowOfBaudRate")
     REQUIRE( model.findRowOfBaudRate(4800) == 1 );
   }
 }
+
+TEST_CASE("baudRateAtRow")
+{
+  BaudRateListTableModel model;
+
+  model.setBaudRateList({1200,4800});
+  REQUIRE( model.rowCount() == 2 );
+
+  CHECK( model.baudRateAtRow(0) == 1200 );
+  CHECK( model.baudRateAtRow(1) == 4800 );
+}

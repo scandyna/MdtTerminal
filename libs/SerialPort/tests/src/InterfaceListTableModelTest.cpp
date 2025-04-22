@@ -124,3 +124,12 @@ TEST_CASE("findRowOfStandard")
     CHECK( model.findRowOfStandard(InterfaceStandard::RS_485_2W) == 1 );
   }
 }
+
+TEST_CASE("interfaceAtRow")
+{
+  InterfaceListTableModel model;
+  model.setVendorIdentifierAndProductIdentifier(0, 0);
+  REQUIRE( model.rowCount() == 1 );
+
+  CHECK( model.interfaceAtRow(0).standard() == InterfaceStandard::RS_232 );
+}

@@ -9,6 +9,8 @@
  *****************************************************************************************/
 #include "AbstractSettingsEditor.h"
 #include "Mdt/SerialPort/AbstractPortInfoListTableModel.h"
+#include "Mdt/SerialPort/SettingsRawData.h"
+#include "Mdt/SerialPort/SettingsBuilder.h"
 #include <cassert>
 
 namespace Mdt{ namespace SerialPort{
@@ -45,6 +47,21 @@ void AbstractSettingsEditor::setSettings(const Settings & settings)
   if( settings.sendByteByByteIsEnabled() ){
     setSendByteByByteIntervalInMilliseconds( settings.sendByteByByteSettings().rawIntervalInMilliseconds() );
   }
+}
+
+Settings AbstractSettingsEditor::buildSettings() const
+{
+  SettingsRawData settingsData;
+  settingsData.baudRate = currentBaudRate();
+  settingsData.dataBits = currentDataBits();
+  settingsData.parity = currentParity();
+  settingsData.flowControl = currentFlowControl();
+  settingsData.stopBits = currentStopBits();
+  settingsData.interfaceStandard = currentInterface().standard();
+  settingsData.sendByteByByteIsEnabled = mSendByteByByteIsEnabled;
+  settingsData.sendByteByByteIntervalInMilliseconds = mSendByteByByteIntervalInMilliseconds;
+
+  return SettingsBuilder::settingsFromRawData(settingsData);
 }
 
 void AbstractSettingsEditor::setPortInfoListCurrentRowFromUi(int row) noexcept
@@ -236,6 +253,49 @@ void AbstractSettingsEditor::setSendByteByByteIntervalInMilliseconds(int interva
   mSendByteByByteIntervalInMilliseconds = interval;
   emit sendByteByByteIntervalInMillisecondsChanged(interval);
 }
+
+qint32 AbstractSettingsEditor::currentBaudRate() const noexcept
+{
+  assert( mBaudRateListTableModel.rowIndexIsInRange(mBaudRateListCurrentRow) );
+
+  return mBaudRateListTableModel.baudRateAtRow(mBaudRateListCurrentRow);
+}
+
+QSerialPort::DataBits AbstractSettingsEditor::currentDataBits() const noexcept
+{
+  assert( mDataBitsListTableModel.rowIndexIsInRange(mDataBitsListCurrentRow) );
+
+  return mDataBitsListTableModel.dataBitsAtRow(mDataBitsListCurrentRow);
+}
+
+QSerialPort::Parity AbstractSettingsEditor::currentParity() const noexcept
+{
+  assert( mParityListTableModel.rowIndexIsInRange(mParityListCurrentRow) );
+
+  return mParityListTableModel.parityAtRow(mParityListCurrentRow);
+}
+
+QSerialPort::FlowControl AbstractSettingsEditor::currentFlowControl() const noexcept
+{
+  assert( mFlowControlListTableModel.rowIndexIsInRange(mFlowControlListCurrentRow) );
+
+  return mFlowControlListTableModel.flowControlAtRow(mFlowControlListCurrentRow);
+}
+
+QSerialPort::StopBits AbstractSettingsEditor::currentStopBits() const noexcept
+{
+  assert( mStopBitsListTableModel.rowIndexIsInRange(mStopBitsListCurrentRow) );
+
+  return mStopBitsListTableModel.stopBitsAtRow(mStopBitsListCurrentRow);
+}
+
+const Interface & AbstractSettingsEditor::currentInterface() const noexcept
+{
+  assert( mInterfaceListTableModel.rowIndexIsInRange(mInterfaceListCurrentRow) );
+
+  return mInterfaceListTableModel.interfaceAtRow(mInterfaceListCurrentRow);
+}
+
 
 bool AbstractSettingsEditor::rowIsMinusOneOrInRangeOfInterfaceList(int row) const noexcept
 {

@@ -67,6 +67,13 @@ int InterfaceListTableModel::findRowOfStandard(InterfaceStandard standard) const
   return -1;
 }
 
+const Interface & InterfaceListTableModel::interfaceAtRow(int row) const noexcept
+{
+  assert( rowIndexIsInRange(row) );
+
+  return mList.atRow(row);
+}
+
 QVariant InterfaceListTableModel::displayRoleData(const QModelIndex & index) const noexcept
 {
   assert( indexIsValidAndInRange(index) );

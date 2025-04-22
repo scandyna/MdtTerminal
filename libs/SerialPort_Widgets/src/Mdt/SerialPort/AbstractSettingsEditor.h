@@ -11,6 +11,7 @@
 #define MDT_SERIAL_PORT_ABSTRACT_SETTINGS_EDITOR_H
 
 #include "Mdt/SerialPort/Settings.h"
+#include "Mdt/SerialPort/Interface.h"
 #include "Mdt/SerialPort/InterfaceStandard.h"
 #include "Mdt/SerialPort/AbstractPortInfoListTableModel.h"
 #include "Mdt/SerialPort/BaudRateListTableModel.h"
@@ -19,8 +20,10 @@
 #include "Mdt/SerialPort/FlowControlListTableModel.h"
 #include "Mdt/SerialPort/StopBitsListTableModel.h"
 #include "Mdt/SerialPort/InterfaceListTableModel.h"
+#include "Mdt/SerialPort/SettingsValidationError.h"
 #include "mdt_serialport_widgets_export.h"
 #include <QAbstractTableModel>
+#include <QSerialPort>
 #include <QObject>
 
 namespace Mdt{ namespace SerialPort{
@@ -191,6 +194,12 @@ namespace Mdt{ namespace SerialPort{
      */
     void setSettings(const Settings & settings);
 
+    /*! \brief Build settings with the current state of this editor
+     *
+     * \exception SettingsValidationError
+     */
+    Settings buildSettings() const;
+
    public Q_SLOTS:
 
     /*! \brief Set the current row in the port info list model
@@ -303,6 +312,13 @@ namespace Mdt{ namespace SerialPort{
     void setCurrentInterfaceStandard(InterfaceStandard standard);
     void setSendByteByByteEnabled(bool enabled);
     void setSendByteByByteIntervalInMilliseconds(int interval);
+
+    qint32 currentBaudRate() const noexcept;
+    QSerialPort::DataBits currentDataBits() const noexcept;
+    QSerialPort::Parity currentParity() const noexcept;
+    QSerialPort::FlowControl currentFlowControl() const noexcept;
+    QSerialPort::StopBits currentStopBits() const noexcept;
+    const Interface & currentInterface() const noexcept;
 
     bool rowIsMinusOneOrInRangeOfInterfaceList(int row) const noexcept;
 

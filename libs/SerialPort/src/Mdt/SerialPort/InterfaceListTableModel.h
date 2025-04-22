@@ -121,6 +121,13 @@ namespace Mdt{ namespace SerialPort{
      */
     int findRowOfStandard(InterfaceStandard standard) const;
 
+    /*! \brief Get the interface at given row
+     *
+     * \pre \a row must be in range.
+     * This also means that this model must refer to a list
+     */
+    const Interface & interfaceAtRow(int row) const noexcept;
+
    private:
 
     int rowCountWithoutParentIndex() const noexcept override

@@ -404,12 +404,12 @@ TEST_CASE("setSettings_PortSpecificSettings")
     editor.setPortInfoListCurrentRowFromUi(-1);
     editor.setInterfaceListCurrentRowFromUi(-1);
 
-      settingsData.interfaceStandard = InterfaceStandard::RS_232;
-      const Settings settings = SettingsBuilder::settingsFromRawData(settingsData);
+    settingsData.interfaceStandard = InterfaceStandard::RS_232;
+    const Settings settings = SettingsBuilder::settingsFromRawData(settingsData);
 
-      editor.setSettings(settings);
+    editor.setSettings(settings);
 
-      CHECK( editor.interfaceListCurrentRow() == -1 );
+    CHECK( editor.interfaceListCurrentRow() == -1 );
   }
 
   SECTION("common port supporting RS-232 only")
@@ -481,5 +481,74 @@ TEST_CASE("setSettings_PortSpecificSettings")
 
       CHECK( editor.interfaceListCurrentRow() == 1 );
     }
+  }
+}
+
+TEST_CASE("buildSettings")
+{
+  TestSettingsEditor editor;
+
+  Mdt::SerialPort::TestLib::TestPortInfo commonPort;
+  commonPort.portName = "ttyS0";
+  commonPort.systemLocation = "/dev/ttyS0";
+
+  Mdt::SerialPort::TestLib::TestPortInfo uport1250_1;
+  uport1250_1.portName = "ttyS1";
+  uport1250_1.systemLocation = "/dev/ttyS1";
+  uport1250_1.vid = 0x110A;
+  uport1250_1.pid = 0x1250;
+
+  SettingsRawData settingsData;
+  settingsData.dataBits = QSerialPort::Data6;
+  settingsData.parity = QSerialPort::MarkParity;
+  settingsData.flowControl = QSerialPort::HardwareControl;
+  settingsData.stopBits = QSerialPort::TwoStop;
+
+  editor.addAvailablePort(commonPort);
+  editor.addAvailablePort(uport1250_1);
+  editor.fetchAvailablePorts();
+  editor.fetchAvailablePortSettings();
+
+  SECTION("RS-232 4800")
+  {
+    editor.setPortInfoListCurrentRowFromUi(0);
+    editor.setInterfaceListCurrentRowFromUi(0);
+    settingsData.baudRate = 4800;
+    settingsData.sendByteByByteIsEnabled = true;
+    settingsData.sendByteByByteIntervalInMilliseconds = 100;
+    const Settings inSettings = SettingsBuilder::settingsFromRawData(settingsData);
+    editor.setSettings(inSettings);
+
+    const Settings settings = editor.buildSettings();
+
+    CHECK( settings.baudRate() == 4800 );
+    CHECK( settings.dataBits() == QSerialPort::Data6 );
+    CHECK( settings.parity() == QSerialPort::MarkParity );
+    CHECK( settings.flowControl() == QSerialPort::HardwareControl );
+    CHECK( settings.stopBits() == QSerialPort::TwoStop );
+    CHECK( settings.interfaceStandard() == InterfaceStandard::RS_232 );
+    CHECK( settings.sendByteByByteIsEnabled() );
+    CHECK( settings.sendByteByByteSettings().rawIntervalInMilliseconds() == 100 );
+  }
+
+  SECTION("RS-485 2W 19.2k")
+  {
+    editor.setPortInfoListCurrentRowFromUi(1);
+    editor.setInterfaceListCurrentRowFromUi(1);
+
+    settingsData.baudRate = 19'200;
+    settingsData.interfaceStandard = InterfaceStandard::RS_485_2W;
+    const Settings inSettings = SettingsBuilder::settingsFromRawData(settingsData);
+    editor.setSettings(inSettings);
+
+    const Settings settings = editor.buildSettings();
+
+    CHECK( settings.baudRate() == 19'200 );
+    CHECK( settings.dataBits() == QSerialPort::Data6 );
+    CHECK( settings.parity() == QSerialPort::MarkParity );
+    CHECK( settings.flowControl() == QSerialPort::HardwareControl );
+    CHECK( settings.stopBits() == QSerialPort::TwoStop );
+    CHECK( settings.interfaceStandard() == InterfaceStandard::RS_485_2W );
+    CHECK( !settings.sendByteByByteIsEnabled() );
   }
 }

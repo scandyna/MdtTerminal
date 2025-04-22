@@ -90,6 +90,8 @@ namespace Mdt{ namespace SerialPort{
     }
 
     /*! \brief Get the interface standard
+     *
+     * \todo Should provide interface (parameter value should be accessible)
      */
     InterfaceStandard interfaceStandard() const noexcept
     {
