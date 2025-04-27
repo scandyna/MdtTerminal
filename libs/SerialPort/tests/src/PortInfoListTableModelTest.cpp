@@ -35,6 +35,83 @@ TEST_CASE("defaultConstructed")
   REQUIRE( model.rowCount() == 0 );
 }
 
+TEST_CASE("portName")
+{
+  TestPortInfoListTableModel model;
+
+  TestPortInfo port;
+  port.portName = "ttyS0";
+  port.systemLocation = "/dev/ttyS0";
+
+  model.addAvailablePort(port);
+
+  model.fetchAvailablePorts();
+  REQUIRE( model.rowCount() == 1 );
+
+  CHECK( model.portNameAtRow(0) == "ttyS0" );
+}
+
+TEST_CASE("findRowOfPortName")
+{
+  TestPortInfoListTableModel model;
+
+  TestPortInfo ttyS0;
+  ttyS0.portName = "ttyS0";
+  ttyS0.systemLocation = "/dev/ttyS0";
+
+  TestPortInfo ttyS1;
+  ttyS1.portName = "ttyS1";
+  ttyS1.systemLocation = "/dev/ttyS1";
+
+  SECTION("empty list")
+  {
+    model.fetchAvailablePorts();
+    REQUIRE( model.rowCount() == 0 );
+
+    CHECK( model.findRowOfPortName("ttyS0") == -1 );
+  }
+
+  SECTION("list with ttyS0")
+  {
+    model.addAvailablePort(ttyS0);
+    model.fetchAvailablePorts();
+    REQUIRE( model.rowCount() == 1 );
+
+    SECTION("ttyS0 is at row 0")
+    {
+      CHECK( model.findRowOfPortName("ttyS0") == 0 );
+    }
+
+    SECTION("ttyS1 does not exist")
+    {
+      CHECK( model.findRowOfPortName("ttyS1") == -1 );
+    }
+  }
+
+  SECTION("list with ttyS0 and ttyS1")
+  {
+    model.addAvailablePort(ttyS0);
+    model.addAvailablePort(ttyS1);
+    model.fetchAvailablePorts();
+    REQUIRE( model.rowCount() == 2 );
+
+    SECTION("ttyS0 is at row 0")
+    {
+      CHECK( model.findRowOfPortName("ttyS0") == 0 );
+    }
+
+    SECTION("ttyS1 is at row 1")
+    {
+      CHECK( model.findRowOfPortName("ttyS1") == 1 );
+    }
+
+    SECTION("ttyS3 does not exist")
+    {
+      CHECK( model.findRowOfPortName("ttyS3") == -1 );
+    }
+  }
+}
+
 TEST_CASE("getData")
 {
   TestPortInfoListTableModel model;

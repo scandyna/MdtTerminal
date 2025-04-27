@@ -14,6 +14,14 @@
 using namespace Mdt::SerialPort;
 
 
+TEST_CASE("portNameHasMinimalValidity")
+{
+  CHECK( !Settings::portNameHasMinimalValidity("") );
+  CHECK( !Settings::portNameHasMinimalValidity(" ") );
+  CHECK( !Settings::portNameHasMinimalValidity("  ") );
+  CHECK( Settings::portNameHasMinimalValidity("ttyS0") );
+}
+
 TEST_CASE("baudRateHasMinimalValidity")
 {
   CHECK( !Settings::baudRateHasMinimalValidity(-1) );
@@ -54,6 +62,19 @@ TEST_CASE("defaultSettings")
 {
   auto settings = Settings::defaultSettings();
 
+  CHECK( settings.baudRate() == 9600 );
+  CHECK( settings.dataBits() == QSerialPort::Data8 );
+  CHECK( settings.parity() == QSerialPort::NoParity );
+  CHECK( settings.flowControl() == QSerialPort::NoFlowControl );
+  CHECK( settings.stopBits() == QSerialPort::OneStop );
+  CHECK( settings.interfaceStandard() == InterfaceStandard::RS_232 );
+}
+
+TEST_CASE("defaultSettingsWithPortName")
+{
+  auto settings = Settings::defaultSettingsWithPortName("ttyS0");
+
+  CHECK( settings.portName() == "ttyS0" );
   CHECK( settings.baudRate() == 9600 );
   CHECK( settings.dataBits() == QSerialPort::Data8 );
   CHECK( settings.parity() == QSerialPort::NoParity );

@@ -20,6 +20,7 @@ TEST_CASE("settingsFromRawData")
 {
   SettingsRawData data;
 
+  data.portName = "ttyS0";
   data.baudRate = 4800;
   data.dataBits = QSerialPort::Data6;
   data.parity = QSerialPort::SpaceParity;
@@ -31,6 +32,7 @@ TEST_CASE("settingsFromRawData")
 
   const Settings settings = SettingsBuilder::settingsFromRawData(data);
 
+  CHECK( settings.portName() == "ttyS0" );
   CHECK( settings.baudRate() == 4800 );
   CHECK( settings.dataBits() == QSerialPort::Data6 );
   CHECK( settings.parity() == QSerialPort::SpaceParity );

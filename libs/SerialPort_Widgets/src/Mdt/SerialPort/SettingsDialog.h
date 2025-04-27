@@ -12,6 +12,7 @@
 
 #include "Mdt/SerialPort/Settings.h"
 #include "Mdt/SerialPort/SettingsEditor.h"
+#include "Mdt/SerialPort/SettingsValidationError.h"
 #include "mdt_serialport_widgets_export.h"
 #include <QString>
 #include <QDialog>
@@ -42,6 +43,12 @@ namespace Mdt{ namespace SerialPort{
     /*! \brief Set given settings to this editor
      */
     void setSettings(const Settings & settings);
+
+    /*! \brief Build settings with the current state of this editor
+     *
+     * \exception SettingsValidationError
+     */
+    Settings buildSettings() const;
 
    public Q_SLOTS:
 

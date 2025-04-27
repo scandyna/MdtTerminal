@@ -47,6 +47,11 @@ namespace Mdt{ namespace SerialPort{
       return &mPortInfoListTableModel;
     }
 
+    const AbstractPortInfoListTableModel *constPortInfoListTableModel() const noexcept override
+    {
+      return &mPortInfoListTableModel;
+    }
+
     void doFetchAvailablePorts() override
     {
       mPortInfoListTableModel.fetchAvailablePorts();

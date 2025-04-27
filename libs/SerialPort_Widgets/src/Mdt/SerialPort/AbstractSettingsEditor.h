@@ -25,6 +25,7 @@
 #include <QAbstractTableModel>
 #include <QSerialPort>
 #include <QObject>
+#include <QString>
 
 namespace Mdt{ namespace SerialPort{
 
@@ -122,6 +123,20 @@ namespace Mdt{ namespace SerialPort{
       return mPortInfoListCurrentRow;
     }
 
+    /*! \brief Check if a current row has been set for  the port info list
+     */
+    bool hasPortInfoListCurrentRow() const noexcept
+    {
+      return mPortInfoListCurrentRow >= 0;
+    }
+
+    /*! \brief Get current port name
+     *
+     * \pre A current port must have been set
+     * \sa hasPortInfoListCurrentRow()
+     */
+    QString currentPortName() const noexcept;
+
     /*! \brief Get the current row in the baud rate list model
      */
     int baudRateListCurrentRow() const noexcept
@@ -197,6 +212,8 @@ namespace Mdt{ namespace SerialPort{
     /*! \brief Build settings with the current state of this editor
      *
      * \exception SettingsValidationError
+     * \pre A current port must have been set
+     * \sa hasPortInfoListCurrentRow()
      */
     Settings buildSettings() const;
 
@@ -304,6 +321,7 @@ namespace Mdt{ namespace SerialPort{
      */
     void fetchPortSpecificAttributes();
 
+    void setCurrentPortName(const QString & name);
     void setCurrentBaudRate(const Settings & settings);
     void setCurrentDataBits(const Settings & settings);
     void setCurrentParity(const Settings & settings);
@@ -313,6 +331,7 @@ namespace Mdt{ namespace SerialPort{
     void setSendByteByByteEnabled(bool enabled);
     void setSendByteByByteIntervalInMilliseconds(int interval);
 
+    /// \todo Maybe make public ?
     qint32 currentBaudRate() const noexcept;
     QSerialPort::DataBits currentDataBits() const noexcept;
     QSerialPort::Parity currentParity() const noexcept;
@@ -320,10 +339,14 @@ namespace Mdt{ namespace SerialPort{
     QSerialPort::StopBits currentStopBits() const noexcept;
     const Interface & currentInterface() const noexcept;
 
+    bool rowIsMinusOneOrInRangeOfPortInfoList(int row) const noexcept;
     bool rowIsMinusOneOrInRangeOfInterfaceList(int row) const noexcept;
 
     virtual
     AbstractPortInfoListTableModel *portInfoListTableModel() noexcept = 0;
+
+    virtual
+    const AbstractPortInfoListTableModel *constPortInfoListTableModel() const noexcept = 0;
 
     virtual
     void doFetchAvailablePorts() = 0;
@@ -346,7 +369,7 @@ namespace Mdt{ namespace SerialPort{
     int mStopBitsListCurrentRow = 0;
     int mInterfaceListCurrentRow = -1;
     bool mSendByteByByteIsEnabled = false;
-    int mSendByteByByteIntervalInMilliseconds = 0;
+    int mSendByteByByteIntervalInMilliseconds = 10;
     BaudRateListTableModel mBaudRateListTableModel;
     DataBitsListTableModel mDataBitsListTableModel;
     ParityListTableModel mParityListTableModel;

@@ -39,7 +39,12 @@ namespace Mdt{ namespace SerialPort{
    * Settings is a set of attributes required to open a serial port.
    *
    * \todo I think the default constructor should provide default settings ?
-   * What about port name ?
+   *
+   * \todo Document the choice of port name:
+   * QSerialPort accepts QSerialPort::setPortName() and QSerialPort::setPort()
+   * QSerialPort::setPortName() is fine, it knows how to define system location.
+   * QSerialPort::setPort() requires a QSerialPortInfo.
+   * QSerialPortInfo can only be constructed for an existing port on the system.
    */
   class MDT_SERIALPORT_EXPORT Settings
   {
@@ -126,6 +131,11 @@ namespace Mdt{ namespace SerialPort{
       return mSendByteByByteSettings.interval();
     }
 
+    /*! \brief Check if given port name has minimal validity
+     */
+    static
+    bool portNameHasMinimalValidity(const QString & name) noexcept;
+
     /*! \brief Check if given baud rate has minimal validity
      *
      * Returns true if given \a rate is > 0
@@ -174,15 +184,28 @@ namespace Mdt{ namespace SerialPort{
     bool stopBitsHasMinimalValidity(QSerialPort::StopBits bits) noexcept;
 
     /*! \brief Get default settings
+     *
+     * \note Default settings has no port name
      */
     static
     Settings defaultSettings() noexcept;
+
+    /*! \brief Get default settings with a port name
+     *
+     * \pre \a name must have a minimal validity
+     * \sa portNameHasMinimalValidity()
+     */
+    static
+    Settings defaultSettingsWithPortName(const QString & name) noexcept;
 
    private:
 
     Settings() noexcept = default;
 
     /*! \brief Set the port name
+     *
+     * \pre \a name must have a minimal validity
+     * \sa portNameHasMinimalValidity()
      */
     void setPortName(const QString & name) noexcept;
 

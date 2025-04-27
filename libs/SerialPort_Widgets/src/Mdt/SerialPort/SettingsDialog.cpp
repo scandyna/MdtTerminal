@@ -77,6 +77,7 @@ SettingsDialog::SettingsDialog(QWidget* parent)
 
   mUi->sendByteIntervalBox->setMinimum( SendByteByByteSettings::minimumRawIntervalInMilliseconds() );
   mUi->sendByteIntervalBox->setMaximum( SendByteByByteSettings::maximumRawIntervalInMilliseconds() );
+  mUi->sendByteIntervalBox->setValue( mEditor.sendByteByByteIntervalInMilliseconds() );
 
   connect(&mEditor, &SettingsEditor::sendByteByByteIsEnabledChanged, mUi->sendByteByByteBox, &QCheckBox::setChecked);
   connect(mUi->sendByteByByteBox, &QCheckBox::clicked, &mEditor, &SettingsEditor::setSendByteByByteEnabledFromUi);
@@ -93,6 +94,11 @@ SettingsDialog::~SettingsDialog() noexcept = default;
 void SettingsDialog::setSettings(const Settings & settings)
 {
   mEditor.setSettings(settings);
+}
+
+Settings SettingsDialog::buildSettings() const
+{
+  return mEditor.buildSettings();
 }
 
 void SettingsDialog::showPortInfo(const QSerialPortInfo & portInfo) noexcept

@@ -19,6 +19,7 @@ Settings SettingsBuilder::settingsFromRawData(const SettingsRawData & data)
 
   Settings settings;
 
+  settings.setPortName(data.portName);
   settings.setBaudRate(data.baudRate);
   settings.setDataBits(data.dataBits);
   settings.setParity(data.parity);

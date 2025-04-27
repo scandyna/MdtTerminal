@@ -14,6 +14,7 @@
 #include "mdt_serialport_export.h"
 #include <QSerialPort>
 #include <QtGlobal>
+#include <QString>
 
 namespace Mdt{ namespace SerialPort{
 
@@ -28,6 +29,7 @@ namespace Mdt{ namespace SerialPort{
    */
   struct MDT_SERIALPORT_EXPORT SettingsRawData
   {
+    QString portName;
     qint32 baudRate = 0;
     QSerialPort::DataBits dataBits = QSerialPort::UnknownDataBits;
     QSerialPort::Parity parity = QSerialPort::UnknownParity;

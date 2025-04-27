@@ -43,6 +43,11 @@ class TestSettingsEditor : public Mdt::SerialPort::AbstractSettingsEditor
     return &mPortInfoListTableModel;
   }
 
+  const Mdt::SerialPort::AbstractPortInfoListTableModel *constPortInfoListTableModel() const noexcept override
+  {
+    return &mPortInfoListTableModel;
+  }
+
   void doFetchAvailablePorts() override
   {
     mPortInfoListTableModel.fetchAvailablePorts();

@@ -145,6 +145,13 @@ mdt_add_test(
     src/SerialPortSettingsBuilderErrorTest.cpp
 )
 
+mdt_add_test(
+  NAME SerialPortSetupTest
+  TARGET serialPortSetupTest
+  DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/PortSetupTest.cpp
+)
 
 mdt_add_test(
   NAME SerialPortTest

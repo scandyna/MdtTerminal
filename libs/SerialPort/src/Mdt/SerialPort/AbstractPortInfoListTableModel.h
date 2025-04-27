@@ -112,13 +112,30 @@ namespace Mdt{ namespace SerialPort{
      */
     void fetchAvailablePorts();
 
+    /*! \brief Get the port name at given row
+     *
+     * \pre \a row must be in range of this model
+     */
+    QString portNameAtRow(int row) const noexcept;
+
     /*! \brief Get the vendor identifier at given row
+     *
+     * \pre \a row must be in range of this model
      */
     std::optional<quint16> vendorIdentifierAtRow(int row) const noexcept;
 
     /*! \brief Get the product identifier at given row
+     *
+     * \pre \a row must be in range of this model
      */
     std::optional<quint16> productIdentifierAtRow(int row) const noexcept;
+
+    /*! \brief Find the row of given port name
+     *
+     * Returns a valid row if requested port name exists in the list,
+     * or -1 if not found, or the list is empty.
+     */
+    int findRowOfPortName(const QString & name) const noexcept;
 
    private:
 

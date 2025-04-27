@@ -14,6 +14,7 @@
 #include "Mdt/SerialPort/SettingsValidationError.h"
 #include "mdt_serialport_export.h"
 #include <QObject>
+#include <QString>
 
 namespace Mdt{ namespace SerialPort{
 
@@ -31,6 +32,14 @@ namespace Mdt{ namespace SerialPort{
      */
     static
     void validateSettings(const SettingsRawData & data);
+
+    /*! \brief Validate given port name
+     *
+     * \exception SettingsValidationError
+     * \sa Settings::portNameHasMinimalValidity()
+     */
+    static
+    void validatePortName(const QString & name);
 
     /*! \brief Validate given baud rate
      *

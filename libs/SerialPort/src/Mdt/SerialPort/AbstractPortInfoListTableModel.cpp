@@ -25,6 +25,13 @@ void AbstractPortInfoListTableModel::fetchAvailablePorts()
   endResetModel();
 }
 
+QString AbstractPortInfoListTableModel::portNameAtRow(int row) const noexcept
+{
+  assert( rowIndexIsInRange(row) );
+
+  return doGetPortNameAtRow(row);
+}
+
 std::optional<quint16> AbstractPortInfoListTableModel::vendorIdentifierAtRow(int row) const noexcept
 {
   assert( rowIndexIsInRange(row) );
@@ -37,6 +44,19 @@ std::optional<quint16> AbstractPortInfoListTableModel::productIdentifierAtRow(in
   assert( rowIndexIsInRange(row) );
 
   return doGetProductIdentifierAtRow(row);
+}
+
+int AbstractPortInfoListTableModel::findRowOfPortName(const QString & name) const noexcept
+{
+  const int count = rowCount();
+
+  for(int row = 0; row < count; ++row){
+    if( portNameAtRow(row) == name ){
+      return row;
+    }
+  }
+
+  return -1;
 }
 
 QVariant AbstractPortInfoListTableModel::displayRoleData(const QModelIndex & index) const noexcept

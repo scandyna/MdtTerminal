@@ -25,6 +25,7 @@ TEST_CASE("validateSettings")
 
   SECTION("Valid settings")
   {
+    data.portName = "ttyS0";
     data.baudRate = 4800;
     data.dataBits = QSerialPort::Data7;
     data.parity = QSerialPort::MarkParity;
@@ -32,6 +33,19 @@ TEST_CASE("validateSettings")
     data.stopBits = QSerialPort::TwoStop;
 
     SettingsValidation::validateSettings(data);
+  }
+}
+
+TEST_CASE("validatePortName")
+{
+  SECTION("invalid name")
+  {
+    REQUIRE_THROWS_AS( SettingsValidation::validatePortName(""), SettingsValidationError );
+  }
+
+  SECTION("valid name")
+  {
+    SettingsValidation::validatePortName("ttyS0");
   }
 }
 

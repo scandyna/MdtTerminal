@@ -13,6 +13,8 @@
 #include "Mdt/SerialPort/SettingsBuilder.h"
 #include <cassert>
 
+// #include <QDebug>
+
 namespace Mdt{ namespace SerialPort{
 
 AbstractSettingsEditor::AbstractSettingsEditor(QObject* parent)
@@ -23,6 +25,14 @@ AbstractSettingsEditor::AbstractSettingsEditor(QObject* parent)
 int AbstractSettingsEditor::portNameColumnInPortInfoListModelForView() const noexcept
 {
   return AbstractPortInfoListTableModel::portNameColumnIndex();
+}
+
+QString AbstractSettingsEditor::currentPortName() const noexcept
+{
+  assert( hasPortInfoListCurrentRow() );
+  assert( constPortInfoListTableModel()->rowIndexIsInRange(mPortInfoListCurrentRow) );
+
+  return constPortInfoListTableModel()->portNameAtRow(mPortInfoListCurrentRow);
 }
 
 void AbstractSettingsEditor::fetchAvailablePorts()
@@ -37,6 +47,7 @@ void AbstractSettingsEditor::fetchAvailablePortSettings()
 
 void AbstractSettingsEditor::setSettings(const Settings & settings)
 {
+  setCurrentPortName( settings.portName() );
   setCurrentBaudRate(settings);
   setCurrentDataBits(settings);
   setCurrentParity(settings);
@@ -51,7 +62,10 @@ void AbstractSettingsEditor::setSettings(const Settings & settings)
 
 Settings AbstractSettingsEditor::buildSettings() const
 {
+  assert( hasPortInfoListCurrentRow() );
+
   SettingsRawData settingsData;
+  settingsData.portName = currentPortName();
   settingsData.baudRate = currentBaudRate();
   settingsData.dataBits = currentDataBits();
   settingsData.parity = currentParity();
@@ -153,6 +167,28 @@ void AbstractSettingsEditor::fetchPortSpecificAttributes()
   const auto pid = model->productIdentifierAtRow(row);
 
   mInterfaceListTableModel.setVendorIdentifierAndProductIdentifier(vid, pid);
+}
+
+void AbstractSettingsEditor::setCurrentPortName(const QString & name)
+{
+  const int row = constPortInfoListTableModel()->findRowOfPortName(name);
+
+  if(row == mPortInfoListCurrentRow){
+    return;
+  }
+
+  if(row < 0){
+    if( constPortInfoListTableModel()->rowCount() == 0 ){
+      mPortInfoListCurrentRow = -1;
+    }else{
+      mPortInfoListCurrentRow = 0;
+    }
+  }else{
+    mPortInfoListCurrentRow = row;
+  }
+  assert( rowIsMinusOneOrInRangeOfPortInfoList(mPortInfoListCurrentRow) );
+
+  emit portInfoListCurrentRowChanged(mPortInfoListCurrentRow);
 }
 
 void AbstractSettingsEditor::setCurrentBaudRate(const Settings & settings)
@@ -296,6 +332,15 @@ const Interface & AbstractSettingsEditor::currentInterface() const noexcept
   return mInterfaceListTableModel.interfaceAtRow(mInterfaceListCurrentRow);
 }
 
+
+bool AbstractSettingsEditor::rowIsMinusOneOrInRangeOfPortInfoList(int row) const noexcept
+{
+  if(row == -1){
+    return true;
+  }
+
+  return constPortInfoListTableModel()->rowIndexIsInRange(row);
+}
 
 bool AbstractSettingsEditor::rowIsMinusOneOrInRangeOfInterfaceList(int row) const noexcept
 {

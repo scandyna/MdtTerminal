@@ -338,9 +338,25 @@ TEST_CASE("setSettings")
 {
   TestSettingsEditor editor;
 
+  Mdt::SerialPort::TestLib::TestPortInfo ttyS0;
+  ttyS0.portName = "ttyS0";
+  ttyS0.systemLocation = "/dev/ttyS0";
+
+  Mdt::SerialPort::TestLib::TestPortInfo ttyS1;
+  ttyS1.portName = "ttyS1";
+  ttyS1.systemLocation = "/dev/ttyS1";
+
+  editor.addAvailablePort(ttyS0);
+  editor.addAvailablePort(ttyS1);
+
+  editor.fetchAvailablePorts();
+  // Emulate QComboBox setting its current index to the first element
+  editor.setPortInfoListCurrentRowFromUi(0);
+
   editor.fetchAvailablePortSettings();
 
   SettingsRawData data;
+  data.portName = "ttyS1";
   data.baudRate = 4800;
   data.dataBits = QSerialPort::Data6;
   data.parity = QSerialPort::MarkParity;
@@ -352,6 +368,7 @@ TEST_CASE("setSettings")
   const Settings settings = SettingsBuilder::settingsFromRawData(data);
   editor.setSettings(settings);
 
+  CHECK( editor.currentPortName() == "ttyS1" );
   CHECK( getModelData(*editor.baudRateListModelForView(), editor.baudRateListCurrentRow(), 0) == BaudRateStringFormat::toHumanFriendlyString(4800) );
   CHECK( getModelData(*editor.dataBitsListModelForView(), editor.dataBitsListCurrentRow(), 0).toInt() == 6 );
   const QString expectedParityStr = ParityStringFormat::parityToString( settings.parity() );
@@ -362,6 +379,87 @@ TEST_CASE("setSettings")
   CHECK( getModelData(*editor.stopBitsListModelForView(), editor.stopBitsListCurrentRow(), 0).toString() == expectedStopBitsStr );
   CHECK( editor.sendByteByByteIsEnabled() );
   CHECK( editor.sendByteByByteIntervalInMilliseconds() == 50 );
+}
+
+TEST_CASE("setSettings_PortName")
+{
+  TestSettingsEditor editor;
+
+  Mdt::SerialPort::TestLib::TestPortInfo ttyS0;
+  ttyS0.portName = "ttyS0";
+  ttyS0.systemLocation = "/dev/ttyS0";
+
+  Mdt::SerialPort::TestLib::TestPortInfo ttyS1;
+  ttyS1.portName = "ttyS1";
+  ttyS1.systemLocation = "/dev/ttyS1";
+
+  editor.fetchAvailablePortSettings();
+
+  SECTION("no port available")
+  {
+    editor.fetchAvailablePorts();
+    // Emulate QComboBox setting its current index to -1
+    editor.setPortInfoListCurrentRowFromUi(-1);
+
+    SECTION("no specific port requested")
+    {
+      const auto settings = Settings::defaultSettings();
+
+      editor.setSettings(settings);
+
+      CHECK( !editor.hasPortInfoListCurrentRow() );
+    }
+
+    SECTION("try request ttyS0")
+    {
+      const auto settings = Settings::defaultSettingsWithPortName("ttyS0");
+
+      editor.setSettings(settings);
+
+      CHECK( !editor.hasPortInfoListCurrentRow() );
+    }
+  }
+
+  SECTION("ttyS0 and ttyS1 available")
+  {
+    editor.addAvailablePort(ttyS0);
+    editor.addAvailablePort(ttyS1);
+    editor.fetchAvailablePorts();
+    // Emulate QComboBox setting its current index to the first element
+    editor.setPortInfoListCurrentRowFromUi(0);
+
+    SECTION("no specific port requested")
+    {
+      const auto settings = Settings::defaultSettings();
+
+      editor.setSettings(settings);
+
+      CHECK( editor.currentPortName() == "ttyS0" );
+    }
+
+    SECTION("request ttyS1")
+    {
+      const auto settings = Settings::defaultSettingsWithPortName("ttyS1");
+
+      editor.setSettings(settings);
+
+      CHECK( editor.currentPortName() == "ttyS1" );
+    }
+
+    /*
+     * TODO: what should be the correct behaviour ?
+     * The current choice is to choose the first port
+     * if the requested one does not exist.
+     */
+    SECTION("try request ttyS2")
+    {
+      const auto settings = Settings::defaultSettingsWithPortName("ttyS2");
+
+      editor.setSettings(settings);
+
+      CHECK( editor.currentPortName() == "ttyS0" );
+    }
+  }
 }
 
 TEST_CASE("setSettings_PortSpecificSettings")
@@ -404,6 +502,7 @@ TEST_CASE("setSettings_PortSpecificSettings")
     editor.setPortInfoListCurrentRowFromUi(-1);
     editor.setInterfaceListCurrentRowFromUi(-1);
 
+    settingsData.portName = "NoPort";
     settingsData.interfaceStandard = InterfaceStandard::RS_232;
     const Settings settings = SettingsBuilder::settingsFromRawData(settingsData);
 
@@ -419,6 +518,8 @@ TEST_CASE("setSettings_PortSpecificSettings")
     // Emulate QComboBox setting its current index to the first element
     editor.setPortInfoListCurrentRowFromUi(0);
     editor.setInterfaceListCurrentRowFromUi(0);
+
+    settingsData.portName = "ttyS0";
 
     SECTION("RS-232")
     {
@@ -461,6 +562,8 @@ TEST_CASE("setSettings_PortSpecificSettings")
     // Emulate QComboBox setting its current index to the first element
     editor.setPortInfoListCurrentRowFromUi(0);
     editor.setInterfaceListCurrentRowFromUi(0);
+
+    settingsData.portName = "ttyS1";
 
     SECTION("RS-232")
     {
@@ -509,10 +612,11 @@ TEST_CASE("buildSettings")
   editor.fetchAvailablePorts();
   editor.fetchAvailablePortSettings();
 
-  SECTION("RS-232 4800")
+  SECTION("ttyS0 RS-232 4800")
   {
     editor.setPortInfoListCurrentRowFromUi(0);
     editor.setInterfaceListCurrentRowFromUi(0);
+    settingsData.portName = "ttyS0";
     settingsData.baudRate = 4800;
     settingsData.sendByteByByteIsEnabled = true;
     settingsData.sendByteByByteIntervalInMilliseconds = 100;
@@ -521,6 +625,7 @@ TEST_CASE("buildSettings")
 
     const Settings settings = editor.buildSettings();
 
+    CHECK( settings.portName() == "ttyS0" );
     CHECK( settings.baudRate() == 4800 );
     CHECK( settings.dataBits() == QSerialPort::Data6 );
     CHECK( settings.parity() == QSerialPort::MarkParity );
@@ -531,11 +636,12 @@ TEST_CASE("buildSettings")
     CHECK( settings.sendByteByByteSettings().rawIntervalInMilliseconds() == 100 );
   }
 
-  SECTION("RS-485 2W 19.2k")
+  SECTION("ttyS1 RS-485 2W 19.2k")
   {
     editor.setPortInfoListCurrentRowFromUi(1);
     editor.setInterfaceListCurrentRowFromUi(1);
 
+    settingsData.portName = "ttyS1";
     settingsData.baudRate = 19'200;
     settingsData.interfaceStandard = InterfaceStandard::RS_485_2W;
     const Settings inSettings = SettingsBuilder::settingsFromRawData(settingsData);
@@ -543,6 +649,7 @@ TEST_CASE("buildSettings")
 
     const Settings settings = editor.buildSettings();
 
+    CHECK( settings.portName() == "ttyS1" );
     CHECK( settings.baudRate() == 19'200 );
     CHECK( settings.dataBits() == QSerialPort::Data6 );
     CHECK( settings.parity() == QSerialPort::MarkParity );

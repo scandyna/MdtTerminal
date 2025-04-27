@@ -12,6 +12,11 @@
 
 namespace Mdt{ namespace SerialPort{
 
+bool Settings::portNameHasMinimalValidity(const QString & name) noexcept
+{
+  return !name.trimmed().isEmpty();
+}
+
 bool Settings::baudRateHasMinimalValidity(qint32 rate) noexcept
 {
   return rate > 0;
@@ -51,6 +56,24 @@ Settings Settings::defaultSettings() noexcept
   settings.setStopBits(QSerialPort::OneStop);
 
   return settings;
+}
+
+Settings Settings::defaultSettingsWithPortName(const QString & name) noexcept
+{
+  assert( portNameHasMinimalValidity(name) );
+
+  Settings settings = defaultSettings();
+
+  settings.setPortName(name);
+
+  return settings;
+}
+
+void Settings::setPortName(const QString & name) noexcept
+{
+  assert( portNameHasMinimalValidity(name) );
+
+  mPortName = name;
 }
 
 void Settings::setBaudRate(qint32 rate) noexcept
