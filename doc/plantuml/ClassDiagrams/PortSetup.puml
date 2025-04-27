@@ -1,0 +1,6 @@
+@startuml
+!include Mdt/SerialPort/PortSetup.puml
+
+hide QObject methods
+
+@enduml

@@ -1,0 +1,12 @@
+@startuml
+!include Mdt/SerialPort/AbstractEngine.puml
+
+namespace Mdt.SerialPort {
+
+  class UnixEngine {
+  }
+
+  AbstractEngine <|-- UnixEngine
+}
+
+@enduml

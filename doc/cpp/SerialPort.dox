@@ -53,10 +53,16 @@
  * !include ClassDiagrams/SettingsEditor.puml
  * \enduml
  *
+ * \startuml "Port setup"
+ * !include ClassDiagrams/PortSetup.puml
+ * \enduml
+ *
  * \sa Mdt::SerialPort::Settings
  * \sa Mdt::SerialPort::SettingsBuilder
  * \sa Mdt::SerialPort::SettingsDialog
+ * \sa Mdt::SerialPort::PortSetup
  *
+ * \todo Also something to configure port, like set interface
  *
  * \section SerialPort_TestLib Serial port test lib
  *
@@ -64,6 +70,10 @@
  * \sa Mdt::SerialPort::TestLib
  *
  * \section SerialPort_PlatformSpecifics Platform sepcifics
+ *
+ * \startuml "Engine overview"
+ * !include ClassDiagrams/Engine.puml
+ * \enduml
  *
  * \todo AbstractEngine , UnixEngine, WindowsEngine
  * Also Handle fromNativeHandle()

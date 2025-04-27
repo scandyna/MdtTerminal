@@ -1,0 +1,16 @@
+@startuml
+!include Qt/Core/QObject.puml
+
+namespace Mdt.SerialPort {
+
+  class PortSetup {
+
+    +void setSettingsToPort(Settings s, QSerialPort p)
+    +Settings getSettingsFromPort(QSerialPort p)
+  }
+
+}
+
+QObject <|-- Mdt.SerialPort.PortSetup
+
+@enduml
