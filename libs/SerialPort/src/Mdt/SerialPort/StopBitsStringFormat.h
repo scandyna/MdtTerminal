@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2024 Philippe Steinmann.
+ ** Copyright (C) 2024-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
 #ifndef MDT_SERIAL_PORT_STOP_BITS_STRING_FORMAT_H
@@ -27,7 +27,7 @@ namespace Mdt{ namespace SerialPort{
 
     StopBitsStringFormat(QObject *parent) = delete;
 
-    /*! \brief Get the string representation of given flow control
+    /*! \brief Get the string representation of given stop bits
      */
     static
     QString stopBitsToString(QSerialPort::StopBits bits) noexcept;
