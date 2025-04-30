@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2024 Philippe Steinmann.
+ ** Copyright (C) 2024-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "Mdt/SerialPort/FlowControlStringFormat.h"
@@ -12,3 +12,10 @@
 #include "Catch2QString.h"
 
 using namespace Mdt::SerialPort;
+
+
+TEST_CASE("flowControlToShortString")
+{
+  CHECK( FlowControlStringFormat::flowControlToShortString(QSerialPort::HardwareControl) == "RTS/CTS" );
+  CHECK( FlowControlStringFormat::flowControlToShortString(QSerialPort::SoftwareControl) == "XON/XOFF" );
+}

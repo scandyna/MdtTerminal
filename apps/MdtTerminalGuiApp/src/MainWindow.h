@@ -17,6 +17,7 @@
 #include <QWidget>
 #include <QSerialPort>
 #include <QString>
+#include <QLabel>
 
 /*! \brief Main windows of MdtTerminalGuiApp
  */
@@ -40,10 +41,15 @@ class MainWindow : public QMainWindow
 
  private:
 
+  void showStatusMessage(const QString &message);
   void displayErrorMessage(const QString & message);
+
+  void showPortOpenStatusMessage();
+  void showPortClosedStatusMessage();
 
   Ui::MainWindow mUi;
   CentralWidget *mCentralWidget;
+  QLabel *mStatusLabel;
   Mdt::SerialPort::Settings mSerialPortSettings;
   QSerialPort mSerialPort;
 };

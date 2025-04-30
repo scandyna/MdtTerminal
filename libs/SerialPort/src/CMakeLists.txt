@@ -28,6 +28,7 @@ add_library(Mdt_SerialPort
   Mdt/SerialPort/SettingsValidationError.cpp
   Mdt/SerialPort/SettingsValidation.cpp
   Mdt/SerialPort/SettingsBuilder.cpp
+  Mdt/SerialPort/SettingsStringFormat.cpp
   Mdt/SerialPort/PortSetup.cpp
   Mdt/SerialPort/SerialPort.cpp
 )

@@ -42,6 +42,14 @@ mdt_add_test(
 )
 
 mdt_add_test(
+  NAME FlowControlStringFormatTest
+  TARGET flowControlStringFormatTest
+  DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/FlowControlStringFormatTest.cpp
+)
+
+mdt_add_test(
   NAME FlowControlListTableModelTest
   TARGET flowControlListTableModelTest
   DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
@@ -143,6 +151,14 @@ mdt_add_test(
   DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
   SOURCE_FILES
     src/SerialPortSettingsBuilderErrorTest.cpp
+)
+
+mdt_add_test(
+  NAME SerialPortSettingsStringFormatTest
+  TARGET serialPortSettingsStringFormatTest
+  DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/SettingsStringFormatTest.cpp
 )
 
 mdt_add_test(

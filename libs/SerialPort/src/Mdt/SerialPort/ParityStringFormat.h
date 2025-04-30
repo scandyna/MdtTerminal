@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2024 Philippe Steinmann.
+ ** Copyright (C) 2024-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
 #ifndef MDT_SERIAL_PORT_PARITY_STRING_FORMAT_H
@@ -14,6 +14,7 @@
 #include <QSerialPort>
 #include <QObject>
 #include <QString>
+#include <QChar>
 
 namespace Mdt{ namespace SerialPort{
 
@@ -31,6 +32,11 @@ namespace Mdt{ namespace SerialPort{
      */
     static
     QString parityToString(QSerialPort::Parity parity) noexcept;
+
+    /*! \brief Get the first upper case char of given parity
+     */
+    static
+    QChar firstUpperCaseCharOfParity(QSerialPort::Parity parity) noexcept;
   };
 
 }} // namespace Mdt{ namespace SerialPort{

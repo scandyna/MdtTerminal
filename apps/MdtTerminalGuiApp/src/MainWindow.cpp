@@ -9,22 +9,30 @@
  *****************************************************************************************/
 #include "MainWindow.h"
 #include "Mdt/SerialPort/SettingsDialog.h"
+#include "Mdt/SerialPort/SettingsStringFormat.h"
+#include "Mdt/SerialPort/FlowControlStringFormat.h"
 #include "Mdt/SerialPort/PortSetup.h"
 #include <QAction>
+#include <QStatusBar>
 #include <QMessageBox>
 
 MainWindow::MainWindow(QWidget* parent)
  : QMainWindow(parent),
    mCentralWidget(new CentralWidget),
+   mStatusLabel(new QLabel),
    mSerialPortSettings( Mdt::SerialPort::Settings::defaultSettings() )
 {
   mUi.setupUi(this);
   setCentralWidget(mCentralWidget);
   mCentralWidget->setFocusToCommandEdit();
 
+  statusBar()->addWidget(mStatusLabel);
+
   connect(mUi.actionConfigurePort, &QAction::triggered, this, &MainWindow::setupSerialPort);
   connect(mUi.actionOpenPort, &QAction::triggered, this, &MainWindow::openSerialPort);
   connect(mUi.actionClosePort, &QAction::triggered, this, &MainWindow::closeSerialPort);
+
+  showPortClosedStatusMessage();
 }
 
 void MainWindow::setupSerialPort()
@@ -48,7 +56,10 @@ void MainWindow::openSerialPort()
   Mdt::SerialPort::PortSetup::setSettingsToPort(mSerialPortSettings, mSerialPort);
   if( !mSerialPort.open(QIODevice::ReadWrite) ){
     displayErrorMessage( tr("Error while open serial port: %1").arg( mSerialPort.errorString() ) );
+    return;
   }
+
+  showPortOpenStatusMessage();
 }
 
 void MainWindow::closeSerialPort()
@@ -56,9 +67,31 @@ void MainWindow::closeSerialPort()
   if( mSerialPort.isOpen() ){
     mSerialPort.close();
   }
+
+  showPortClosedStatusMessage();
+}
+
+void MainWindow::showStatusMessage(const QString &message)
+{
+  mStatusLabel->setText(message);
 }
 
 void MainWindow::displayErrorMessage(const QString & message)
 {
   QMessageBox::critical(this, tr("Error"), message);
+}
+
+void MainWindow::showPortOpenStatusMessage()
+{
+  showStatusMessage(
+    tr("Port open: %1 %2 %3")
+    .arg( mSerialPort.portName() )
+    .arg( Mdt::SerialPort::SettingsStringFormat::baudeRateAndDpsStringFromPort(mSerialPort) )
+    .arg( Mdt::SerialPort::FlowControlStringFormat::flowControlToShortString( mSerialPort.flowControl() ) )
+  );
+}
+
+void MainWindow::showPortClosedStatusMessage()
+{
+  showStatusMessage( tr("Port closed") );
 }

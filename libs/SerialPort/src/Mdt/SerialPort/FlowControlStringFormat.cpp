@@ -4,10 +4,11 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2024 Philippe Steinmann.
+ ** Copyright (C) 2024-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "FlowControlStringFormat.h"
+#include <QLatin1Literal>
 
 namespace Mdt{ namespace SerialPort{
 
@@ -22,6 +23,21 @@ QString FlowControlStringFormat::flowControlToString(QSerialPort::FlowControl co
       return tr("Software (XON/XOFF)");
     case QSerialPort::UnknownFlowControl:
       return tr("Unknown");
+  }
+
+  return QString();
+}
+
+QString FlowControlStringFormat::flowControlToShortString(QSerialPort::FlowControl control) noexcept
+{
+  switch(control){
+    case QSerialPort::HardwareControl:
+      return QLatin1String("RTS/CTS");
+    case QSerialPort::SoftwareControl:
+      return QLatin1String("XON/XOFF");
+    case QSerialPort::NoFlowControl:
+    case QSerialPort::UnknownFlowControl:
+      break;
   }
 
   return QString();
