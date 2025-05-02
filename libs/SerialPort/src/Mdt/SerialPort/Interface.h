@@ -23,7 +23,9 @@ namespace Mdt{ namespace SerialPort{
   {
    public:
 
-    Interface() = delete;
+    /*! \brief Construct a default interface
+     */
+    Interface() noexcept = default;
 
     /*! \brief Get the standard of this interface
      */
@@ -48,7 +50,7 @@ namespace Mdt{ namespace SerialPort{
 
     Interface(InterfaceStandard standard, unsigned int value) noexcept;
 
-    InterfaceStandard mStandard;
+    InterfaceStandard mStandard = InterfaceStandard::RS_232;
     unsigned int mParameterValue = 0;
   };
 

@@ -25,7 +25,7 @@ Settings SettingsBuilder::settingsFromRawData(const SettingsRawData & data)
   settings.setParity(data.parity);
   settings.setFlowControl(data.flowControl);
   settings.setStopBits(data.stopBits);
-  settings.setInterfaceStandard(data.interfaceStandard);
+  settings.setInterface(data.interface);
 
   if( data.sendByteByByteIsEnabled ){
     settings.setSendByteByByteSettings( SendByteByByteSettings::enabledWithRawIntervalInMilliseconds(data.sendByteByByteIntervalInMilliseconds) );

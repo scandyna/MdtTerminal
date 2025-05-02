@@ -71,7 +71,7 @@ Settings AbstractSettingsEditor::buildSettings() const
   settingsData.parity = currentParity();
   settingsData.flowControl = currentFlowControl();
   settingsData.stopBits = currentStopBits();
-  settingsData.interfaceStandard = currentInterface().standard();
+  settingsData.interface = currentInterface();
   settingsData.sendByteByByteIsEnabled = mSendByteByByteIsEnabled;
   settingsData.sendByteByByteIntervalInMilliseconds = mSendByteByByteIntervalInMilliseconds;
 

@@ -11,7 +11,7 @@
 #define MDT_SERIAL_PORT_SETTINGS_H
 
 #include "Mdt/SerialPort/Platform.h"
-#include "Mdt/SerialPort/InterfaceStandard.h"
+#include "Mdt/SerialPort/Interface.h"
 #include "Mdt/SerialPort/SendByteByByteSettings.h"
 #include "mdt_serialport_export.h"
 #include <QSerialPort>
@@ -94,13 +94,20 @@ namespace Mdt{ namespace SerialPort{
       return mStopBits;
     }
 
+    /*! \brief Get the interface
+     */
+    const Interface & interface() const noexcept
+    {
+      return mInterface;
+    }
+
     /*! \brief Get the interface standard
      *
      * \todo Should provide interface (parameter value should be accessible)
      */
     InterfaceStandard interfaceStandard() const noexcept
     {
-      return mInterfaceStandard;
+      return mInterface.standard();
     }
 
     /*! \brief Get send byte by byte settings
@@ -244,9 +251,9 @@ namespace Mdt{ namespace SerialPort{
      */
     void setStopBits(QSerialPort::StopBits bits) noexcept;
 
-    /*! \brief Set the interface standard
+    /*! \brief Set the interface
      */
-    void setInterfaceStandard(InterfaceStandard standard) noexcept;
+    void setInterface(const Interface & interface) noexcept;
 
     /*! \brief Set the send byte by byte settings
      */
@@ -258,7 +265,7 @@ namespace Mdt{ namespace SerialPort{
     QSerialPort::Parity mParity = QSerialPort::UnknownParity;
     QSerialPort::FlowControl mFlowControl = QSerialPort::UnknownFlowControl;
     QSerialPort::StopBits mStopBits = QSerialPort::UnknownStopBits;
-    InterfaceStandard mInterfaceStandard = InterfaceStandard::RS_232;
+    Interface mInterface;
     SendByteByByteSettings mSendByteByByteSettings = SendByteByByteSettings::disabled();
   };
 

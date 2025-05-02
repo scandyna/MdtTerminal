@@ -10,7 +10,7 @@
 #ifndef MDT_SERIAL_PORT_SETTINGS_RAW_DATA_H
 #define MDT_SERIAL_PORT_SETTINGS_RAW_DATA_H
 
-#include "Mdt/SerialPort/InterfaceStandard.h"
+#include "Mdt/SerialPort/Interface.h"
 #include "mdt_serialport_export.h"
 #include <QSerialPort>
 #include <QtGlobal>
@@ -35,7 +35,7 @@ namespace Mdt{ namespace SerialPort{
     QSerialPort::Parity parity = QSerialPort::UnknownParity;
     QSerialPort::FlowControl flowControl = QSerialPort::UnknownFlowControl;
     QSerialPort::StopBits stopBits = QSerialPort::UnknownStopBits;
-    InterfaceStandard interfaceStandard = InterfaceStandard::RS_232;
+    Interface interface;
     bool sendByteByByteIsEnabled = false;
     int sendByteByByteIntervalInMilliseconds = 0;
   };

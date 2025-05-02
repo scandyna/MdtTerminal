@@ -503,7 +503,7 @@ TEST_CASE("setSettings_PortSpecificSettings")
     editor.setInterfaceListCurrentRowFromUi(-1);
 
     settingsData.portName = "NoPort";
-    settingsData.interfaceStandard = InterfaceStandard::RS_232;
+    // settingsData.interfaceStandard = InterfaceStandard::RS_232;
     const Settings settings = SettingsBuilder::settingsFromRawData(settingsData);
 
     editor.setSettings(settings);
@@ -523,7 +523,7 @@ TEST_CASE("setSettings_PortSpecificSettings")
 
     SECTION("RS-232")
     {
-      settingsData.interfaceStandard = InterfaceStandard::RS_232;
+      // settingsData.interfaceStandard = InterfaceStandard::RS_232;
       const Settings settings = SettingsBuilder::settingsFromRawData(settingsData);
 
       editor.setSettings(settings);
@@ -535,7 +535,7 @@ TEST_CASE("setSettings_PortSpecificSettings")
      * TODO What should be the behaviour ?
      *
      * Current behaviour is to display the RS-232 interface.
-     * This means, we ignore the request settings (is this really a problem ?)
+     * This means, we ignore the requested settings (is this really a problem ?)
      * If the user then selects another serial port adapter,
      * that supports the requested interface standard,
      * the user will have to choose it.
@@ -546,7 +546,7 @@ TEST_CASE("setSettings_PortSpecificSettings")
      */
     SECTION("Try RS-485 2W")
     {
-      settingsData.interfaceStandard = InterfaceStandard::RS_485_2W;
+      settingsData.interface = Interface::fromStandardAndParameterValue(InterfaceStandard::RS_485_2W, 2);
       const Settings settings = SettingsBuilder::settingsFromRawData(settingsData);
 
       editor.setSettings(settings);
@@ -567,7 +567,7 @@ TEST_CASE("setSettings_PortSpecificSettings")
 
     SECTION("RS-232")
     {
-      settingsData.interfaceStandard = InterfaceStandard::RS_232;
+      // settingsData.interfaceStandard = InterfaceStandard::RS_232;
       const Settings settings = SettingsBuilder::settingsFromRawData(settingsData);
 
       editor.setSettings(settings);
@@ -577,7 +577,7 @@ TEST_CASE("setSettings_PortSpecificSettings")
 
     SECTION("RS-485 2W")
     {
-      settingsData.interfaceStandard = InterfaceStandard::RS_485_2W;
+      settingsData.interface = Interface::fromStandardAndParameterValue(InterfaceStandard::RS_485_2W, 2);
       const Settings settings = SettingsBuilder::settingsFromRawData(settingsData);
 
       editor.setSettings(settings);
@@ -643,7 +643,7 @@ TEST_CASE("buildSettings")
 
     settingsData.portName = "ttyS1";
     settingsData.baudRate = 19'200;
-    settingsData.interfaceStandard = InterfaceStandard::RS_485_2W;
+    settingsData.interface = Interface::fromStandardAndParameterValue(InterfaceStandard::RS_485_2W, 2);
     const Settings inSettings = SettingsBuilder::settingsFromRawData(settingsData);
     editor.setSettings(inSettings);
 

@@ -13,6 +13,13 @@
 
 using namespace Mdt::SerialPort;
 
+TEST_CASE("Default_Interface")
+{
+  Interface interface;
+
+  CHECK( interface.standard() == InterfaceStandard::RS_232 );
+}
+
 TEST_CASE("fromStandardAndParameterValue")
 {
   const auto rs422 = Interface::fromStandardAndParameterValue(InterfaceStandard::RS_422, 1);

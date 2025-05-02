@@ -26,7 +26,7 @@ TEST_CASE("settingsFromRawData")
   data.parity = QSerialPort::SpaceParity;
   data.flowControl = QSerialPort::SoftwareControl;
   data.stopBits = QSerialPort::TwoStop;
-  data.interfaceStandard = InterfaceStandard::RS_422;
+  data.interface = Interface::fromStandardAndParameterValue(InterfaceStandard::RS_422, 1);
   data.sendByteByByteIsEnabled = true;
   data.sendByteByByteIntervalInMilliseconds = 50;
 

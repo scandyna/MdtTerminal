@@ -111,9 +111,9 @@ void Settings::setStopBits(QSerialPort::StopBits bits) noexcept
   mStopBits = bits;
 }
 
-void Settings::setInterfaceStandard(InterfaceStandard standard) noexcept
+void Settings::setInterface(const Interface & interface) noexcept
 {
-  mInterfaceStandard = standard;
+  mInterface = interface;
 }
 
 void Settings::setSendByteByByteSettings(const SendByteByByteSettings & s) noexcept
