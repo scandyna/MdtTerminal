@@ -1,0 +1,40 @@
+@startuml
+!include libusb/libusb.puml
+
+namespace Mdt.Usb {
+
+  class EndpointInfo {
+  }
+
+
+  class InterfaceInfo {
+  }
+
+  InterfaceInfo *--> "0..*" EndpointInfo
+
+
+  class ConfigurationInfo {
+  }
+
+  ConfigurationInfo *--> "1..*" InterfaceInfo
+
+
+  class BinaryDeviceObjectStoreInfo {
+  }
+
+
+  class DeviceInfo {
+  }
+
+  DeviceInfo *--> "?" ConfigurationInfo
+  DeviceInfo *--> "1" EndpointInfo
+
+
+  class DeviceInfoList {
+  }
+
+  DeviceInfoList *--> "*" DeviceInfo
+
+}
+
+@enduml

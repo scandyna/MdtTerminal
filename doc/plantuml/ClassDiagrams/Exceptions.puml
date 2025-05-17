@@ -1,0 +1,8 @@
+@startuml
+!include Mdt/Usb/QRuntimeError.puml
+!include Mdt/Usb/LibusbRuntimeError.puml
+
+!include std/logic_error.puml
+!include std/runtime_error.puml
+
+@enduml

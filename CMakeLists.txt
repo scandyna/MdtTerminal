@@ -35,9 +35,18 @@ include(MdtSanitizers)
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN YES)
 
+# TODO: for now, only works if libusb is installed UNIX system wide
+# On CI, it will probably also not work, and we should not add libusb dev into the Docker images
+# Once we have access to conancenter again (i.e. access to Conan 2),
+# une the Conan generated CMake files and use find_package()
+option(BUILD_USB_SANDBOX "Build USB sandbox" OFF)
+
+# TODO: should be a dependent option only available if BUILD_TESTS is ON
+option(BUILD_TESTS_WITH_HW_USB "Build USB tests that depends on HW (like at least a device attached)" OFF)
+
 option(BUILD_APPS "Build the applications (tools)" OFF)
 option(BUILD_TESTS "Build the tests" OFF)
-# TODO: should use dependent option to enable BUILD_TESTS if one or both is selected ?
+# TODO: should be a dependent option only available if BUILD_TESTS is ON
 option(BUILD_TESTS_WITH_HW_SERIAL_PORT "Build tests that require the presence of at least 1 HW serial port on the system" OFF)
 option(BUILD_TESTS_WITH_BRIDGE_PLUG "Build tests that require a bridge plug (also requires HW serial port on the system)" OFF)
 option(BUILD_BENCHMARKS "Build the benchmarks" OFF)

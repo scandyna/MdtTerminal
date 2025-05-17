@@ -1,0 +1,13 @@
+@startuml
+!include std/runtime_error.puml
+
+namespace Mdt.Usb {
+
+  class QRuntimeError {
+  }
+
+}
+
+std.runtime_error <|-- Mdt.Usb.QRuntimeError
+
+@enduml

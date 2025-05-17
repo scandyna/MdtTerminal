@@ -1,0 +1,10 @@
+@startuml
+
+namespace std {
+
+  class exception {
+  }
+
+}
+
+@enduml

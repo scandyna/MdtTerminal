@@ -11,4 +11,6 @@
 /*! \mainpage %Mdt Terminal C++ API Documentation
  *
  * \ref SerialPort_dox
+ *
+ * \ref Usb_dox
  */

@@ -1,0 +1,13 @@
+@startuml
+!include libusb/libusb_device_descriptor.puml
+
+namespace Mdt.Usb {
+
+  class DeviceDescriptor {
+  }
+
+}
+
+Mdt.Usb.DeviceDescriptor *--> libusb_device_descriptor
+
+@enduml

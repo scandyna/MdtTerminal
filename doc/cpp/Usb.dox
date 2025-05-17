@@ -1,0 +1,57 @@
+
+/*! \page Usb_dox USB library
+ *
+ * \startuml "USB library overview"
+ * !include ClassDiagrams/Usb.puml
+ * \enduml
+ *
+ *
+ * \startuml "USB device info"
+ * !include ClassDiagrams/UsbDeviceInfo.puml
+ * \enduml
+ *
+ * \startuml "Exceptions"
+ * !include ClassDiagrams/Exceptions.puml
+ * \enduml
+ *
+ * \startuml "libusb USB descriptors"
+ * !include ClassDiagrams/libusb_USB_descriptors.puml
+ * \enduml
+ *
+ * \startuml "USB descriptors"
+ * !include ClassDiagrams/UsbDescriptors.puml
+ * \enduml
+ *
+ * \todo Builder ? Bof ?
+ * Maybe: DeviceEnumerator ? Polymorphic, can be subclassed for tests
+ *
+ * \todo Should split:
+ * DevicePointerList and DeviceDescriptorList ?
+ * Then, DeviceList owns both ?
+ *
+ * \todo DeviceInfo ?
+ *
+ * \todo DeviceDescriptorList ?
+ * 
+ * \todo At the end, AbstractDevice then concrete impl ?
+ *
+ *
+ * \code
+ * using namespace Mdt::Usb;
+ *
+ * auto context = std::make_shared<Context>();
+ * DeviceEnumerator deviceEnumerator(context);
+ *
+ * LibUsbDeviceList deviceList = deviceEnumerator.scanForAttachedDevices();
+ *
+ * 
+ * Mdt::Usb::DeviceList deviceList = Mdt::Usb::DeviceListBuilder::scanForAttachedDevices();
+ *
+ * Mdt::Usb::DeviceDescriptor deviceDescriptor = deviceList.findXy(...);
+ *
+ * auto handle = Mdt::Usb::DeviceHandle::openFromDescriptor(deviceDescriptor);
+ *
+ * // From here on, the deviceList can be destroyed
+ * \endcode
+ */
+

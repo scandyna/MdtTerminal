@@ -1,0 +1,13 @@
+@startuml
+!include Mdt/Usb/QRuntimeError.puml
+
+namespace Mdt.Usb {
+
+  class LibusbRuntimeError {
+  }
+
+  QRuntimeError <|-- LibusbRuntimeError
+
+}
+
+@enduml

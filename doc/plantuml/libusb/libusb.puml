@@ -1,0 +1,9 @@
+@startuml
+
+class libusb_context {
+}
+
+class libusb_device {
+}
+
+@enduml

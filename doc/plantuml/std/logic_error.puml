@@ -1,0 +1,13 @@
+@startuml
+!include std/exception.puml
+
+namespace std {
+
+  class logic_error {
+  }
+
+  exception <|-- logic_error
+
+}
+
+@enduml
