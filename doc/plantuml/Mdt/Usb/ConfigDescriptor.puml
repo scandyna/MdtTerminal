@@ -1,0 +1,15 @@
+@startuml
+!include libusb/libusb_config_descriptor.puml
+!include Mdt/Usb/InterfaceDescriptor.puml
+
+namespace Mdt.Usb {
+
+  class ConfigDescriptor {
+  }
+
+  ConfigDescriptor *--> "*" InterfaceAlternateSettings
+}
+
+Mdt.Usb.ConfigDescriptor *--> libusb_config_descriptor
+
+@enduml

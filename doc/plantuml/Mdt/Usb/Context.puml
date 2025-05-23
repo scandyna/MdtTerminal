@@ -1,0 +1,13 @@
+@startuml
+!include libusb/libusb_context.puml
+
+namespace Mdt.Usb {
+
+  class Context {
+  }
+
+}
+
+Mdt.Usb.Context *--> libusb_context
+
+@enduml

@@ -1,17 +1,9 @@
 @startuml
 !include libusb/libusb_device_descriptor.puml
+!include libusb/libusb_config_descriptor.puml
+!include libusb/libusb_interface_descriptor.puml
+!include libusb/libusb_endpoint_descriptor.puml
 
-class libusb_endpoint_descriptor {
-}
-
-class libusb_interface_descriptor {
-}
-
-class libusb_interface {
-}
-
-class libusb_config_descriptor {
-}
 
 class libusb_container_id_descriptor {
 }

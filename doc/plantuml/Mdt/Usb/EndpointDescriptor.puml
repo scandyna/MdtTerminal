@@ -1,0 +1,13 @@
+@startuml
+!include libusb/libusb_endpoint_descriptor.puml
+
+namespace Mdt.Usb {
+
+  class EndpointDescriptor {
+  }
+
+}
+
+Mdt.Usb.EndpointDescriptor *--> libusb_endpoint_descriptor
+
+@enduml

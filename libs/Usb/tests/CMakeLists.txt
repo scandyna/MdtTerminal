@@ -27,9 +27,41 @@ mdt_add_test(
 )
 
 mdt_add_test(
+  NAME LibusbDeviceListTest
+  TARGET libusbDeviceListTest
+  DEPENDENCIES Mdt::Usb Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/LibusbDeviceListTest.cpp
+)
+
+mdt_add_test(
   NAME UsbDeviceDescriptorTest
   TARGET usbDeviceDescriptorTest
   DEPENDENCIES Mdt::Usb Mdt::Catch2Main Mdt::Catch2Qt
   SOURCE_FILES
     src/DeviceDescriptorTest.cpp
+)
+
+mdt_add_test(
+  NAME UsbInterfaceDescriptorTest
+  TARGET usbInterfaceDescriptorTest
+  DEPENDENCIES Mdt::Usb Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/InterfaceDescriptorTest.cpp
+)
+
+mdt_add_test(
+  NAME UsbInterfaceAlternateSettingsTest
+  TARGET usbInterfaceAlternateSettingsTest
+  DEPENDENCIES Mdt::Usb Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/InterfaceAlternateSettingsTest.cpp
+)
+
+mdt_add_test(
+  NAME UsbConfigDescriptorTest
+  TARGET usbConfigDescriptorTest
+  DEPENDENCIES Mdt::Usb Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/ConfigDescriptorTest.cpp
 )

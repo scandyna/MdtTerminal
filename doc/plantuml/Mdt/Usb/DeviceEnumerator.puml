@@ -1,0 +1,24 @@
+@startuml
+!include Qt/Core/QObject.puml
+!include Mdt/Usb/LibusbDeviceList.puml
+!include Mdt/Usb/Context.puml
+
+namespace Mdt.Usb {
+
+  class AbstractDeviceEnumerator {
+  }
+
+  class DeviceEnumerator {
+  }
+
+  AbstractDeviceEnumerator <|-- DeviceEnumerator
+  DeviceEnumerator --> Context
+  DeviceEnumerator ..> LibusbDeviceList
+
+}
+
+QObject <|-- Mdt.Usb.AbstractDeviceEnumerator
+
+Mdt.Usb.AbstractDeviceEnumerator <|-- TestDeviceEnumerator
+
+@enduml

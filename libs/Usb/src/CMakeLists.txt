@@ -7,7 +7,12 @@ add_library(Mdt_Usb
   Mdt/Usb/QRuntimeError.cpp
   Mdt/Usb/LibusbRuntimeError.cpp
   Mdt/Usb/Context.cpp
+  Mdt/Usb/LibusbDeviceList.cpp
+  Mdt/Usb/DeviceEnumerator.cpp
   Mdt/Usb/DeviceDescriptor.cpp
+  Mdt/Usb/ConfigDescriptor.cpp
+  Mdt/Usb/InterfaceAlternateSettings.cpp
+  Mdt/Usb/InterfaceDescriptor.cpp
 )
 
 add_library(Mdt::Usb ALIAS Mdt_Usb)

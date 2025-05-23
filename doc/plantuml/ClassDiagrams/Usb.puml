@@ -1,26 +1,8 @@
 @startuml
 !include libusb/libusb.puml
 
-!include Qt/Core/QObject.puml
-
-
-namespace std {
-
-  class runtime_error {
-  }
-
-}
 
 namespace Mdt.Usb {
-
-  class QRuntimeError {
-  }
-
-  class Context {
-  }
-
-  class LibUsbDeviceList {
-  }
 
   class DeviceDescriptor {
   }
@@ -30,29 +12,9 @@ namespace Mdt.Usb {
 
   DeviceList *--> "*" DeviceDescriptor
 
-
-  class AbstractDeviceEnumerator {
-  }
-
-  class DeviceEnumerator {
-  }
-
-  AbstractDeviceEnumerator <|-- DeviceEnumerator
-  DeviceEnumerator --> Context
-  DeviceEnumerator ..> LibUsbDeviceList
-
 }
-
-std.runtime_error <|-- Mdt.Usb.QRuntimeError
-
-Mdt.Usb.Context *--> libusb_context
-
-Mdt.Usb.LibUsbDeviceList *--> "*" libusb_device
 
 Mdt.Usb.DeviceDescriptor --> libusb_device
 
-QObject <|-- Mdt.Usb.AbstractDeviceEnumerator
-
-Mdt.Usb.AbstractDeviceEnumerator <|-- TestDeviceEnumerator
 
 @enduml

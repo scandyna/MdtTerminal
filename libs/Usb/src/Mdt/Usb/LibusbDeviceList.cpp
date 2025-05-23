@@ -7,19 +7,13 @@
  ** Copyright (C) 2025-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
-#include "DeviceDescriptor.h"
-#include <cassert>
+#include "LibusbDeviceList.h"
 
 namespace Mdt{ namespace Usb{
 
-DeviceDescriptor DeviceDescriptor::fromLibusbDevicePointer(libusb_device *device) noexcept
+LibusbDeviceList::~LibusbDeviceList() noexcept
 {
-  assert(device != nullptr);
-
-  DeviceDescriptor descriptor;
-  libusb_get_device_descriptor(device, &descriptor.mDescriptor);
-
-  return descriptor;
+  libusb_free_device_list(mList, 1);
 }
 
 }} // namespace Mdt{ namespace Usb{

@@ -1,0 +1,13 @@
+@startuml
+!include libusb/libusb_device.puml
+
+namespace Mdt.Usb {
+
+  class LibusbDeviceList {
+  }
+
+}
+
+Mdt.Usb.LibusbDeviceList *--> "*" libusb_device
+
+@enduml

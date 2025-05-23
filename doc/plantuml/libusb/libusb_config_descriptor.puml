@@ -1,0 +1,9 @@
+@startuml
+!include libusb/libusb_interface.puml
+
+class libusb_config_descriptor {
+}
+
+libusb_config_descriptor --> "*" libusb_interface
+
+@enduml

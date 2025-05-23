@@ -7,21 +7,8 @@
  ** Copyright (C) 2025-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
-#include "Mdt/Usb/DeviceDescriptor.h"
+#include "Mdt/Usb/LibusbDeviceList.h"
 #include "catch2/catch.hpp"
 #include "Catch2QString.h"
 
 using namespace Mdt::Usb;
-
-
-TEST_CASE("fromLibusbDescriptor")
-{
-  libusb_device_descriptor libusbDescriptor;
-  libusbDescriptor.idVendor = 0x1234;
-  libusbDescriptor.idProduct = 0x5678;
-
-  const auto descriptor = DeviceDescriptor::fromLibusbDescriptor(libusbDescriptor);
-
-  CHECK( descriptor.idVendor() == 0x1234 );
-  CHECK( descriptor.idProduct() == 0x5678 );
-}

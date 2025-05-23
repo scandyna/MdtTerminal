@@ -7,19 +7,16 @@
  ** Copyright (C) 2025-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
-#include "DeviceDescriptor.h"
-#include <cassert>
+#include "InterfaceDescriptor.h"
 
 namespace Mdt{ namespace Usb{
 
-DeviceDescriptor DeviceDescriptor::fromLibusbDevicePointer(libusb_device *device) noexcept
+InterfaceDescriptor InterfaceDescriptor::fromLibusbDescriptor(const libusb_interface_descriptor & descriptor) noexcept
 {
-  assert(device != nullptr);
+  InterfaceDescriptor interface;
+  interface.mbNumEndpoints = descriptor.bNumEndpoints;
 
-  DeviceDescriptor descriptor;
-  libusb_get_device_descriptor(device, &descriptor.mDescriptor);
-
-  return descriptor;
+  return interface;
 }
 
 }} // namespace Mdt{ namespace Usb{

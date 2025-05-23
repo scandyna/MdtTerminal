@@ -1,13 +1,6 @@
 @startuml
-!include libusb/libusb_device_descriptor.puml
-
-namespace Mdt.Usb {
-
-  class DeviceDescriptor {
-  }
-
-}
-
-Mdt.Usb.DeviceDescriptor *--> libusb_device_descriptor
+!include Mdt/Usb/DeviceDescriptor.puml
+!include Mdt/Usb/ConfigDescriptor.puml
+!include Mdt/Usb/InterfaceDescriptor.puml
 
 @enduml

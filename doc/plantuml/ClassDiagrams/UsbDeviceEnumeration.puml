@@ -1,0 +1,8 @@
+@startuml
+!include Mdt/Usb/LibusbDeviceList.puml
+!include Mdt/Usb/DeviceEnumerator.puml
+
+hide QObject methods
+hide QObject members
+
+@enduml

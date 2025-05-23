@@ -1,0 +1,24 @@
+@startuml
+!include libusb/libusb_interface.puml
+!include libusb/libusb_interface_descriptor.puml
+!include Mdt/Usb/EndpointDescriptor.puml
+
+namespace Mdt.Usb {
+
+  class InterfaceDescriptor {
+  }
+
+  InterfaceDescriptor *--> "*" EndpointDescriptor
+
+
+  class InterfaceAlternateSettings {
+  }
+
+  InterfaceAlternateSettings *--> "*" InterfaceDescriptor
+
+}
+
+Mdt.Usb.InterfaceAlternateSettings *--> libusb_interface
+Mdt.Usb.InterfaceDescriptor *--> libusb_interface_descriptor
+
+@enduml

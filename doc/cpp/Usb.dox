@@ -1,18 +1,65 @@
 
 /*! \page Usb_dox USB library
  *
- * \startuml "USB library overview"
+ * \startuml "USB library overview - Sandbox"
  * !include ClassDiagrams/Usb.puml
  * \enduml
  *
+ *
+ * \section Usb_Introduction USB library introduction
+ *
+ * \code
+ * using namespace Mdt::Usb;
+ *
+ * auto context = std::make_shared<Context>();
+ * DeviceEnumerator deviceEnumerator(context);
+ *
+ * LibusbDeviceList deviceList = deviceEnumerator.scanForAttachedDevices();
+ *
+ * 
+ * Mdt::Usb::DeviceList deviceList = Mdt::Usb::DeviceListBuilder::scanForAttachedDevices();
+ *
+ * Mdt::Usb::DeviceDescriptor deviceDescriptor = deviceList.findXy(...);
+ *
+ * auto handle = Mdt::Usb::DeviceHandle::openFromDescriptor(deviceDescriptor);
+ *
+ * // From here on, the deviceList can be destroyed
+ * \endcode
+ *
+ *
+ * \section Usb_Errors USB errors
+ *
+ * \startuml "Exceptions"
+ * !include ClassDiagrams/Exceptions.puml
+ * \enduml
+ *
+ * \sa Mdt::Usb::LibusbError
+ * \sa Mdt::Usb::LibusbRuntimeError
+ *
+ * \section Usb_Context USB context
+ *
+ * \startuml "USB context"
+ * !include ClassDiagrams/UsbContext.puml
+ * \enduml
+ *
+ * \sa Mdt::Usb::Context
+ *
+ *
+ * \section Usb_DeviceEnumeration Device enumeration
+ *
+ * \startuml "USB device enumeration"
+ * !include ClassDiagrams/UsbDeviceEnumeration.puml
+ * \enduml
+ *
+ * \sa Mdt::Usb::LibusbDeviceList
+ * \sa Mdt::Usb::DeviceEnumerator
  *
  * \startuml "USB device info"
  * !include ClassDiagrams/UsbDeviceInfo.puml
  * \enduml
  *
- * \startuml "Exceptions"
- * !include ClassDiagrams/Exceptions.puml
- * \enduml
+ *
+ * \section Usb_Descriptors USB descriptors
  *
  * \startuml "libusb USB descriptors"
  * !include ClassDiagrams/libusb_USB_descriptors.puml
@@ -21,6 +68,8 @@
  * \startuml "USB descriptors"
  * !include ClassDiagrams/UsbDescriptors.puml
  * \enduml
+ *
+ * \section Usb_Sandbox USB sandbox
  *
  * \todo Builder ? Bof ?
  * Maybe: DeviceEnumerator ? Polymorphic, can be subclassed for tests
@@ -35,23 +84,14 @@
  * 
  * \todo At the end, AbstractDevice then concrete impl ?
  *
- *
- * \code
- * using namespace Mdt::Usb;
- *
- * auto context = std::make_shared<Context>();
- * DeviceEnumerator deviceEnumerator(context);
- *
- * LibUsbDeviceList deviceList = deviceEnumerator.scanForAttachedDevices();
- *
- * 
- * Mdt::Usb::DeviceList deviceList = Mdt::Usb::DeviceListBuilder::scanForAttachedDevices();
- *
- * Mdt::Usb::DeviceDescriptor deviceDescriptor = deviceList.findXy(...);
- *
- * auto handle = Mdt::Usb::DeviceHandle::openFromDescriptor(deviceDescriptor);
- *
- * // From here on, the deviceList can be destroyed
- * \endcode
  */
 
+namespace Mdt{
+
+  /*! \brief Mdt::Usb namespace
+   */
+  namespace Usb {
+
+  }
+
+}

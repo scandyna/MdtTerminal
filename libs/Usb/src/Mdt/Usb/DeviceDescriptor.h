@@ -23,9 +23,6 @@ namespace Mdt{ namespace Usb{
   {
    public:
 
-    /// \todo If default constructor, struct must be 0 initalized - Note: {} !
-    DeviceDescriptor() = delete;
-
     /*! \brief Copy construct a descriptor from other
      */
     DeviceDescriptor(const DeviceDescriptor & other) noexcept = default;
@@ -41,6 +38,20 @@ namespace Mdt{ namespace Usb{
     /*! \brief Move assign other to this descriptor
      */
     DeviceDescriptor & operator=(DeviceDescriptor && other) noexcept = default;
+
+    /*! \brief Get the USB-IF vendor ID
+     */
+    uint16_t idVendor() const noexcept
+    {
+      return mDescriptor.idVendor;
+    }
+
+    /*! \brief Get the product ID
+     */
+    uint16_t idProduct() const noexcept
+    {
+      return mDescriptor.idProduct;
+    }
 
     /*! \brief Get the libusb descriptor
      */
@@ -77,6 +88,9 @@ namespace Mdt{ namespace Usb{
      : mDescriptor(descriptor)
     {
     }
+
+    /// \todo If default constructor becomes public, struct must be 0 initalized - Note: {} !
+    DeviceDescriptor() noexcept = default;
 
     libusb_device_descriptor mDescriptor;
   };

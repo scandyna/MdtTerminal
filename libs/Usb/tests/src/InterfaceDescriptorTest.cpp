@@ -7,7 +7,7 @@
  ** Copyright (C) 2025-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
-#include "Mdt/Usb/DeviceDescriptor.h"
+#include "Mdt/Usb/InterfaceDescriptor.h"
 #include "catch2/catch.hpp"
 #include "Catch2QString.h"
 
@@ -16,12 +16,10 @@ using namespace Mdt::Usb;
 
 TEST_CASE("fromLibusbDescriptor")
 {
-  libusb_device_descriptor libusbDescriptor;
-  libusbDescriptor.idVendor = 0x1234;
-  libusbDescriptor.idProduct = 0x5678;
+  libusb_interface_descriptor libusbInterface;
+  libusbInterface.bNumEndpoints = 1;
 
-  const auto descriptor = DeviceDescriptor::fromLibusbDescriptor(libusbDescriptor);
+  const auto interface = InterfaceDescriptor::fromLibusbDescriptor(libusbInterface);
 
-  CHECK( descriptor.idVendor() == 0x1234 );
-  CHECK( descriptor.idProduct() == 0x5678 );
+  CHECK( interface.bNumEndpoints() == 1 );
 }
