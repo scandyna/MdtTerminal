@@ -7,7 +7,7 @@
  ** Copyright (C) 2025-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
-#include "Mdt/Usb/InterfaceAlternateSettings.h"
+#include "Mdt/Usb/Interface.h"
 #include "catch2/catch.hpp"
 #include "Catch2QString.h"
 
@@ -28,7 +28,7 @@ TEST_CASE("fromLibusbInterface")
   libusbInterface.altsetting = libusbInterfaceList;
   libusbInterface.num_altsetting = 1;
 
-  const auto alternateSettings = InterfaceAlternateSettings::fromLibusbInterface(libusbInterface);
+  const auto alternateSettings = Interface::fromLibusbInterface(libusbInterface);
 
   CHECK( alternateSettings.count() == 1 );
   CHECK( alternateSettings.alternateSettingAt(0).bNumEndpoints() == 1 );

@@ -7,16 +7,16 @@
  ** Copyright (C) 2025-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
-#include "InterfaceAlternateSettings.h"
+#include "Interface.h"
 #include <cassert>
 
 namespace Mdt{ namespace Usb{
 
-InterfaceAlternateSettings InterfaceAlternateSettings::fromLibusbInterface(const libusb_interface & interface) noexcept
+Interface Interface::fromLibusbInterface(const libusb_interface & interface) noexcept
 {
   assert(interface.altsetting != nullptr);
 
-  InterfaceAlternateSettings alternateSettings;
+  Interface alternateSettings;
 
   for(int i=0; i < interface.num_altsetting; ++i){
     alternateSettings.mAlternateSettings.push_back( InterfaceDescriptor::fromLibusbDescriptor(interface.altsetting[i]) );

@@ -51,11 +51,11 @@ mdt_add_test(
 )
 
 mdt_add_test(
-  NAME UsbInterfaceAlternateSettingsTest
-  TARGET usbInterfaceAlternateSettingsTest
+  NAME UsbInterfaceTest
+  TARGET usbInterfaceTest
   DEPENDENCIES Mdt::Usb Mdt::Catch2Main Mdt::Catch2Qt
   SOURCE_FILES
-    src/InterfaceAlternateSettingsTest.cpp
+    src/InterfaceTest.cpp
 )
 
 mdt_add_test(

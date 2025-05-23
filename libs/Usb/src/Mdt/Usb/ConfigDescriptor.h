@@ -10,7 +10,7 @@
 #ifndef MDT_USB_CONFIG_DESCRIPTOR_H
 #define MDT_USB_CONFIG_DESCRIPTOR_H
 
-#include "Mdt/Usb/InterfaceAlternateSettings.h"
+#include "Mdt/Usb/Interface.h"
 #include "Mdt/Usb/LibusbRuntimeError.h"
 #include "mdt_usb_export.h"
 #include <libusb.h>
@@ -40,7 +40,7 @@ namespace Mdt{ namespace Usb{
      *
      * \pre \a index must be in range
      */
-    const InterfaceAlternateSettings & fAt(uint8_t index) const noexcept
+    const Interface & fAt(uint8_t index) const noexcept
     {
       assert( index < bNumInterfaces() );
 

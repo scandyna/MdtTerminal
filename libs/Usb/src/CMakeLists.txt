@@ -11,7 +11,7 @@ add_library(Mdt_Usb
   Mdt/Usb/DeviceEnumerator.cpp
   Mdt/Usb/DeviceDescriptor.cpp
   Mdt/Usb/ConfigDescriptor.cpp
-  Mdt/Usb/InterfaceAlternateSettings.cpp
+  Mdt/Usb/Interface.cpp
   Mdt/Usb/InterfaceDescriptor.cpp
 )
 

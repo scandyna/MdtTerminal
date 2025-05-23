@@ -11,14 +11,14 @@ namespace Mdt.Usb {
   InterfaceDescriptor *--> "*" EndpointDescriptor
 
 
-  class InterfaceAlternateSettings {
+  class Interface {
   }
 
-  InterfaceAlternateSettings *--> "*" InterfaceDescriptor
+  Interface *--> "*" InterfaceDescriptor
 
 }
 
-Mdt.Usb.InterfaceAlternateSettings *--> libusb_interface
+Mdt.Usb.Interface *--> libusb_interface
 Mdt.Usb.InterfaceDescriptor *--> libusb_interface_descriptor
 
 @enduml

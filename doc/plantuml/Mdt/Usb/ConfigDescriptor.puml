@@ -7,7 +7,7 @@ namespace Mdt.Usb {
   class ConfigDescriptor {
   }
 
-  ConfigDescriptor *--> "*" InterfaceAlternateSettings
+  ConfigDescriptor *--> "*" Interface
 }
 
 Mdt.Usb.ConfigDescriptor *--> libusb_config_descriptor

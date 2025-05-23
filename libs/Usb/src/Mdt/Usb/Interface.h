@@ -7,8 +7,8 @@
  ** Copyright (C) 2025-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
-#ifndef MDT_USB_INTERFACE_ALTERNATE_SETTINGS_H
-#define MDT_USB_INTERFACE_ALTERNATE_SETTINGS_H
+#ifndef MDT_USB_INTERFACE_H
+#define MDT_USB_INTERFACE_H
 
 #include "Mdt/Usb/InterfaceDescriptor.h"
 #include "mdt_usb_export.h"
@@ -21,7 +21,7 @@ namespace Mdt{ namespace Usb{
 
   /*! \brief A collection of alternate settings for a particular USB interface
    */
-  class MDT_USB_EXPORT InterfaceAlternateSettings
+  class MDT_USB_EXPORT Interface
   {
    public:
 
@@ -48,15 +48,15 @@ namespace Mdt{ namespace Usb{
     /*! \brief Get a descriptor from given libusb interface
      */
     static
-    InterfaceAlternateSettings fromLibusbInterface(const libusb_interface & interface) noexcept;
+    Interface fromLibusbInterface(const libusb_interface & interface) noexcept;
 
    private:
 
-    InterfaceAlternateSettings() noexcept = default;
+    Interface() noexcept = default;
 
     std::vector<InterfaceDescriptor> mAlternateSettings;
   };
 
 }} // namespace Mdt{ namespace Usb{
 
-#endif // #ifndef MDT_USB_INTERFACE_ALTERNATE_SETTINGS_H
+#endif // #ifndef MDT_USB_INTERFACE_H
