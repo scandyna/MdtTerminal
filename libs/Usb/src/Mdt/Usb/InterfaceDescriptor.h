@@ -10,9 +10,13 @@
 #ifndef MDT_USB_INTERFACE_DESCRIPTOR_H
 #define MDT_USB_INTERFACE_DESCRIPTOR_H
 
+#include "Mdt/Usb/EndpointDescriptor.h"
+#include "Mdt/Usb/NumericLimits.h"
 #include "mdt_usb_export.h"
 #include <cstdint>
 #include <libusb.h>
+#include <vector>
+#include <cassert>
 
 namespace Mdt{ namespace Usb{
 
@@ -31,7 +35,20 @@ namespace Mdt{ namespace Usb{
      */
     uint8_t bNumEndpoints() const noexcept
     {
-      return mbNumEndpoints;
+      assert( uint8_t_canHoldValueOf_size_t( mEndpointList.size() ) );
+
+      return uint8_t_from_size_t( mEndpointList.size() );
+    }
+
+    /*! \brief Get the ednpoint descriptor at given address
+     *
+     * \pre \a index must be in range
+     */
+    const EndpointDescriptor & endpointAt(uint8_t index) const noexcept
+    {
+      assert( index < bNumEndpoints() );
+
+      return mEndpointList[index];
     }
 
     /*! \brief Get a descriptor from given libusb interface descriptor
@@ -43,7 +60,7 @@ namespace Mdt{ namespace Usb{
 
     InterfaceDescriptor() noexcept = default;
 
-    uint8_t mbNumEndpoints = 0;
+    std::vector<EndpointDescriptor> mEndpointList;
   };
 
 }} // namespace Mdt{ namespace Usb{

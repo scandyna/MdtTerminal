@@ -16,31 +16,30 @@ using namespace Mdt::Usb;
 
 TEST_CASE("fromLibusbDescriptor")
 {
-  /// \tod maybe an array of libusb_interface ?
-
   libusb_interface_descriptor defaultLibusbInterface;
   defaultLibusbInterface.bNumEndpoints = 1;
 
-  libusb_interface_descriptor libusbInterfaceList[1]
+  libusb_interface_descriptor libusbInterfaceAltSettingList[1]
   {
     defaultLibusbInterface
   };
 
-  libusb_interface libusbInterfaceAltSetting;
-  libusbInterfaceAltSetting.altsetting = libusbInterfaceList;
-  libusbInterfaceAltSetting.num_altsetting = 1;
+  libusb_interface libusbInterface;
+  libusbInterface.altsetting = libusbInterfaceAltSettingList;
+  libusbInterface.num_altsetting = 1;
 
-  libusb_interface libusbInterfaceAltSettingList[1]
+  libusb_interface libusbInterfaceList[1]
   {
-    libusbInterfaceAltSetting
+    libusbInterface
   };
 
   libusb_config_descriptor libusbConfig;
-  libusbConfig.interface = libusbInterfaceAltSettingList;
+  libusbConfig.interface = libusbInterfaceList;
   libusbConfig.bNumInterfaces = 1;
 
   const auto descriptor = ConfigDescriptor::fromLibusbDescriptor(libusbConfig);
 
+  CHECK( descriptor.interfaceCount() == 1 );
   CHECK( descriptor.bNumInterfaces() == 1 );
-  
+  CHECK( descriptor.interfaceAt(0).alternateSettingsCount() == 1 );
 }

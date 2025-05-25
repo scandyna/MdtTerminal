@@ -3,6 +3,7 @@ include(GenerateExportHeader)
 include(MdtInstallLibrary)
 
 add_library(Mdt_Usb
+  Mdt/Usb/NumericLimits.cpp
   Mdt/Usb/LibusbError.cpp
   Mdt/Usb/QRuntimeError.cpp
   Mdt/Usb/LibusbRuntimeError.cpp
@@ -13,6 +14,7 @@ add_library(Mdt_Usb
   Mdt/Usb/ConfigDescriptor.cpp
   Mdt/Usb/Interface.cpp
   Mdt/Usb/InterfaceDescriptor.cpp
+  Mdt/Usb/EndpointDescriptor.cpp
 )
 
 add_library(Mdt::Usb ALIAS Mdt_Usb)

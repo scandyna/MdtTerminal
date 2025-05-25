@@ -29,7 +29,7 @@ namespace Mdt{ namespace Usb{
 
     /*! \brief Get the count of alternate settings
      */
-    size_t count() const noexcept
+    size_t alternateSettingsCount() const noexcept
     {
       return mAlternateSettings.size();
     }
@@ -40,12 +40,12 @@ namespace Mdt{ namespace Usb{
      */
     const InterfaceDescriptor & alternateSettingAt(size_t index) const noexcept
     {
-      assert( index < count() );
+      assert( index < alternateSettingsCount() );
 
       return mAlternateSettings[index];
     }
 
-    /*! \brief Get a descriptor from given libusb interface
+    /*! \brief Get an interface from given libusb interface
      */
     static
     Interface fromLibusbInterface(const libusb_interface & interface) noexcept;

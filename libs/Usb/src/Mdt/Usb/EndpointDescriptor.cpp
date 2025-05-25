@@ -7,19 +7,16 @@
  ** Copyright (C) 2025-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
-#include "InterfaceDescriptor.h"
+#include "EndpointDescriptor.h"
 
 namespace Mdt{ namespace Usb{
 
-InterfaceDescriptor InterfaceDescriptor::fromLibusbDescriptor(const libusb_interface_descriptor & descriptor) noexcept
+EndpointDescriptor EndpointDescriptor::fromLibusbDescriptor(const libusb_endpoint_descriptor & descriptor) noexcept
 {
-  InterfaceDescriptor interface;
+  EndpointDescriptor endpoint;
+  endpoint.mbEndpointAddress = descriptor.bEndpointAddress;
 
-  for(uint8_t i=0; i < descriptor.bNumEndpoints; ++i){
-    interface.mEndpointList.push_back( EndpointDescriptor::fromLibusbDescriptor(descriptor.endpoint[i]) );
-  }
-
-  return interface;
+  return endpoint;
 }
 
 }} // namespace Mdt{ namespace Usb{

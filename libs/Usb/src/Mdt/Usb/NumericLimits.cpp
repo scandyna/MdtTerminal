@@ -7,19 +7,8 @@
  ** Copyright (C) 2025-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
-#include "InterfaceDescriptor.h"
+#include "NumericLimits.h"
 
 namespace Mdt{ namespace Usb{
-
-InterfaceDescriptor InterfaceDescriptor::fromLibusbDescriptor(const libusb_interface_descriptor & descriptor) noexcept
-{
-  InterfaceDescriptor interface;
-
-  for(uint8_t i=0; i < descriptor.bNumEndpoints; ++i){
-    interface.mEndpointList.push_back( EndpointDescriptor::fromLibusbDescriptor(descriptor.endpoint[i]) );
-  }
-
-  return interface;
-}
 
 }} // namespace Mdt{ namespace Usb{

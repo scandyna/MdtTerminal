@@ -27,7 +27,6 @@ namespace Mdt.Usb {
   }
 
   DeviceInfo *--> "?" ConfigurationInfo
-  DeviceInfo *--> "1" EndpointInfo
 
 
   class DeviceInfoList {

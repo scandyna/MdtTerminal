@@ -28,8 +28,8 @@ TEST_CASE("fromLibusbInterface")
   libusbInterface.altsetting = libusbInterfaceList;
   libusbInterface.num_altsetting = 1;
 
-  const auto alternateSettings = Interface::fromLibusbInterface(libusbInterface);
+  const auto interface = Interface::fromLibusbInterface(libusbInterface);
 
-  CHECK( alternateSettings.count() == 1 );
-  CHECK( alternateSettings.alternateSettingAt(0).bNumEndpoints() == 1 );
+  CHECK( interface.alternateSettingsCount() == 1 );
+  CHECK( interface.alternateSettingAt(0).bNumEndpoints() == 1 );
 }

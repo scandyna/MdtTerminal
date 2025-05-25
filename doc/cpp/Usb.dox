@@ -69,6 +69,21 @@
  * !include ClassDiagrams/UsbDescriptors.puml
  * \enduml
  *
+ * \code
+ * using namespace Mdt::Usb;
+ *
+ * libusb_device *device = getInterestingDevice(...);
+ *
+ * const auto deviceDescriptor = DeviceDescriptor::fromLibusbDevicePointer(device);
+ * const auto configDescriptor = ConfigDescriptor::activeConfigFromLibusbDevicePointer(device);
+ * \endcode
+ *
+ * \sa Mdt::Usb::DeviceDescriptor
+ * \sa Mdt::Usb::ConfigDescriptor
+ * \sa Mdt::Usb::Interface
+ * \sa Mdt::Usb::InterfaceDescriptor
+ * \sa Mdt::Usb::EndpointDescriptor
+ *
  * \section Usb_Sandbox USB sandbox
  *
  * \todo Builder ? Bof ?

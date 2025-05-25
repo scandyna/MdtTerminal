@@ -3,6 +3,14 @@ include(MdtAddTest)
 
 
 mdt_add_test(
+  NAME UsbNumericLimitsTest
+  TARGET usbNumericLimitsTest
+  DEPENDENCIES Mdt::Usb Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/NumericLimitsTest.cpp
+)
+
+mdt_add_test(
   NAME LibusbErrorTest
   TARGET libusbErrorTest
   DEPENDENCIES Mdt::Usb Mdt::Catch2Main Mdt::Catch2Qt
@@ -40,6 +48,14 @@ mdt_add_test(
   DEPENDENCIES Mdt::Usb Mdt::Catch2Main Mdt::Catch2Qt
   SOURCE_FILES
     src/DeviceDescriptorTest.cpp
+)
+
+mdt_add_test(
+  NAME UsbEndpointDescriptorTest
+  TARGET usbEndpointDescriptorTest
+  DEPENDENCIES Mdt::Usb Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/EndpointDescriptorTest.cpp
 )
 
 mdt_add_test(

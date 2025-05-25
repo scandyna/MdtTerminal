@@ -23,7 +23,13 @@ QString configDescriptorTr(const char *sourceText) noexcept
 
 ConfigDescriptor ConfigDescriptor::fromLibusbDescriptor(const libusb_config_descriptor & descriptor) noexcept
 {
-  return ConfigDescriptor(descriptor);
+  ConfigDescriptor config;
+
+  for(uint8_t i=0; i < descriptor.bNumInterfaces; ++i){
+    config.mInterfaceList.push_back( Interface::fromLibusbInterface(descriptor.interface[i]) );
+  }
+
+  return config;
 }
 
 ConfigDescriptor ConfigDescriptor::activeConfigFromLibusbDevicePointer(libusb_device *device)

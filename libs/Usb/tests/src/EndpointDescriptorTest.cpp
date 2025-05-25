@@ -7,7 +7,7 @@
  ** Copyright (C) 2025-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
-#include "Mdt/Usb/InterfaceDescriptor.h"
+#include "Mdt/Usb/EndpointDescriptor.h"
 #include "catch2/catch.hpp"
 #include "Catch2QString.h"
 
@@ -19,17 +19,7 @@ TEST_CASE("fromLibusbDescriptor")
   libusb_endpoint_descriptor libusbEndoint;
   libusbEndoint.bEndpointAddress = 0x82;
 
-  libusb_endpoint_descriptor libusbEndointList[1]
-  {
-    libusbEndoint
-  };
+  const auto endpoint = EndpointDescriptor::fromLibusbDescriptor(libusbEndoint);
 
-  libusb_interface_descriptor libusbInterface;
-  libusbInterface.endpoint = libusbEndointList;
-  libusbInterface.bNumEndpoints = 1;
-
-  const auto interface = InterfaceDescriptor::fromLibusbDescriptor(libusbInterface);
-
-  CHECK( interface.bNumEndpoints() == 1 );
-  CHECK( interface.endpointAt(0).bEndpointAddress() == 0x82 );
+  CHECK( endpoint.bEndpointAddress() == 0x82 );
 }

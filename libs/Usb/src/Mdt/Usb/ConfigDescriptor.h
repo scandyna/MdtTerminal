@@ -12,9 +12,12 @@
 
 #include "Mdt/Usb/Interface.h"
 #include "Mdt/Usb/LibusbRuntimeError.h"
+#include "Mdt/Usb/NumericLimits.h"
 #include "mdt_usb_export.h"
 #include <libusb.h>
 #include <cstdint>
+#include <limits>
+#include <vector>
 #include <cassert>
 
 namespace Mdt{ namespace Usb{
@@ -33,18 +36,27 @@ namespace Mdt{ namespace Usb{
      */
     uint8_t bNumInterfaces() const noexcept
     {
-      return mDescriptor.bNumInterfaces;
+      return interfaceCount();
     }
 
-    /*! \brief 
+    /*! \brief Get the count of interfaces
+     */
+    uint8_t interfaceCount() const noexcept
+    {
+      assert( uint8_t_canHoldValueOf_size_t( mInterfaceList.size() ) );
+
+      return uint8_t_from_size_t( mInterfaceList.size() );
+    }
+
+    /*! \brief Get the interface at given index
      *
      * \pre \a index must be in range
      */
-    const Interface & fAt(uint8_t index) const noexcept
+    const Interface & interfaceAt(uint8_t index) const noexcept
     {
-      assert( index < bNumInterfaces() );
+      assert( index < interfaceCount() );
 
-      
+      return mInterfaceList[index];
     }
 
     /*! \brief Get a descriptor from given libusb config descriptor
@@ -62,16 +74,17 @@ namespace Mdt{ namespace Usb{
 
    private:
 
-    explicit
-    ConfigDescriptor(const libusb_config_descriptor & descriptor) noexcept
-     : mDescriptor(descriptor)
-    {
-    }
+    // explicit
+    // ConfigDescriptor(const libusb_config_descriptor & descriptor) noexcept
+    //  : mDescriptor(descriptor)
+    // {
+    // }
 
     /// \todo If default constructor becomes public, struct must be 0 initalized - Note: {} !
     ConfigDescriptor() noexcept = default;
 
-    libusb_config_descriptor mDescriptor;
+    std::vector<Interface> mInterfaceList;
+    // libusb_config_descriptor mDescriptor;
   };
 
 }} // namespace Mdt{ namespace Usb{
