@@ -35,6 +35,9 @@
 #include <libudev.h>
 
 #include "Mdt/SerialPort/Unix/UnixFileStatus.h"
+#include "Mdt/SerialPort/Unix/FileStatusFileType.h"
+#include "Mdt/SerialPort/Unix/UdevContext.h"
+#include "Mdt/SerialPort/Unix/UdevDevice.h"
 
 #include <QSerialPort>
 
@@ -215,19 +218,27 @@ void printConfigDescriptor(const Mdt::Usb::ConfigDescriptor & descriptor)
 
 TEST_CASE("stat_sandbox")
 {
-  struct stat st;
-  int ret = stat("/dev/ttyUSB1", &st);
-  if(ret < 0){
-    qDebug() << "Failed to stat: " << errno;
-    return;
-  }
+  // struct stat st;
+  // int ret = stat("/dev/ttyUSB1", &st);
+  // if(ret < 0){
+  //   qDebug() << "Failed to stat: " << errno;
+  //   return;
+  // }
+  // 
+  // qDebug() << " st_dev" << st.st_dev;
+  // qDebug() << " st_rdev" << st.st_rdev;
 
-  qDebug() << " st_dev" << st.st_dev;
-  qDebug() << " st_rdev" << st.st_rdev;
+  const auto fileStatus = UnixFileStatus::fromPath("/dev/ttyUSB1");
+
+  qDebug() << " device: " << fileStatus.representedDeviceId();
+  qDebug() << "  is block: " << fileStatus.isBlockDevice();
+  qDebug() << "  is char: " << fileStatus.isCharacterDevice();
 }
 
 void printUdevDevice(udev_device *device)
 {
+  using Mdt::SerialPort::Unix::UdevDevice;
+
   assert(device != nullptr);
 
   qDebug() << "sysname: " << udev_device_get_sysname(device);
@@ -247,21 +258,233 @@ void printUdevDevice(udev_device *device)
   qDebug() << " attr manufacturer: " << udev_device_get_sysattr_value(device, "manufacturer");
   qDebug() << " attr product: " << udev_device_get_sysattr_value(device, "product");
 
-  qDebug() << " attr busnum: " << udev_device_get_sysattr_value(device, "busnum");
-  qDebug() << " attr devnum: " << udev_device_get_sysattr_value(device, "devnum");
-  qDebug() << " attr port_number: " << udev_device_get_sysattr_value(device, "port_number");
+  // qDebug() << " attr idVendor: " << udev_device_get_sysattr_value(device, "idVendor");
+  const auto vid = UdevDevice::getVendorId(device);
+  if( vid.has_value() ){
+    qDebug() << " - VID: 0x" << QString::number(*vid, 16) << " (" << *vid << ")";
+  }
+
+  // qDebug() << " attr idProduct: " << udev_device_get_sysattr_value(device, "idProduct");
+  const auto pid = UdevDevice::getProductId(device);
+  if( vid.has_value() ){
+    qDebug() << " - PID: 0x" << QString::number(*pid, 16) << " (" << *pid << ")";
+  }
+
+  // qDebug() << " attr busnum: " << udev_device_get_sysattr_value(device, "busnum");
+  const auto busNumber = UdevDevice::getBusNumber(device);
+  if( busNumber.has_value() ){
+    qDebug() << " - bus: " << *busNumber;
+  }
+
+  // qDebug() << " attr devnum: " << udev_device_get_sysattr_value(device, "devnum");
+  const auto deviceNumber = UdevDevice::getDeviceNumber(device);
+  if( deviceNumber.has_value() ){
+    qDebug() << " - device " << *deviceNumber;
+  }
+
+  // qDebug() << " attr port_number: " << udev_device_get_sysattr_value(device, "port_number");
+  const auto portNumber = UdevDevice::getPortNumber(device);
+  if( portNumber.has_value() ){
+    qDebug() << " - port number " << *portNumber;
+  }
 }
+
+  /// \todo should probably go to Unix sub namespace ? Yes !
+
+  /*! \brief Vendor ID and product ID
+   */
+  struct VendorIdAndProductId
+  {
+    uint16_t vid = 0;
+    uint16_t pid = 0;
+  };
+
+  /*! \brief Bus number, device number and port number
+   */
+  struct BusDevicePortNumber
+  {
+    uint8_t busNumber = 0;
+    uint8_t deviceNumber = 0;
+    uint8_t portNumber = 0;
+  };
+
+  /*! \brief Walk an Udev tree branch direction to root
+   *
+   * Calls the UnaryFunc \a f for each device node
+   * during the walk, including the given start node \a device ,
+   * as long as \a pred returns true.
+   *
+   * \note \a pred is called before \a f .
+   *
+   * UnaryFunc should be of the for:
+   * \code
+   * void f(udev_device *device);
+   * \endcode
+   *
+   * UnaryPred should be of the form:
+   * \code
+   * bool p(udev_device *device);
+   * \endcode
+   *
+   * The given device pointer will never be null
+   * while calling \a p of \a f .
+   */
+  template<typename UnaryFunc, typename UnaryPred>
+  void walkUdevTreeToRootWhile(const Mdt::SerialPort::Unix::UdevDevice & device, UnaryFunc f, UnaryPred p)
+  {
+    udev_device *devicePtr = device.nativePointer();
+    if(devicePtr == nullptr){
+      return;
+    }
+    if( !p(devicePtr) ){
+      return;
+    }
+
+    f(devicePtr);
+
+    for( udev_device *parent = udev_device_get_parent(devicePtr) ; parent != nullptr ; parent = udev_device_get_parent(parent) ){
+      if( !p(parent) ){
+        return;
+      }
+      f(parent);
+    }
+  }
+
+  /*! \brief Walk an Udev tree branch direction to root
+   *
+   * Calls the UnaryFunc \a f for each device node
+   * during the walk, including the given start node \a device .
+   *
+   * UnaryFunc should be of the for:
+   * \code
+   * void f(udev_device *device);
+   * \endcode
+   *
+   * The given device pointer will never be null.
+   */
+  template<typename UnaryFunc>
+  void walkUdevTreeToRoot(const Mdt::SerialPort::Unix::UdevDevice & device, UnaryFunc f)
+  {
+    const auto pred = [](udev_device *){
+      return true;
+    };
+
+    walkUdevTreeToRootWhile(device, f, pred);
+
+    // udev_device *devicePtr = device.nativePointer();
+    // if(devicePtr == nullptr){
+    //   return;
+    // }
+    // 
+    // f(devicePtr);
+    // 
+    // for( udev_device *parent = udev_device_get_parent(devicePtr) ; parent != nullptr ; parent = udev_device_get_parent(parent) ){
+    //   f(parent);
+    // }
+  }
+
+  /*! \brief
+   */
+  bool deviceMatchesVidPid(udev_device *device, const VendorIdAndProductId & vidPid) noexcept
+  {
+    assert(device != nullptr);
+  }
+
+  /*! \brief Find the bus, device and port number
+   */
+  std::optional<BusDevicePortNumber> findBusDevicePortNumber(const Mdt::SerialPort::Unix::UdevDevice & device, const VendorIdAndProductId & vidPid)
+  {
+    /*
+     * We start at a leaf of the device tree.
+     * Walk up until we find the expected device.
+     * If we walk more, we will probably en up to a PCI controller.
+     * On the road, we also will get the port number of the device.
+     */
+    const auto pred = [vidPid](udev_device *devicePtr) -> bool
+    {
+      return deviceMatchesVidPid(devicePtr, vidPid);
+
+      using Mdt::SerialPort::Unix::UdevDevice;
+
+      const auto vid = UdevDevice::getVendorId(devicePtr);
+      if( !vid.has_value() ){
+        return false;
+      }
+      const auto pid = UdevDevice::getProductId(devicePtr);
+      if( vid.has_value() && pid.has_value() ){
+        if(*vid != vidPid.vid){
+          return false;
+        }
+      }
+      
+    };
+
+  }
+
+  /*! \brief Find the bus, device and port number for given path
+   *
+   * Example:
+   * Imagine we have 2 Moxa UPort 1250 attached to the system.
+   * - /dev/ttyUSB0 : bus 1, device 4, port number 0  (VID: 0x110a, PID: 0x1250)
+   * - /dev/ttyUSB1 : bus 1, device 4, port number 1  (VID: 0x110a, PID: 0x1250)
+   * - /dev/ttyUSB2 : bus 2, device 3, port number 0  (VID: 0x110a, PID: 0x1250)
+   * - /dev/ttyUSB3 : bus 2, device 3, port number 1  (VID: 0x110a, PID: 0x1250)
+   *
+   * Here, the VID and PID of the device is the same for both.
+   * If we want, f.ex., set the interface of ttyUSB1 to RS-422 with an USB control transfert,
+   * we need to know the bus and device (address) to differentiate which device to configure,
+   * and also the port number of the device.
+   *
+   * \note The VID and PID is required because of the way the libudev API is made.
+   * See implementation for more details.
+   *
+   * \pre 
+   * \exception 
+   */
+  std::optional<BusDevicePortNumber> findBusDevicePortNumberFromPath(const std::filesystem::path & path, const VendorIdAndProductId & vidPid)
+  {
+    using Mdt::SerialPort::Unix::UdevDevice;
+
+    const auto fileStatus = UnixFileStatus::fromPath(path);
+
+    const auto udevContext = std::make_shared<Mdt::SerialPort::Unix::UdevContext>();
+
+    auto device = UdevDevice::from_devnum( udevContext, fileStatus.fileType(), fileStatus.representedDeviceId() );
+
+    return findBusDevicePortNumber(device, vidPid);
+  }
 
 TEST_CASE("libudev_sandbox")
 {
-  udev *udevContext = udev_new();
-  assert(udevContext != nullptr);
+  using Mdt::SerialPort::Unix::UdevDevice;
+
+  const auto udevContext = std::make_shared<Mdt::SerialPort::Unix::UdevContext>();
+  // udev *udevContext = udev_new();
+  // assert(udevContext != nullptr);
 
   /** \todo see:
    * https://stackoverflow.com/questions/40215880/libudev-get-devnum-for-specific-tty-in-c
    * https://stackoverflow.com/questions/20249418/find-bus-number-and-device-number-with-device-file-symlink/20341112#20341112
    * https://manpages.debian.org/stretch-backports/libudev-dev/udev_device_get_property_value.3.en.html
    */
+
+  const std::filesystem::path devicePath = "/dev/ttyUSB1";
+  const auto fileStatus = UnixFileStatus::fromPath(devicePath);
+
+  // char deviceTypeChar = UdevDevice::deviceTypeCharFromFileType( fileStatus.fileType() );
+  // if( fileStatus.isBlockDevice() ){
+  //   deviceTypeChar = 'b';
+  // }else if( fileStatus.isCharacterDevice() ){
+  //   deviceTypeChar = 'c';
+  // }
+  // if(deviceTypeChar == '\0'){
+  //   qDebug() << "device " << devicePath.string().c_str() << " is neither a block or character device";
+  //   return;
+  // }
+
+  qDebug() << " print tree - OLD ************** ";
+
+  auto device2 = UdevDevice::from_devnum( udevContext, fileStatus.fileType(), fileStatus.representedDeviceId() );
 
   /*
    * We start at a leaf of the device tree.
@@ -270,12 +493,14 @@ TEST_CASE("libudev_sandbox")
    * On the road, we also will get the port number of the device.
    */
 
-  udev_device *device = udev_device_new_from_devnum(udevContext, 'c', 48129);
+  udev_device *device = device2.nativePointer();
+  // udev_device *device = udev_device_new_from_devnum( udevContext->nativePointer(), deviceTypeChar, fileStatus.representedDeviceId() );
+  // udev_device *device = udev_device_new_from_devnum(udevContext, 'c', 48129);
   // udev_device *device = udev_device_new_from_syspath(udevContext, "/dev/ttyUSB0");
-  if(device == nullptr){
-    qDebug() << "Failed to get UDEV device: " << errno;
-    return;
-  }
+  // if(device == nullptr){
+  //   qDebug() << "Failed to get UDEV device: " << errno;
+  //   return;
+  // }
 
   printUdevDevice(device);
 
@@ -294,8 +519,17 @@ TEST_CASE("libudev_sandbox")
     printUdevDevice(parent);
   }
 
-  udev_device_unref(device);
-  udev_unref(udevContext);
+  qDebug() << " print tree - walkUdevTreeToRoot ************** ";
+
+  walkUdevTreeToRoot(device2, printUdevDevice);
+
+  // udev_device_unref(device);
+  // udev_unref(udevContext);
+
+  const auto busDevicePortNumber = findBusDevicePortNumberFromPath(devicePath, {0x110A, 0x1250});
+  if( busDevicePortNumber.has_value() ){
+    qDebug() << "+++ found .......... bus: " << busDevicePortNumber->busNumber << " - device: " << busDevicePortNumber->deviceNumber << " - port: " << busDevicePortNumber->portNumber;
+  }
 }
 
 TEST_CASE("libusb_sandbox")
