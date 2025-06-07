@@ -109,8 +109,8 @@ endif()
 # Compilers issues
 #######################
 
-# https://gitlab.com/scandyna/mdtterminal/-/issues/2
 if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
+  # https://gitlab.com/scandyna/mdtterminal/-/issues/2
   add_compile_options(-Wno-error=maybe-uninitialized)
 endif()
 
