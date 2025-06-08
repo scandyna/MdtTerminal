@@ -34,7 +34,7 @@
 
 #include <libudev.h>
 
-#include "Mdt/SerialPort/Unix/UnixFileStatus.h"
+#include "Mdt/SerialPort/Unix/FileStatus.h"
 #include "Mdt/SerialPort/Unix/FileStatusFileType.h"
 #include "Mdt/SerialPort/Unix/UdevContext.h"
 #include "Mdt/SerialPort/Unix/UdevDevice.h"
@@ -252,6 +252,8 @@ void printConfigDescriptor(const Mdt::Usb::ConfigDescriptor & descriptor)
 
 TEST_CASE("stat_sandbox")
 {
+  using Mdt::SerialPort::Unix::FileStatus;
+
   // struct stat st;
   // int ret = stat("/dev/ttyUSB1", &st);
   // if(ret < 0){
@@ -262,7 +264,7 @@ TEST_CASE("stat_sandbox")
   // qDebug() << " st_dev" << st.st_dev;
   // qDebug() << " st_rdev" << st.st_rdev;
 
-  const auto fileStatus = UnixFileStatus::fromPath("/dev/ttyUSB1");
+  const auto fileStatus = FileStatus::fromPath("/dev/ttyUSB1");
 
   qDebug() << " device: " << fileStatus.representedDeviceId();
   qDebug() << "  is block: " << fileStatus.isBlockDevice();
@@ -580,8 +582,9 @@ void printUdevDevice(udev_device *device)
   std::optional<BusDevicePortNumber> findBusDevicePortNumberFromPath(const std::filesystem::path & path, const VendorIdAndProductId & vidPid)
   {
     using Mdt::SerialPort::Unix::UdevDevice;
+    using Mdt::SerialPort::Unix::FileStatus;
 
-    const auto fileStatus = UnixFileStatus::fromPath(path);
+    const auto fileStatus = FileStatus::fromPath(path);
 
     const auto udevContext = std::make_shared<Mdt::SerialPort::Unix::UdevContext>();
 
@@ -593,6 +596,7 @@ void printUdevDevice(udev_device *device)
 TEST_CASE("libudev_sandbox")
 {
   using Mdt::SerialPort::Unix::UdevDevice;
+  using Mdt::SerialPort::Unix::FileStatus;
 
   const auto udevContext = std::make_shared<Mdt::SerialPort::Unix::UdevContext>();
   // udev *udevContext = udev_new();
@@ -605,7 +609,7 @@ TEST_CASE("libudev_sandbox")
    */
 
   const std::filesystem::path devicePath = "/dev/ttyUSB1";
-  const auto fileStatus = UnixFileStatus::fromPath(devicePath);
+  const auto fileStatus = FileStatus::fromPath(devicePath);
 
   // char deviceTypeChar = UdevDevice::deviceTypeCharFromFileType( fileStatus.fileType() );
   // if( fileStatus.isBlockDevice() ){

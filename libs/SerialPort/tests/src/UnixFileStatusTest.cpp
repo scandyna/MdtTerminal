@@ -7,11 +7,11 @@
  ** Copyright (C) 2025-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
-#include "Mdt/SerialPort/Unix/UnixFileStatus.h"
+#include "Mdt/SerialPort/Unix/FileStatus.h"
 #include "catch2/catch.hpp"
 #include "Catch2QString.h"
 
-using namespace Mdt::SerialPort;
+using namespace Mdt::SerialPort::Unix;
 
 
 TEST_CASE("fromStatStruct")
@@ -19,7 +19,7 @@ TEST_CASE("fromStatStruct")
   struct stat st;
   st.st_dev = 1234;
 
-  const auto fileStatus = UnixFileStatus::fromStatStruct(st);
+  const auto fileStatus = FileStatus::fromStatStruct(st);
 
   CHECK( fileStatus.deviceId() == 1234 );
 }
@@ -30,7 +30,7 @@ TEST_CASE("blockDevice")
   st.st_rdev = 4321;
   st.st_mode = 0060000; // Octal notation
 
-  const auto fileStatus = UnixFileStatus::fromStatStruct(st);
+  const auto fileStatus = FileStatus::fromStatStruct(st);
 
   CHECK( fileStatus.representedDeviceId() == 4321 );
   CHECK( fileStatus.isBlockDevice() );
@@ -43,7 +43,7 @@ TEST_CASE("characterDevice")
   st.st_rdev = 4321;
   st.st_mode = 0020000; // Octal notation
 
-  const auto fileStatus = UnixFileStatus::fromStatStruct(st);
+  const auto fileStatus = FileStatus::fromStatStruct(st);
 
   CHECK( fileStatus.representedDeviceId() == 4321 );
   CHECK( !fileStatus.isBlockDevice() );

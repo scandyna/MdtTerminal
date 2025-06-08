@@ -7,7 +7,7 @@
  ** Copyright (C) 2025-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
-#include "UnixFileStatus.h"
+#include "FileStatus.h"
 #include "Mdt/SerialPort/FilesystemHelpers.h"
 #include <QString>
 #include <QCoreApplication>
@@ -15,7 +15,7 @@
 #include <string.h>
 #include <cassert>
 
-namespace Mdt{ namespace SerialPort{
+namespace Mdt{ namespace SerialPort{ namespace Unix{
 
 QString unixFileStatusTr(const char *sourceText) noexcept
 {
@@ -23,21 +23,21 @@ QString unixFileStatusTr(const char *sourceText) noexcept
 }
 
 
-Unix::FileStatusFileType UnixFileStatus::fileType() const noexcept
+FileStatusFileType FileStatus::fileType() const noexcept
 {
-  const auto type = Unix::fileStatusFileTypeFrom_stat_st_mode(mStat.st_mode);
+  const auto type = fileStatusFileTypeFrom_stat_st_mode(mStat.st_mode);
   /// \todo validation should be done during construction, like in fromStatStruct()
   assert( type.has_value() );
 
   return *type;
 }
 
-UnixFileStatus UnixFileStatus::fromStatStruct(const struct stat & st) noexcept
+FileStatus FileStatus::fromStatStruct(const struct stat & st) noexcept
 {
-  return UnixFileStatus(st);
+  return FileStatus(st);
 }
 
-UnixFileStatus UnixFileStatus::fromPath(const std::filesystem::path & path)
+FileStatus FileStatus::fromPath(const std::filesystem::path & path)
 {
   struct stat st;
   int ret = stat(path.native().c_str(), &st);
@@ -47,12 +47,12 @@ UnixFileStatus UnixFileStatus::fromPath(const std::filesystem::path & path)
     throw FileOpenError(msg);
   }
 
-  return UnixFileStatus(st);
+  return FileStatus(st);
 }
 
-UnixFileStatus::UnixFileStatus(const struct stat & st) noexcept
+FileStatus::FileStatus(const struct stat & st) noexcept
  : mStat(st)
 {
 }
 
-}} // namespace Mdt{ namespace SerialPort{
+}}} // namespace Mdt{ namespace SerialPort{ namespace Unix{

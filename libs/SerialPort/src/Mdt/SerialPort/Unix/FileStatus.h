@@ -16,7 +16,7 @@
 #include <sys/stat.h>
 #include <filesystem>
 
-namespace Mdt{ namespace SerialPort{
+namespace Mdt{ namespace SerialPort{ namespace Unix{
 
   /*! \brief Unix file status (stat)
    *
@@ -25,11 +25,25 @@ namespace Mdt{ namespace SerialPort{
    * \sa https://man7.org/linux/man-pages/man3/stat.3type.html
    * \sa https://man7.org/linux/man-pages/man2/stat.2.html
    */
-  class MDT_SERIALPORT_EXPORT UnixFileStatus
+  class MDT_SERIALPORT_EXPORT FileStatus
   {
    public:
 
-    /// \todo deal with copy and move
+    /*! \brief Copy construct a status from other
+     */
+    FileStatus(const FileStatus & other) noexcept = default;
+
+    /*! \brief Copy assign other to this status
+     */
+    FileStatus & operator=(const FileStatus & other) noexcept = default;
+
+    /*! \brief Move construct a status from other
+     */
+    FileStatus(FileStatus && other) noexcept = default;
+
+    /*! \brief Move assign other to this status
+     */
+    FileStatus & operator=(FileStatus && other) noexcept = default;
 
     /*! \brief Get the ID of the device containing the file (st_dev)
      */
@@ -50,7 +64,7 @@ namespace Mdt{ namespace SerialPort{
 
     /*! \brief Get the file type (extracted from st_mode)
      */
-    Unix::FileStatusFileType fileType() const noexcept;
+    FileStatusFileType fileType() const noexcept;
 
     /*! \brief Check if the file is a block device (extracted from st_mode)
      */
@@ -72,7 +86,7 @@ namespace Mdt{ namespace SerialPort{
      * Example: check if the file status type is a known one.
      */
     static
-    UnixFileStatus fromStatStruct(const struct stat & st) noexcept;
+    FileStatus fromStatStruct(const struct stat & st) noexcept;
 
     /*! \brief Get a file status from given path
      *
@@ -81,16 +95,16 @@ namespace Mdt{ namespace SerialPort{
      * \todo see fromStatStruct()
      */
     static
-    UnixFileStatus fromPath(const std::filesystem::path & path);
+    FileStatus fromPath(const std::filesystem::path & path);
 
    private:
 
     explicit
-    UnixFileStatus(const struct stat & st) noexcept;
+    FileStatus(const struct stat & st) noexcept;
 
     struct stat mStat;
   };
 
-}} // namespace Mdt{ namespace SerialPort{
+}}} // namespace Mdt{ namespace SerialPort{ namespace Unix{
 
 #endif // #ifndef MDT_SERIAL_PORT_UNIX_FILE_STATUS_H

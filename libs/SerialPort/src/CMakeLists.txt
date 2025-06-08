@@ -42,7 +42,7 @@ if(UNIX)
     PRIVATE
       Mdt/SerialPort/Unix/Handle.cpp
       Mdt/SerialPort/Unix/UnixEngine.cpp
-      Mdt/SerialPort/Unix/UnixFileStatus.cpp
+      Mdt/SerialPort/Unix/FileStatus.cpp
       Mdt/SerialPort/Unix/FileStatusFileType.cpp
       Mdt/SerialPort/Unix/UdevContext.cpp
       Mdt/SerialPort/Unix/UdevDevice.cpp
