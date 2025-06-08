@@ -11,6 +11,7 @@
 #define MDT_SERIAL_PORT_PORT_SETUP_H
 
 #include "Mdt/SerialPort/Settings.h"
+#include "Mdt/SerialPort/Interface.h"
 #include "mdt_serialport_export.h"
 #include <QSerialPort>
 
@@ -25,6 +26,14 @@ namespace Mdt{ namespace SerialPort{
   class MDT_SERIALPORT_EXPORT PortSetup
   {
    public:
+
+    /*! \brief Configure the interface for given port
+     *
+     * \exception PortSetupError
+     * \pre \a port must be open
+     */
+    static
+    void configureInterface(const Interface & interface, QSerialPort & port);
 
     /*! \brief Set given settings to given port
      *

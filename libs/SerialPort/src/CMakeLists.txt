@@ -3,8 +3,11 @@ include(GenerateExportHeader)
 include(MdtInstallLibrary)
 
 add_library(Mdt_SerialPort
+  Mdt/SerialPort/StringHelpers.cpp
   Mdt/SerialPort/Platform.cpp
   Mdt/SerialPort/QRuntimeError.cpp
+  Mdt/SerialPort/FileOpenError.cpp
+  Mdt/SerialPort/FilesystemHelpers.cpp
   Mdt/SerialPort/BaudRateStringFormat.cpp
   Mdt/SerialPort/BaudRateListTableModel.cpp
   Mdt/SerialPort/DataBitsListTableModel.cpp
@@ -29,9 +32,22 @@ add_library(Mdt_SerialPort
   Mdt/SerialPort/SettingsValidation.cpp
   Mdt/SerialPort/SettingsBuilder.cpp
   Mdt/SerialPort/SettingsStringFormat.cpp
+  Mdt/SerialPort/AbstractEngine.cpp
   Mdt/SerialPort/PortSetup.cpp
   Mdt/SerialPort/SerialPort.cpp
 )
+
+if(UNIX)
+  target_sources(Mdt_SerialPort
+    PRIVATE
+      Mdt/SerialPort/Unix/Handle.cpp
+      Mdt/SerialPort/Unix/UnixEngine.cpp
+      Mdt/SerialPort/Unix/UnixFileStatus.cpp
+      Mdt/SerialPort/Unix/FileStatusFileType.cpp
+      Mdt/SerialPort/Unix/UdevContext.cpp
+      Mdt/SerialPort/Unix/UdevDevice.cpp
+  )
+endif()
 
 add_library(Mdt::SerialPort ALIAS Mdt_SerialPort)
 
@@ -59,6 +75,28 @@ target_link_libraries(Mdt_SerialPort
     Mdt0::ItemModel
 )
 
+if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
+  if(${CMAKE_CXX_COMPILER_VERSION} VERSION_LESS 9)
+    # https://gitlab.kitware.com/cmake/cmake/-/issues/17834
+    target_link_libraries(Mdt_SerialPort
+      PUBLIC
+        stdc++fs
+    )
+  endif()
+endif()
+
+# TODO: cleanup once Usb is no more a sanbox
+# TODO: if want to use Udev, use a target.
+#       see https://api.kde.org/ecm/find-module/FindUDev.html
+#       and the target conan generates
+if(BUILD_USB_SANDBOX)
+  target_link_libraries(Mdt_SerialPort
+    PUBLIC
+      Mdt::Usb
+      udev
+  )
+endif()
+
 generate_export_header(Mdt_SerialPort)
 
 mdt_install_library(
@@ -68,7 +106,7 @@ mdt_install_library(
   ARCHIVE_DESTINATION ${CMAKE_INSTALL_LIBDIR}
   INCLUDES_DIRECTORY .
   INCLUDES_FILE_WITHOUT_EXTENSION
-  ADDITIONAL_INCLUDES_FILES "${CMAKE_CURRENT_BINARY_DIR}/mdt_mdt_serialport_export.h"
+  ADDITIONAL_INCLUDES_FILES "${CMAKE_CURRENT_BINARY_DIR}/mdt_serialport_export.h"
   INCLUDES_DESTINATION ${MDT_INSTALL_INCLUDEDIR}
   EXPORT_NAME SerialPort
   EXPORT_NAMESPACE Mdt${PROJECT_VERSION_MAJOR}::

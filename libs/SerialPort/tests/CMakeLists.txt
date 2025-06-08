@@ -1,6 +1,15 @@
 
 include(MdtAddTest)
 
+
+mdt_add_test(
+  NAME SerialPortStringHelpersTest
+  TARGET serialPortStringHelpersTest
+  DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/StringHelpersTest.cpp
+)
+
 mdt_add_test(
   NAME BaudRateListTableModelTest
   TARGET baudRateListTableModelTest
@@ -162,6 +171,14 @@ mdt_add_test(
 )
 
 mdt_add_test(
+  NAME SerialPortAbstractEngineTest
+  TARGET serialPortAbstractEngineTest
+  DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/AbstractEngineTest.cpp
+)
+
+mdt_add_test(
   NAME SerialPortSetupTest
   TARGET serialPortSetupTest
   DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
@@ -176,3 +193,86 @@ mdt_add_test(
   SOURCE_FILES
     src/SerialPortTest.cpp
 )
+
+if(UNIX)
+
+  mdt_add_test(
+    NAME SerialPortFilesystemHelpersTest_Unix
+    TARGET serialPortFilesystemHelpersTest_Unix
+    DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+    SOURCE_FILES
+      src/FilesystemHelpersTest_Unix.cpp
+  )
+
+  mdt_add_test(
+    NAME SerialPortHandleTest_Unix
+    TARGET serialPortHandleTest_Unix
+    DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+    SOURCE_FILES
+      src/HandleTest_Unix.cpp
+  )
+
+  mdt_add_test(
+    NAME UnixFileStatusTest
+    TARGET unixFileStatusTest
+    DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+    SOURCE_FILES
+      src/UnixFileStatusTest.cpp
+  )
+
+  mdt_add_test(
+    NAME UnixFileStatusFileTypeTest
+    TARGET unixFileStatusFileTypeTest
+    DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+    SOURCE_FILES
+      src/FileStatusFileTypeTest.cpp
+  )
+
+  mdt_add_test(
+    NAME UnixUdevContextTest
+    TARGET unixUdevContextTest
+    DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+    SOURCE_FILES
+      src/UnixUdevContextTest.cpp
+  )
+
+  mdt_add_test(
+    NAME UnixUdevDeviceTest
+    TARGET unixUdevDeviceTest
+    DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+    SOURCE_FILES
+      src/UdevDeviceTest.cpp
+  )
+
+  # TODO: does it work without HW ?
+  mdt_add_test(
+    NAME SerialPortUnixEngineTest
+    TARGET serialPortUnixEngineTest
+    DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+    SOURCE_FILES
+      src/UnixEngineTest.cpp
+  )
+
+  # TODO this is just a sandbox and will not work on the CI 
+  # target_link_libraries(serialPortUnixEngineTest
+  #   PRIVATE
+  #     usb-1.0
+  # )
+  # target_include_directories(serialPortUnixEngineTest
+  #   PRIVATE
+  #     "/usr/include/libusb-1.0"
+  # )
+
+endif()
+
+if(WIN32)
+
+  mdt_add_test(
+    NAME SerialPortFilesystemHelpersTest_Windows
+    TARGET serialPortFilesystemHelpersTest_Windows
+    DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+    SOURCE_FILES
+      src/FilesystemHelpersTest_Windows.cpp
+  )
+
+endif()

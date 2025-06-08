@@ -10,6 +10,8 @@
 #ifndef MDT_SERIAL_PORT_UNIX_FILE_STATUS_H
 #define MDT_SERIAL_PORT_UNIX_FILE_STATUS_H
 
+#include "Mdt/SerialPort/FileOpenError.h"
+#include "Mdt/SerialPort/Unix/FileStatusFileType.h"
 #include "mdt_serialport_export.h"
 #include <sys/stat.h>
 #include <filesystem>
@@ -46,6 +48,10 @@ namespace Mdt{ namespace SerialPort{
       return mStat.st_rdev;
     }
 
+    /*! \brief Get the file type (extracted from st_mode)
+     */
+    Unix::FileStatusFileType fileType() const noexcept;
+
     /*! \brief Check if the file is a block device (extracted from st_mode)
      */
     bool isBlockDevice() const noexcept
@@ -61,13 +67,18 @@ namespace Mdt{ namespace SerialPort{
     }
 
     /*! \brief Get a file status from given stat struct
+     *
+     * \todo Should do some validation an throw an exception on failure.
+     * Example: check if the file status type is a known one.
      */
     static
     UnixFileStatus fromStatStruct(const struct stat & st) noexcept;
 
     /*! \brief Get a file status from given path
      *
-     * \exception 
+     * \exception FileOpenError
+     *
+     * \todo see fromStatStruct()
      */
     static
     UnixFileStatus fromPath(const std::filesystem::path & path);
