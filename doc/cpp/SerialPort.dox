@@ -1,6 +1,14 @@
 
 /*! \page SerialPort_dox Serial port library
  *
+ * \section SerialPort_Errors Serial port errors
+ *
+ * \startuml "Exceptions"
+ * !include ClassDiagrams/SerialPortExceptions.puml
+ * \enduml
+ *
+ * \sa Mdt::SerialPort::FileOpenError
+ *
  *
  * \section SerialPort_PortInfo Serial port info
  *

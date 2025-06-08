@@ -1,0 +1,13 @@
+@startuml
+!include Mdt/SerialPort/QRuntimeError.puml
+
+namespace Mdt.SerialPort {
+
+  class FileOpenError {
+  }
+
+  QRuntimeError <|-- FileOpenError
+}
+
+
+@enduml

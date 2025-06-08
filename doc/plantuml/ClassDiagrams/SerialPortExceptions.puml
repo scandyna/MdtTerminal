@@ -1,0 +1,5 @@
+@startuml
+!include Mdt/SerialPort/QRuntimeError.puml
+!include Mdt/SerialPort/FileOpenError.puml
+
+@enduml

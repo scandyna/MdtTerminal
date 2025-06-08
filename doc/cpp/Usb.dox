@@ -30,7 +30,7 @@
  * \section Usb_Errors USB errors
  *
  * \startuml "Exceptions"
- * !include ClassDiagrams/Exceptions.puml
+ * !include ClassDiagrams/UsbExceptions.puml
  * \enduml
  *
  * \sa Mdt::Usb::LibusbError
