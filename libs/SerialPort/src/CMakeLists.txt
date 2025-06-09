@@ -32,6 +32,7 @@ add_library(Mdt_SerialPort
   Mdt/SerialPort/SettingsValidation.cpp
   Mdt/SerialPort/SettingsBuilder.cpp
   Mdt/SerialPort/SettingsStringFormat.cpp
+  Mdt/SerialPort/UsbVendorIdProductId.cpp
   Mdt/SerialPort/AbstractEngine.cpp
   Mdt/SerialPort/PortSetup.cpp
   Mdt/SerialPort/SerialPort.cpp
@@ -46,6 +47,8 @@ if(UNIX)
       Mdt/SerialPort/Unix/FileStatusFileType.cpp
       Mdt/SerialPort/Unix/UdevContext.cpp
       Mdt/SerialPort/Unix/UdevDevice.cpp
+      Mdt/SerialPort/Unix/UdevTree.cpp
+      Mdt/SerialPort/Unix/UdevBusDevicePortNumber.cpp
   )
 endif()
 

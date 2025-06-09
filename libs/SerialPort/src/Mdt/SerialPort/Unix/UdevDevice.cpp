@@ -104,6 +104,34 @@ std::optional<uint16_t> UdevDevice::getProductId(udev_device *device)
   return getSystemAttribute_uint16_t_Value(device, "idProduct", 16);
 }
 
+std::optional<UsbVendorIdProductId> UdevDevice::getVendorIdProductId(udev_device *device)
+{
+  assert(device != nullptr);
+
+  const auto vid = getVendorId(device);
+  if( !vid.has_value() ){
+    return {};
+  }
+  const auto pid = getProductId(device);
+  if( !pid.has_value() ){
+    return {};
+  }
+
+  return UsbVendorIdProductId{*vid, *pid};
+}
+
+bool UdevDevice::deviceMatchesVidPid(udev_device *device, const UsbVendorIdProductId & vidPid)
+{
+  assert(device != nullptr);
+
+  const auto deviceVidPid = getVendorIdProductId(device);
+  if( !deviceVidPid.has_value() ){
+    return false;
+  }
+
+  return *deviceVidPid == vidPid;
+}
+
 std::optional<uint8_t> UdevDevice::getSystemAttribute_uint8_t_Value(udev_device *device, const char *attribute, int base)
 {
   assert(device != nullptr);

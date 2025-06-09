@@ -39,6 +39,10 @@
 #include "Mdt/SerialPort/Unix/UdevContext.h"
 #include "Mdt/SerialPort/Unix/UdevDevice.h"
 
+#include "Mdt/SerialPort/UsbVendorIdProductId.h"
+
+#include "Mdt/SerialPort/Unix/UdevBusDevicePortNumber.h"
+
 #include <QSerialPort>
 
 using namespace Mdt::SerialPort;
@@ -325,42 +329,26 @@ void printUdevDevice(udev_device *device)
   }
 }
 
-  /// \todo should probably go to Unix sub namespace ? Yes !
 
-  /*! \brief Vendor ID and product ID
+  /*! \brief Couple of USB bus number and device address
    */
-  struct VendorIdAndProductId
+  struct UsbBusNumberDeviceAddress
   {
-    uint16_t vid = 0;
-    uint16_t pid = 0;
-  };
-
-  /*! \brief Bus number, device number and port number
-   */
-  struct BusDevicePortNumber
-  {
+    /*! \brief Bus number
+     *
+     * This bus number matche libusb_get_bus_number()
+     * and the Udev busnum attribute.
+     */
     uint8_t busNumber = 0;
-    uint8_t deviceNumber = 0;
-    uint8_t portNumber = 0;
+
+    /*! \brief Device address
+     *
+     * This device address matches libusb_get_device_address()
+     * and the Udev devnum attribute.
+     */
+    uint8_t deviceAddress = 0;
   };
 
-  constexpr
-  bool isComplete(const BusDevicePortNumber & x) noexcept
-  {
-    if(x.busNumber == 0){
-      return false;
-    }
-    if(x.deviceNumber == 0){
-      return false;
-    }
-    if(x.portNumber == 0){
-      return false;
-    }
-
-    return true;
-  }
-
-  /// tod UdevTree.h ?
 
   /*! \brief Walk an Udev tree branch direction to root
    *
@@ -404,161 +392,81 @@ void printUdevDevice(udev_device *device)
   //   }
   // }
 
-  /*! \brief Walk an Udev tree branch direction to root
-   *
-   * Calls the UnaryFunc \a f for each device node
-   * during the walk, including the given start node \a device ,
-   * until \a pred returns true.
-   *
-   * \note \a f is called before \a pred .
-   *
-   * UnaryFunc should be of the for:
-   * \code
-   * void f(udev_device *device);
-   * \endcode
-   *
-   * UnaryPred should be of the form:
-   * \code
-   * bool p(udev_device *device);
-   * \endcode
-   *
-   * The given device pointer will never be null
-   * while calling \a p of \a f .
+
+
+  /*! \brief Check if given device matches given vendor ID and product ID
    */
-  template<typename UnaryFunc, typename UnaryPred>
-  void walkUdevTreeToRootUntil(const Mdt::SerialPort::Unix::UdevDevice & device, UnaryFunc f, UnaryPred p)
-  {
-    udev_device *devicePtr = device.nativePointer();
-    if(devicePtr == nullptr){
-      return;
-    }
-
-    f(devicePtr);
-    if( p(devicePtr) ){
-      return;
-    }
-
-    for( udev_device *parent = udev_device_get_parent(devicePtr) ; parent != nullptr ; parent = udev_device_get_parent(parent) ){
-      f(parent);
-      if( p(parent) ){
-        return;
-      }
-    }
-  }
-
-  /*! \brief Walk an Udev tree branch direction to root
-   *
-   * Calls the UnaryFunc \a f for each device node
-   * during the walk, including the given start node \a device .
-   *
-   * UnaryFunc should be of the for:
-   * \code
-   * void f(udev_device *device);
-   * \endcode
-   *
-   * The given device pointer will never be null.
-   */
-  template<typename UnaryFunc>
-  void walkUdevTreeToRoot(const Mdt::SerialPort::Unix::UdevDevice & device, UnaryFunc f)
-  {
-    const auto pred = [](udev_device *){
-      return false;
-    };
-
-    walkUdevTreeToRootUntil(device, f, pred);
-
-    // udev_device *devicePtr = device.nativePointer();
-    // if(devicePtr == nullptr){
-    //   return;
-    // }
-    // 
-    // f(devicePtr);
-    // 
-    // for( udev_device *parent = udev_device_get_parent(devicePtr) ; parent != nullptr ; parent = udev_device_get_parent(parent) ){
-    //   f(parent);
-    // }
-  }
-
-  /*! \brief
-   */
-  bool deviceMatchesVidPid(udev_device *device, const VendorIdAndProductId & vidPid) noexcept
-  {
-    using Mdt::SerialPort::Unix::UdevDevice;
-
-    assert(device != nullptr);
-
-    const auto vid = UdevDevice::getVendorId(device);
-    if( !vid.has_value() ){
-      return false;
-    }
-    const auto pid = UdevDevice::getProductId(device);
-    if( !pid.has_value() ){
-      return false;
-    }
-    if(*vid != vidPid.vid){
-      return false;
-    }
-    if(*pid != vidPid.pid){
-      return false;
-    }
-
-    return true;
-  }
+  // bool deviceMatchesVidPid(udev_device *device, const UsbVendorIdProductId & vidPid) noexcept
+  // {
+  //   using Mdt::SerialPort::Unix::UdevDevice;
+  // 
+  //   assert(device != nullptr);
+  // 
+  //   const auto deviceVidPid = UdevDevice::getVendorIdProductId(device);
+  //   if( !deviceVidPid.has_value() ){
+  //     return false;
+  //   }
+  // 
+  //   return *deviceVidPid == vidPid;
+  // }
 
   /*! \brief Find the bus, device and port number
    */
-  std::optional<BusDevicePortNumber> findBusDevicePortNumber(const Mdt::SerialPort::Unix::UdevDevice & device, const VendorIdAndProductId & vidPid)
-  {
-    BusDevicePortNumber result;
-    bool found = false;
-
-    /*
-     * We start at a leaf of the device tree.
-     * Walk up until we find the expected device.
-     * If we walk more, we will probably en up to a PCI controller.
-     * On the road, we also will get the port number of the device.
-     */
-    const auto pred = [vidPid, &found](udev_device *devicePtr) -> bool
-    {
-      found = deviceMatchesVidPid(devicePtr, vidPid);
-      return found;
-    };
-
-    const auto f = [&result](udev_device *devicePtr)
-    {
-      using Mdt::SerialPort::Unix::UdevDevice;
-
-      printUdevDevice(devicePtr);
-      
-      const auto bus = UdevDevice::getBusNumber(devicePtr);
-      if( bus.has_value() ){
-        result.busNumber = *bus;
-      }
-
-      const auto devnum = UdevDevice::getDeviceNumber(devicePtr);
-      if( devnum.has_value() ){
-        result.deviceNumber = *devnum;
-      }
-
-      const auto port = UdevDevice::getPortNumber(devicePtr);
-      if( port.has_value() ){
-        result.portNumber = *port;
-      }
-    };
-
-    walkUdevTreeToRootUntil(device, f, pred);
-
-    // if( !isComplete(result) ){
-    //   return {};
-    // }
-
-    if( !found ){
-      return {};
-    }
-
-    return result;
-  }
-
+//   std::optional<UdevBusDevicePortNumber> findBusDevicePortNumber(const Mdt::SerialPort::Unix::UdevDevice & device, const UsbVendorIdProductId & vidPid)
+//   {
+//     UdevBusDevicePortNumber result;
+//     bool found = false;
+// 
+//     /*
+//      * We start at a leaf of the device tree.
+//      * Walk up until we find the expected device.
+//      * If we walk more, we will probably en up to a PCI controller.
+//      * On the road, we also will get the port number of the device.
+//      */
+// 
+//     const auto f = [&result](udev_device *devicePtr)
+//     {
+//       using Mdt::SerialPort::Unix::UdevDevice;
+// 
+//       printUdevDevice(devicePtr);
+//       
+//       const auto bus = UdevDevice::getBusNumber(devicePtr);
+//       if( bus.has_value() ){
+//         result.busNumber = *bus;
+//       }
+// 
+//       const auto devnum = UdevDevice::getDeviceNumber(devicePtr);
+//       if( devnum.has_value() ){
+//         result.deviceNumber = *devnum;
+//       }
+// 
+//       const auto port = UdevDevice::getPortNumber(devicePtr);
+//       if( port.has_value() ){
+//         result.portNumber = *port;
+//       }
+//     };
+// 
+//     const auto pred = [vidPid, &found](udev_device *devicePtr) -> bool
+//     {
+//       using Mdt::SerialPort::Unix::UdevDevice;
+// 
+//       found =  UdevDevice::deviceMatchesVidPid(devicePtr, vidPid);
+//       return found;
+//     };
+// 
+//     walkUdevTreeToRootUntil(device, f, pred);
+// 
+//     // if( !isComplete(result) ){
+//     //   return {};
+//     // }
+// 
+//     if( !found ){
+//       return {};
+//     }
+// 
+//     return result;
+//   }
+// 
   /*! \brief Find the bus, device and port number for given path
    *
    * Example:
@@ -579,19 +487,19 @@ void printUdevDevice(udev_device *device)
    * \pre 
    * \exception 
    */
-  std::optional<BusDevicePortNumber> findBusDevicePortNumberFromPath(const std::filesystem::path & path, const VendorIdAndProductId & vidPid)
-  {
-    using Mdt::SerialPort::Unix::UdevDevice;
-    using Mdt::SerialPort::Unix::FileStatus;
-
-    const auto fileStatus = FileStatus::fromPath(path);
-
-    const auto udevContext = std::make_shared<Mdt::SerialPort::Unix::UdevContext>();
-
-    auto device = UdevDevice::from_devnum( udevContext, fileStatus.fileType(), fileStatus.representedDeviceId() );
-
-    return findBusDevicePortNumber(device, vidPid);
-  }
+  // std::optional<UdevBusDevicePortNumber> findBusDevicePortNumberFromPath(const std::filesystem::path & path, const UsbVendorIdProductId & vidPid)
+  // {
+  //   using Mdt::SerialPort::Unix::UdevDevice;
+  //   using Mdt::SerialPort::Unix::FileStatus;
+  // 
+  //   const auto fileStatus = FileStatus::fromPath(path);
+  // 
+  //   const auto udevContext = std::make_shared<Mdt::SerialPort::Unix::UdevContext>();
+  // 
+  //   auto device = UdevDevice::from_devnum( udevContext, fileStatus.fileType(), fileStatus.representedDeviceId() );
+  // 
+  //   return findBusDevicePortNumber(device, vidPid);
+  // }
 
 TEST_CASE("libudev_sandbox")
 {
@@ -659,19 +567,19 @@ TEST_CASE("libudev_sandbox")
     printUdevDevice(parent);
   }
 
-  qDebug() << " print tree - walkUdevTreeToRoot ************** ";
-
-  walkUdevTreeToRoot(device2, printUdevDevice);
+  // qDebug() << " print tree - walkUdevTreeToRoot ************** ";
+  // 
+  // walkUdevTreeToRoot(device2, printUdevDevice);
 
   // udev_device_unref(device);
   // udev_unref(udevContext);
 
-  qDebug() << " +-+-+ search device ======== ...";
+  // qDebug() << " +-+-+ search device ======== ...";
 
-  const auto busDevicePortNumber = findBusDevicePortNumberFromPath(devicePath, {0x110A, 0x1250});
-  if( busDevicePortNumber.has_value() ){
-    qDebug() << "+++ found .......... bus: " << busDevicePortNumber->busNumber << " - device: " << busDevicePortNumber->deviceNumber << " - port: " << busDevicePortNumber->portNumber;
-  }
+  // const auto busDevicePortNumber = findBusDevicePortNumberFromPath(devicePath, {0x110A, 0x1250});
+  // if( busDevicePortNumber.has_value() ){
+  //   qDebug() << "+++ found .......... bus: " << busDevicePortNumber->busNumber << " - device: " << busDevicePortNumber->deviceNumber << " - port: " << busDevicePortNumber->portNumber;
+  // }
 }
 
 void setMoxaUportInterfaceNumber(libusb_device_handle *deviceHandle, uint16_t portNumber, uint16_t interfaceNumber)
@@ -765,7 +673,7 @@ TEST_CASE("setup_uport_sandbox")
 {
   const std::filesystem::path devicePath = "/dev/ttyUSB0";
 
-  const auto busDevicePortNumber = findBusDevicePortNumberFromPath(devicePath, {0x110A, 0x1250});
+  const auto busDevicePortNumber = Mdt::SerialPort::Unix::findBusDevicePortNumberFromPath(devicePath, {0x110A, 0x1250});
   if( !busDevicePortNumber.has_value() ){
     qDebug() << "-> could not find device..";
     return;
@@ -781,7 +689,7 @@ TEST_CASE("setup_uport_sandbox")
 
   qDebug() << " -> open device :)";
 
-  setMoxaUportInterfaceNumber(deviceHandle, busDevicePortNumber->portNumber, 0);
+  setMoxaUportInterfaceNumber(deviceHandle, busDevicePortNumber->portNumber, 2);
 
   libusb_close(deviceHandle);
 }

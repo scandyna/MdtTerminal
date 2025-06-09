@@ -194,6 +194,14 @@ mdt_add_test(
     src/SerialPortTest.cpp
 )
 
+mdt_add_test(
+  NAME SerialPortUsbVendorIdProductIdTestTest
+  TARGET serialPortUsbVendorIdProductIdTestTest
+  DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/UsbVendorIdProductIdTest.cpp
+)
+
 if(UNIX)
 
   mdt_add_test(
@@ -242,6 +250,14 @@ if(UNIX)
     DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
     SOURCE_FILES
       src/UdevDeviceTest.cpp
+  )
+
+  mdt_add_test(
+    NAME UnixUdevBusDevicePortNumberTest
+    TARGET unixUdevBusDevicePortNumberTest
+    DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+    SOURCE_FILES
+      src/UdevBusDevicePortNumberTest.cpp
   )
 
   # TODO: does it work without HW ?

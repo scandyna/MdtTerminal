@@ -13,6 +13,7 @@
 #include "Mdt/SerialPort/Unix/FileStatusFileType.h"
 #include "Mdt/SerialPort/Unix/UdevContext.h"
 #include "Mdt/SerialPort/FileOpenError.h"
+#include "Mdt/SerialPort/UsbVendorIdProductId.h"
 #include "mdt_serialport_export.h"
 #include <libudev.h>
 #include <string>
@@ -141,6 +142,23 @@ namespace Mdt{ namespace SerialPort{ namespace Unix{
     static
     std::optional<uint16_t> getProductId(udev_device *device);
 
+    /*! \brief Get the vendor ID (idVendor) and the product ID (idProduct)
+     *
+     * \pre \a device must be valid
+     * \sa getVendorId(udev_device *device)
+     * \sa getProductId(udev_device *device)
+     * \note If either the vendor ID or the product ID is missing,
+     * no value is returned.
+     */
+    static
+    std::optional<UsbVendorIdProductId> getVendorIdProductId(udev_device *device);
+
+    /*! \brief Check if given device matches given vendor ID and product ID
+     *
+     * \pre \a device must be valid
+     */
+    static
+    bool deviceMatchesVidPid(udev_device *device, const UsbVendorIdProductId & vidPid);
 
     /*! \brief Get an uint8_t value from given string
      *
