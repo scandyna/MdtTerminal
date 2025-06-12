@@ -27,6 +27,8 @@
 #include "Mdt/Usb/DeviceDescriptor.h"
 #include "Mdt/Usb/ConfigDescriptor.h"
 
+#include "Mdt/Usb/LibusbError.h"
+
 #include <memory>
 #include <cassert>
 
@@ -42,6 +44,8 @@
 #include "Mdt/SerialPort/UsbVendorIdProductId.h"
 
 #include "Mdt/SerialPort/Unix/UdevBusDevicePortNumber.h"
+
+#include "Mdt/Usb/DeviceHandle.h"
 
 #include <QSerialPort>
 
@@ -80,120 +84,53 @@ using namespace Mdt::SerialPort;
 
 
 
-  /*! \brief
-   */
-  // class DeviceHandle
-  // {
-  //  public:
-  // 
-  //   static
-  //   DeviceHandle openFromDescriptor(const DeviceDescriptor & descriptor);
-  // 
-  //   // static
-  //   // DeviceHandle openDeviceWithVidPidSn()
-  //   // {
-  //   //   DeviceList deviceList = DeviceListBuilder::scanForAttachedDevices();
-  //   // 
-  //   //   DeviceDescriptor deviceDescriptor = deviceList.findXy(...);
-  //   // 
-  //   //   return DeviceHandle::openFromDescriptor(deviceDescriptor);
-  //   // }
-  // };
 
-libusb_device *findFirstLibusbDeviceWithVidAndPid(const Mdt::Usb::LibusbDeviceList & deviceList, uint16_t vid, uint16_t pid)
-{
-  using Mdt::Usb::DeviceDescriptor;
 
-  for(size_t i=0; i < deviceList.count(); ++i){
-    libusb_device *device = deviceList.libusbDevicePointerAt(i);
-    const auto deviceDescriptor = DeviceDescriptor::fromLibusbDevicePointer(device);
-    if( (deviceDescriptor.idVendor() == vid) && (deviceDescriptor.idProduct() == pid) ){
-      return device;
-    }
-  }
-
-  return nullptr;
-}
-
-// Mdt::Usb::DeviceDescriptor findDeviceDescriptorWithVidAndPid(const Mdt::Usb::LibusbDeviceList & deviceList, uint16_t vid, uint16_t pid)
+// libusb_device_handle *openUsbDevice(libusb_device *device)
 // {
+//   assert(device != nullptr);
+// 
+//   libusb_device_handle *handle = nullptr;
+//   int ret = libusb_open(device, &handle);
+//   qDebug() << "libusb_open() ret: " << ret << " - " << libusb_error_name(ret);
+//   if(ret != 0){
+//     return nullptr;
+//   }
+//   /// \todo error handling
+//   return handle;
 // }
 
-libusb_device_handle *openFirstDeviceWithVidAndPid(std::shared_ptr<Mdt::Usb::Context> context, uint16_t vid, uint16_t pid)
-{
-  assert(context != nullptr);
+// libusb_device_handle *openFirstDeviceWithVidAndPid(std::shared_ptr<Mdt::Usb::Context> context, uint16_t vid, uint16_t pid)
+// {
+//   assert(context != nullptr);
+// 
+//   Mdt::Usb::DeviceEnumerator deviceEnumerator(context);
+// 
+//   Mdt::Usb::LibusbDeviceList deviceList = deviceEnumerator.scanForAttachedDevices();
+// 
+//   libusb_device *device = deviceList.findFirstLibusbDeviceWithVidAndPid(vid, pid);
+//   if(device == nullptr){
+//     return nullptr;
+//   }
+// 
+//   return openUsbDevice(device);
+// }
 
-  Mdt::Usb::DeviceEnumerator deviceEnumerator(context);
-
-  Mdt::Usb::LibusbDeviceList deviceList = deviceEnumerator.scanForAttachedDevices();
-
-  libusb_device *device = findFirstLibusbDeviceWithVidAndPid(deviceList, vid, pid);
-  if(device == nullptr){
-    return nullptr;
-  }
-
-  libusb_device_handle *handle;
-  int ret = libusb_open(device, &handle);
-  qDebug() << "libusb_open() ret: " << ret << " - " << libusb_error_name(ret);
-  if(ret != 0){
-    return nullptr;
-  }
-  /// \todo error handling
-  return handle;
-
-  // for(size_t i=0; i < deviceList.count(); ++i){
-  //   libusb_device_descriptor deviceDescriptor;
-  //   int ret = libusb_get_device_descriptor(deviceList.libusbDevicePointerAt(i), &deviceDescriptor);
-  //   /// \todo error handling
-  //   if( (deviceDescriptor.idVendor == vid) && (deviceDescriptor.idProduct == pid) ){
-  //     libusb_device_handle *handle;
-  //     ret = libusb_open(deviceList.libusbDevicePointerAt(i), &handle);
-  //     qDebug() << "libusb_open() ret: " << ret << " - " << libusb_error_name(ret);
-  //     if(ret != 0){
-  //       return nullptr;
-  //     }
-  //     /// \todo error handling
-  //     return handle;
-  //   }
-  // }
-  // 
-  // return nullptr;
-}
-
-libusb_device *findDeviceOnBusWithAddress(const Mdt::Usb::LibusbDeviceList & deviceList, uint8_t busNumber, uint8_t deviceAddress)
-{
-  for(size_t i=0; i < deviceList.count(); ++i){
-    libusb_device *device = deviceList.libusbDevicePointerAt(i);
-    if( (libusb_get_bus_number(device) == busNumber) && (libusb_get_device_address(device) == deviceAddress) ){
-      return device;
-    }
-  }
-
-  return nullptr;
-}
-
-libusb_device_handle *openDeviceOnBusWithAddress(std::shared_ptr<Mdt::Usb::Context> context, uint8_t busNumber, uint8_t deviceAddress)
-{
-  assert(context != nullptr);
-
-  Mdt::Usb::DeviceEnumerator deviceEnumerator(context);
-
-  Mdt::Usb::LibusbDeviceList deviceList = deviceEnumerator.scanForAttachedDevices();
-
-  libusb_device *device = findDeviceOnBusWithAddress(deviceList, busNumber, deviceAddress);
-  if(device == nullptr){
-    return nullptr;
-  }
-
-  libusb_device_handle *handle;
-  int ret = libusb_open(device, &handle);
-  qDebug() << "libusb_open() ret: " << ret << " - " << libusb_error_name(ret);
-  if(ret != 0){
-    return nullptr;
-  }
-  /// \todo error handling
-  return handle;
-}
+// libusb_device_handle *openDeviceOnBusWithAddress(std::shared_ptr<Mdt::Usb::Context> context, uint8_t busNumber, uint8_t deviceAddress)
+// {
+//   assert(context != nullptr);
+// 
+//   Mdt::Usb::DeviceEnumerator deviceEnumerator(context);
+// 
+//   Mdt::Usb::LibusbDeviceList deviceList = deviceEnumerator.scanForAttachedDevices();
+// 
+//   libusb_device *device = deviceList.findLibusbDeviceOnBusWithAddress(busNumber, deviceAddress);
+//   if(device == nullptr){
+//     return nullptr;
+//   }
+// 
+//   return openUsbDevice(device);
+// }
 
 void printDeviceDescriptor(const Mdt::Usb::DeviceDescriptor & descriptor)
 {
@@ -340,7 +277,7 @@ void printUdevDevice(udev_device *device)
      * and the Udev busnum attribute.
      */
     uint8_t busNumber = 0;
-
+  
     /*! \brief Device address
      *
      * This device address matches libusb_get_device_address()
@@ -348,158 +285,10 @@ void printUdevDevice(udev_device *device)
      */
     uint8_t deviceAddress = 0;
   };
-
-
-  /*! \brief Walk an Udev tree branch direction to root
-   *
-   * Calls the UnaryFunc \a f for each device node
-   * during the walk, including the given start node \a device ,
-   * as long as \a pred returns true.
-   *
-   * \note \a pred is called before \a f .
-   *
-   * UnaryFunc should be of the for:
-   * \code
-   * void f(udev_device *device);
-   * \endcode
-   *
-   * UnaryPred should be of the form:
-   * \code
-   * bool p(udev_device *device);
-   * \endcode
-   *
-   * The given device pointer will never be null
-   * while calling \a p of \a f .
-   */
-  // template<typename UnaryFunc, typename UnaryPred>
-  // void walkUdevTreeToRootWhile(const Mdt::SerialPort::Unix::UdevDevice & device, UnaryFunc f, UnaryPred p)
-  // {
-  //   udev_device *devicePtr = device.nativePointer();
-  //   if(devicePtr == nullptr){
-  //     return;
-  //   }
-  //   if( !p(devicePtr) ){
-  //     return;
-  //   }
-  // 
-  //   f(devicePtr);
-  // 
-  //   for( udev_device *parent = udev_device_get_parent(devicePtr) ; parent != nullptr ; parent = udev_device_get_parent(parent) ){
-  //     if( !p(parent) ){
-  //       return;
-  //     }
-  //     f(parent);
-  //   }
-  // }
+  
 
 
 
-  /*! \brief Check if given device matches given vendor ID and product ID
-   */
-  // bool deviceMatchesVidPid(udev_device *device, const UsbVendorIdProductId & vidPid) noexcept
-  // {
-  //   using Mdt::SerialPort::Unix::UdevDevice;
-  // 
-  //   assert(device != nullptr);
-  // 
-  //   const auto deviceVidPid = UdevDevice::getVendorIdProductId(device);
-  //   if( !deviceVidPid.has_value() ){
-  //     return false;
-  //   }
-  // 
-  //   return *deviceVidPid == vidPid;
-  // }
-
-  /*! \brief Find the bus, device and port number
-   */
-//   std::optional<UdevBusDevicePortNumber> findBusDevicePortNumber(const Mdt::SerialPort::Unix::UdevDevice & device, const UsbVendorIdProductId & vidPid)
-//   {
-//     UdevBusDevicePortNumber result;
-//     bool found = false;
-// 
-//     /*
-//      * We start at a leaf of the device tree.
-//      * Walk up until we find the expected device.
-//      * If we walk more, we will probably en up to a PCI controller.
-//      * On the road, we also will get the port number of the device.
-//      */
-// 
-//     const auto f = [&result](udev_device *devicePtr)
-//     {
-//       using Mdt::SerialPort::Unix::UdevDevice;
-// 
-//       printUdevDevice(devicePtr);
-//       
-//       const auto bus = UdevDevice::getBusNumber(devicePtr);
-//       if( bus.has_value() ){
-//         result.busNumber = *bus;
-//       }
-// 
-//       const auto devnum = UdevDevice::getDeviceNumber(devicePtr);
-//       if( devnum.has_value() ){
-//         result.deviceNumber = *devnum;
-//       }
-// 
-//       const auto port = UdevDevice::getPortNumber(devicePtr);
-//       if( port.has_value() ){
-//         result.portNumber = *port;
-//       }
-//     };
-// 
-//     const auto pred = [vidPid, &found](udev_device *devicePtr) -> bool
-//     {
-//       using Mdt::SerialPort::Unix::UdevDevice;
-// 
-//       found =  UdevDevice::deviceMatchesVidPid(devicePtr, vidPid);
-//       return found;
-//     };
-// 
-//     walkUdevTreeToRootUntil(device, f, pred);
-// 
-//     // if( !isComplete(result) ){
-//     //   return {};
-//     // }
-// 
-//     if( !found ){
-//       return {};
-//     }
-// 
-//     return result;
-//   }
-// 
-  /*! \brief Find the bus, device and port number for given path
-   *
-   * Example:
-   * Imagine we have 2 Moxa UPort 1250 attached to the system.
-   * - /dev/ttyUSB0 : bus 1, device 4, port number 0  (VID: 0x110a, PID: 0x1250)
-   * - /dev/ttyUSB1 : bus 1, device 4, port number 1  (VID: 0x110a, PID: 0x1250)
-   * - /dev/ttyUSB2 : bus 2, device 3, port number 0  (VID: 0x110a, PID: 0x1250)
-   * - /dev/ttyUSB3 : bus 2, device 3, port number 1  (VID: 0x110a, PID: 0x1250)
-   *
-   * Here, the VID and PID of the device is the same for both.
-   * If we want, f.ex., set the interface of ttyUSB1 to RS-422 with an USB control transfert,
-   * we need to know the bus and device (address) to differentiate which device to configure,
-   * and also the port number of the device.
-   *
-   * \note The VID and PID is required because of the way the libudev API is made.
-   * See implementation for more details.
-   *
-   * \pre 
-   * \exception 
-   */
-  // std::optional<UdevBusDevicePortNumber> findBusDevicePortNumberFromPath(const std::filesystem::path & path, const UsbVendorIdProductId & vidPid)
-  // {
-  //   using Mdt::SerialPort::Unix::UdevDevice;
-  //   using Mdt::SerialPort::Unix::FileStatus;
-  // 
-  //   const auto fileStatus = FileStatus::fromPath(path);
-  // 
-  //   const auto udevContext = std::make_shared<Mdt::SerialPort::Unix::UdevContext>();
-  // 
-  //   auto device = UdevDevice::from_devnum( udevContext, fileStatus.fileType(), fileStatus.representedDeviceId() );
-  // 
-  //   return findBusDevicePortNumber(device, vidPid);
-  // }
 
 TEST_CASE("libudev_sandbox")
 {
@@ -582,11 +371,11 @@ TEST_CASE("libudev_sandbox")
   // }
 }
 
-void setMoxaUportInterfaceNumber(libusb_device_handle *deviceHandle, uint16_t portNumber, uint16_t interfaceNumber)
+void setMoxaUportInterfaceNumber(Mdt::Usb::DeviceHandle &deviceHandle, uint16_t portNumber, uint16_t interfaceNumber)
 {
-  assert(deviceHandle != nullptr);
+  assert(deviceHandle.libusbHandle() != nullptr);
 
-  /// \todo portnum vs ifacenum !
+  /// \todo portnum vs ifacenum ! + maybe check its a Moxa UPort ?
 
   constexpr uint8_t RQ_VENDOR_SET_INTERFACE = 0x10;
 
@@ -599,7 +388,7 @@ void setMoxaUportInterfaceNumber(libusb_device_handle *deviceHandle, uint16_t po
   unsigned int timeout = 100;
 
   int ret = libusb_control_transfer(
-    deviceHandle,
+    deviceHandle.libusbHandle(),
     bmRequestType,
     bRequest,
     wValue,
@@ -621,7 +410,7 @@ TEST_CASE("libusb_sandbox")
   Mdt::Usb::DeviceEnumerator deviceEnumerator(context);
   Mdt::Usb::LibusbDeviceList deviceList = deviceEnumerator.scanForAttachedDevices();
 
-  libusb_device *device = findFirstLibusbDeviceWithVidAndPid(deviceList, 0x110A, 0x1250);
+  libusb_device *device = deviceList.findFirstLibusbDeviceWithVidAndPid(0x110A, 0x1250);
   if(device == nullptr){
     return;
   }
@@ -633,19 +422,27 @@ TEST_CASE("libusb_sandbox")
   printDeviceDescriptor(deviceDescriptor);
   printConfigDescriptor(configDescriptor);
 
-  // libusb_device_handle *deviceHandle = openFirstDeviceWithVidAndPid(context, 0x110A, 0x1250);
-  libusb_device_handle *deviceHandle = openDeviceOnBusWithAddress(context, 1, 6);
-  if(deviceHandle == nullptr){
-    qDebug() << "device find/open error";
+  device = deviceList.findLibusbDeviceOnBusWithAddress(1, 6);
+  if(device == nullptr){
+    qDebug() << "device not found..";
     return;
   }
+
+  auto deviceHandle = Mdt::Usb::DeviceHandle::open(device);
+
+  // libusb_device_handle *deviceHandle = openFirstDeviceWithVidAndPid(context, 0x110A, 0x1250);
+  // libusb_device_handle *deviceHandle = openDeviceOnBusWithAddress(context, 1, 6);
+  // if(deviceHandle == nullptr){
+  //   qDebug() << "device find/open error";
+  //   return;
+  // }
 
   qDebug() << " -> open device :)";
 
   /// \todo maybe detach kernel driver
 
 
-  libusb_close(deviceHandle);
+  // libusb_close(deviceHandle);
 
   // DeviceEnumerator deviceEnumerator(context);
   // 
@@ -681,15 +478,26 @@ TEST_CASE("setup_uport_sandbox")
 
   auto context = std::make_shared<Mdt::Usb::Context>();
 
-  libusb_device_handle *deviceHandle = openDeviceOnBusWithAddress(context, busDevicePortNumber->busNumber, busDevicePortNumber->deviceNumber);
-  if(deviceHandle == nullptr){
-    qDebug() << "device find/open error";
+  Mdt::Usb::DeviceEnumerator deviceEnumerator(context);
+  Mdt::Usb::LibusbDeviceList deviceList = deviceEnumerator.scanForAttachedDevices();
+
+  libusb_device *device = deviceList.findLibusbDeviceOnBusWithAddress( busDevicePortNumber->busNumber, busDevicePortNumber->deviceNumber );
+  if(device == nullptr){
+    qDebug() << "device not found...";
     return;
   }
+
+  auto deviceHandle = Mdt::Usb::DeviceHandle::open(device);
+
+  // libusb_device_handle *deviceHandle = openDeviceOnBusWithAddress(context, busDevicePortNumber->busNumber, busDevicePortNumber->deviceNumber);
+  // if(deviceHandle == nullptr){
+  //   qDebug() << "device find/open error";
+  //   return;
+  // }
 
   qDebug() << " -> open device :)";
 
   setMoxaUportInterfaceNumber(deviceHandle, busDevicePortNumber->portNumber, 2);
 
-  libusb_close(deviceHandle);
+  // libusb_close(deviceHandle);
 }

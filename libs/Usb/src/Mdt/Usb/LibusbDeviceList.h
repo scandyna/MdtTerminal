@@ -13,6 +13,7 @@
 #include "mdt_usb_export.h"
 #include <libusb.h>
 #include <cstddef>
+#include <cstdint>
 #include <cassert>
 
 
@@ -71,6 +72,18 @@ namespace Mdt{ namespace Usb{
 
       return mList[index];
     }
+
+    /*! \brief Find the first device that matches given vendor ID and product ID
+     *
+     * Returns a nullptr if no device matches.
+     */
+    libusb_device *findFirstLibusbDeviceWithVidAndPid(uint16_t vid, uint16_t pid) const noexcept;
+
+    /*! \brief Get the device on given bus with given address
+     *
+     * Returns a nullptr if no device matches.
+     */
+    libusb_device *findLibusbDeviceOnBusWithAddress(uint8_t busNumber, uint8_t deviceAddress) const noexcept;
 
    private:
 

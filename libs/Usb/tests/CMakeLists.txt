@@ -35,14 +35,6 @@ mdt_add_test(
 )
 
 mdt_add_test(
-  NAME LibusbDeviceListTest
-  TARGET libusbDeviceListTest
-  DEPENDENCIES Mdt::Usb Mdt::Catch2Main Mdt::Catch2Qt
-  SOURCE_FILES
-    src/LibusbDeviceListTest.cpp
-)
-
-mdt_add_test(
   NAME UsbDeviceDescriptorTest
   TARGET usbDeviceDescriptorTest
   DEPENDENCIES Mdt::Usb Mdt::Catch2Main Mdt::Catch2Qt

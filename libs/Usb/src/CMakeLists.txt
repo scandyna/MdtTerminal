@@ -15,6 +15,7 @@ add_library(Mdt_Usb
   Mdt/Usb/Interface.cpp
   Mdt/Usb/InterfaceDescriptor.cpp
   Mdt/Usb/EndpointDescriptor.cpp
+  Mdt/Usb/DeviceHandle.cpp
 )
 
 add_library(Mdt::Usb ALIAS Mdt_Usb)
