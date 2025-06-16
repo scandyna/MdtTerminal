@@ -220,54 +220,58 @@ if(UNIX)
       src/HandleTest_Unix.cpp
   )
 
-  mdt_add_test(
-    NAME UnixFileStatusTest
-    TARGET unixFileStatusTest
-    DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
-    SOURCE_FILES
-      src/UnixFileStatusTest.cpp
-  )
+  if(BUILD_USB_SANDBOX)
 
-  mdt_add_test(
-    NAME UnixFileStatusFileTypeTest
-    TARGET unixFileStatusFileTypeTest
-    DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
-    SOURCE_FILES
-      src/FileStatusFileTypeTest.cpp
-  )
+    mdt_add_test(
+      NAME UnixFileStatusTest
+      TARGET unixFileStatusTest
+      DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+      SOURCE_FILES
+        src/UnixFileStatusTest.cpp
+    )
 
-  mdt_add_test(
-    NAME UnixUdevContextTest
-    TARGET unixUdevContextTest
-    DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
-    SOURCE_FILES
-      src/UnixUdevContextTest.cpp
-  )
+    mdt_add_test(
+      NAME UnixFileStatusFileTypeTest
+      TARGET unixFileStatusFileTypeTest
+      DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+      SOURCE_FILES
+        src/FileStatusFileTypeTest.cpp
+    )
 
-  mdt_add_test(
-    NAME UnixUdevDeviceTest
-    TARGET unixUdevDeviceTest
-    DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
-    SOURCE_FILES
-      src/UdevDeviceTest.cpp
-  )
+    mdt_add_test(
+      NAME UnixUdevContextTest
+      TARGET unixUdevContextTest
+      DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+      SOURCE_FILES
+        src/UnixUdevContextTest.cpp
+    )
 
-  mdt_add_test(
-    NAME UnixUdevBusDevicePortNumberTest
-    TARGET unixUdevBusDevicePortNumberTest
-    DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
-    SOURCE_FILES
-      src/UdevBusDevicePortNumberTest.cpp
-  )
+    mdt_add_test(
+      NAME UnixUdevDeviceTest
+      TARGET unixUdevDeviceTest
+      DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+      SOURCE_FILES
+        src/UdevDeviceTest.cpp
+    )
 
-  # TODO: does it work without HW ?
-  mdt_add_test(
-    NAME SerialPortUnixEngineTest
-    TARGET serialPortUnixEngineTest
-    DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
-    SOURCE_FILES
-      src/UnixEngineTest.cpp
-  )
+    mdt_add_test(
+      NAME UnixUdevBusDevicePortNumberTest
+      TARGET unixUdevBusDevicePortNumberTest
+      DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+      SOURCE_FILES
+        src/UdevBusDevicePortNumberTest.cpp
+    )
+
+    # TODO: does it work without HW ?
+    mdt_add_test(
+      NAME SerialPortUnixEngineTest
+      TARGET serialPortUnixEngineTest
+      DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+      SOURCE_FILES
+        src/UnixEngineTest.cpp
+    )
+
+  endif()
 
   # TODO this is just a sandbox and will not work on the CI 
   # target_link_libraries(serialPortUnixEngineTest

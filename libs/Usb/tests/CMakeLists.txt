@@ -11,6 +11,14 @@ mdt_add_test(
 )
 
 mdt_add_test(
+  NAME UsbBitManipulationHelpersTest
+  TARGET usbBitManipulationHelpersTest
+  DEPENDENCIES Mdt::Usb Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/BitManipulationHelpersTest.cpp
+)
+
+mdt_add_test(
   NAME LibusbErrorTest
   TARGET libusbErrorTest
   DEPENDENCIES Mdt::Usb Mdt::Catch2Main Mdt::Catch2Qt
@@ -72,4 +80,12 @@ mdt_add_test(
   DEPENDENCIES Mdt::Usb Mdt::Catch2Main Mdt::Catch2Qt
   SOURCE_FILES
     src/ConfigDescriptorTest.cpp
+)
+
+mdt_add_test(
+  NAME UsbBmRequestTypeTest
+  TARGET usbBmRequestTypeTest
+  DEPENDENCIES Mdt::Usb Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/BmRequestTypeTest.cpp
 )

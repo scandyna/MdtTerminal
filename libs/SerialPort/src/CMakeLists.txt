@@ -43,14 +43,20 @@ if(UNIX)
     PRIVATE
       Mdt/SerialPort/Unix/Handle.cpp
       Mdt/SerialPort/Unix/UnixEngine.cpp
-      Mdt/SerialPort/Unix/FileStatus.cpp
-      Mdt/SerialPort/Unix/FileStatusFileType.cpp
-      Mdt/SerialPort/Unix/UdevContext.cpp
-      Mdt/SerialPort/Unix/UdevDevice.cpp
-      Mdt/SerialPort/Unix/UdevTree.cpp
-      Mdt/SerialPort/Unix/UdevBusDevicePortNumber.cpp
   )
+  if(BUILD_USB_SANDBOX)
+    target_sources(Mdt_SerialPort
+      PRIVATE
+        Mdt/SerialPort/Unix/FileStatus.cpp
+        Mdt/SerialPort/Unix/FileStatusFileType.cpp
+        Mdt/SerialPort/Unix/UdevContext.cpp
+        Mdt/SerialPort/Unix/UdevDevice.cpp
+        Mdt/SerialPort/Unix/UdevTree.cpp
+        Mdt/SerialPort/Unix/UdevBusDevicePortNumber.cpp
+      )
+  endif()
 endif()
+
 
 add_library(Mdt::SerialPort ALIAS Mdt_SerialPort)
 

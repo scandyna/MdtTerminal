@@ -51,13 +51,20 @@ void MainWindow::setupSerialPort()
 
 void MainWindow::openSerialPort()
 {
-  /// \todo What if port is open ?
+  /// \todo If no port has been selected, open settings dialog ?
+
+  /// \todo What if port is open ? - Prcondition: GUI must be coherent
 
   Mdt::SerialPort::PortSetup::setSettingsToPort(mSerialPortSettings, mSerialPort);
   if( !mSerialPort.open(QIODevice::ReadWrite) ){
     displayErrorMessage( tr("Error while open serial port: %1").arg( mSerialPort.errorString() ) );
     return;
   }
+
+  // try{
+    Mdt::SerialPort::PortSetup::configureInterface( mSerialPortSettings.interface(), mSerialPort );
+  // }catch(){
+  // }
 
   showPortOpenStatusMessage();
 }

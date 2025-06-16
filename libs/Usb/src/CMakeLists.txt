@@ -4,6 +4,7 @@ include(MdtInstallLibrary)
 
 add_library(Mdt_Usb
   Mdt/Usb/NumericLimits.cpp
+  Mdt/Usb/BitManipulationHelpers.cpp
   Mdt/Usb/LibusbError.cpp
   Mdt/Usb/QRuntimeError.cpp
   Mdt/Usb/LibusbRuntimeError.cpp
@@ -16,6 +17,7 @@ add_library(Mdt_Usb
   Mdt/Usb/InterfaceDescriptor.cpp
   Mdt/Usb/EndpointDescriptor.cpp
   Mdt/Usb/DeviceHandle.cpp
+  Mdt/Usb/BmRequestType.cpp
 )
 
 add_library(Mdt::Usb ALIAS Mdt_Usb)
