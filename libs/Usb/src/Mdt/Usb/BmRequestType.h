@@ -42,11 +42,16 @@ namespace Mdt{ namespace Usb{
    */
   enum class RequestType : uint8_t
   {
-    Standard, /*!< Standard */
-    Class,    /*!< Class */
-    Vendor,   /*!< Vendor */
-    Reserved  /*!< Reserved */
+    Standard = 0,       /*!< Standard */
+    Class = (1 << 5),   /*!< Class */
+    Vendor = (2 << 5),  /*!< Vendor */
+    Reserved = (3 << 5) /*!< Reserved */
   };
+
+  /*! \brief Mask corresponding to RequestType
+   */
+  constexpr
+  uint8_t RequestTypeMask = 0b0110'0000;
 
   /*! \brief Request recipient
    *
@@ -58,12 +63,17 @@ namespace Mdt{ namespace Usb{
    */
   enum class RequestRecipient : uint8_t
   {
-    Device,         /*!< Device */
-    Interface,      /*!< Interface */
-    Endpoint,       /*!< Endpoint */
-    Other,          /*!< Other */
-    VendorSpecific  /*!< Vendor specific */
+    Device = 0,         /*!< Device */
+    Interface = 1,      /*!< Interface */
+    Endpoint = 2,       /*!< Endpoint */
+    Other = 3,          /*!< Other */
+    VendorSpecific = 31 /*!< Vendor specific */
   };
+
+  /*! \brief Mask corresponding to RequestRecipient
+   */
+  constexpr
+  uint8_t RequestRecipientMask = 0b0001'1111;
 
   /*! \brief Helper class around bmRequestType
    *
@@ -90,7 +100,7 @@ namespace Mdt{ namespace Usb{
     constexpr
     DataTransferDirection dataTransferDirection() const noexcept
     {
-      return static_cast<DataTransferDirection>(mValue & 0b1000'0000);
+      return static_cast<DataTransferDirection>(mValue & DataTransferDirectionMask);
     }
 
     /*! \brief Set the type
@@ -100,6 +110,7 @@ namespace Mdt{ namespace Usb{
     constexpr
     void setType(RequestType type) noexcept
     {
+      mValue = applyFlags(mValue, RequestTypeMask, type);
     }
 
     /*! \brief Get the type
@@ -109,6 +120,7 @@ namespace Mdt{ namespace Usb{
     constexpr
     RequestType type() const noexcept
     {
+      return static_cast<RequestType>(mValue & RequestTypeMask);
     }
 
     /*! \brief Set the recipient
@@ -118,6 +130,7 @@ namespace Mdt{ namespace Usb{
     constexpr
     void setRecipient(RequestRecipient recipient) noexcept
     {
+      mValue = applyFlags(mValue, RequestRecipientMask, recipient);
     }
 
     /*! \brief Get the recipient
@@ -127,6 +140,7 @@ namespace Mdt{ namespace Usb{
     constexpr
     RequestRecipient recipient() const noexcept
     {
+      return static_cast<RequestRecipient>(mValue & RequestRecipientMask);
     }
 
     /*! \brief Set the value for this bmRequestType
