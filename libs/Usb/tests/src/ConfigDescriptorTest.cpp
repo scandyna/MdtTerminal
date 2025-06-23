@@ -17,7 +17,7 @@ using namespace Mdt::Usb;
 TEST_CASE("fromLibusbDescriptor")
 {
   libusb_interface_descriptor defaultLibusbInterface;
-  defaultLibusbInterface.bNumEndpoints = 1;
+  defaultLibusbInterface.bNumEndpoints = 0;
 
   libusb_interface_descriptor libusbInterfaceAltSettingList[1]
   {
