@@ -11,7 +11,6 @@
 #include "LibusbError.h"
 #include <QCoreApplication>
 #include <QString>
-
 #include <cassert>
 
 namespace Mdt{ namespace Usb{

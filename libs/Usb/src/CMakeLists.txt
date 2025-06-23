@@ -19,6 +19,7 @@ add_library(Mdt_Usb
   Mdt/Usb/DeviceHandle.cpp
   Mdt/Usb/BmRequestType.cpp
   Mdt/Usb/ControlSetup.cpp
+  Mdt/Usb/ControlTransfer.cpp
 )
 
 add_library(Mdt::Usb ALIAS Mdt_Usb)

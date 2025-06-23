@@ -26,6 +26,14 @@ mdt_add_test(
 )
 
 mdt_add_test(
+  NAME UsbControlTransfer_WithHW_Test
+  TARGET usbControlTransfer_WithHW_Test
+  DEPENDENCIES Mdt::Usb Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/ControlTransferTest.cpp
+)
+
+mdt_add_test(
   NAME UsbSandbox_WithHW_Test
   TARGET usbSandbox_WithHW_Test
   DEPENDENCIES Mdt::Usb Mdt::Catch2Main Mdt::Catch2Qt

@@ -32,6 +32,8 @@
 #include <memory>
 #include <cassert>
 
+#include <chrono>
+
 #include <QDebug>
 
 #include <libudev.h>
@@ -46,6 +48,8 @@
 #include "Mdt/SerialPort/Unix/UdevBusDevicePortNumber.h"
 
 #include "Mdt/Usb/DeviceHandle.h"
+#include "Mdt/Usb/ControlSetup.h"
+#include "Mdt/Usb/ControlTransfer.h"
 
 #include <QSerialPort>
 
@@ -95,7 +99,7 @@ void printConfigDescriptor(const Mdt::Usb::ConfigDescriptor & descriptor)
   {
     /*! \brief Bus number
      *
-     * This bus number matche libusb_get_bus_number()
+     * This bus number matches libusb_get_bus_number()
      * and the Udev busnum attribute.
      */
     uint8_t busNumber = 0;
@@ -110,107 +114,49 @@ void printConfigDescriptor(const Mdt::Usb::ConfigDescriptor & descriptor)
   
 
 
-  /*! \brief Setup packet for control transfers
-   *
-   * Contains the same members as libusb_control_setup.
-   * This ControlSetup is available to avoid confusions with libusb_control_setup
-   * (see below).
-   *
-   * In the libusb API, the multi-byte control setup fields (wValue, wIndex and wLength)
-   * must be given in the endianness of the USB bus (little-endian).
-   *
-   * This ControlSetup excepts host endianness.
-   * libusb helpers will be used to do the conversions if needed.
-   *
-   * \sa https://libusb.sourceforge.io/api-1.0/structlibusb__control__setup.html
-   * \sa https://libusb.sourceforge.io/api-1.0/group__libusb__asyncio.html
-   * \sa USB 3.2 specification §9.3
-   */
-  struct ControlSetup
-  {
-    uint8_t bmRequestType = 0;
-    uint8_t bRequest = 0;
-    uint16_t wValue = 0;
-    uint16_t wIndex = 0;
-    uint16_t wLength = 0;
-
-    /// \todo use https://www.en.cppreference.com/w/cpp/utility/bitset.html
-
-    /*! \brief
-     *
-     * Set bit .. of bmRequestType ...
-     */
-    constexpr
-    void setDataTransferDirectionHostToDevice() noexcept
-    {
-    }
-
-    /*! \brief
-     */
-    constexpr
-    void setDataTransferDirectionDeviceToHost() noexcept
-    {
-    }
-
-  };
-
-  /*! \brief Perform a (synchronous) USB control transfer
-   *
-   * This is a helper around libusb_control_transfer()
-   *
-   * \exception Maybe none here !
-   * 
-   * \sa https://libusb.sourceforge.io/api-1.0/group__libusb__syncio.html
-   *
-   * \todo timeout std::chrono
-   *
-   * \todo data should be something safer - span ? later..
-   */
-  void controlTransfer(const ControlSetup & setup, unsigned char *data)
-  {
-  }
-
-  /*! \brief Perform a (synchronous) USB control transfer
-   *
-   * This is a helper around controlTransfer() for requests
-   * having no data exchange with the device.
-   *
-   * \pre the wLength filed of \a setup must be 0
-   * \sa controlTransfer()
-   */
-  void controlTransferWithoutData(const ControlSetup & setup)
-  {
-  }
-
 void setMoxaUportInterfaceNumber(Mdt::Usb::DeviceHandle &deviceHandle, uint16_t portNumber, uint16_t interfaceNumber)
 {
   assert(deviceHandle.libusbHandle() != nullptr);
 
   /// \todo portnum vs ifacenum ! + maybe check its a Moxa UPort ?
 
+  using namespace std::chrono_literals;
+
   constexpr uint8_t RQ_VENDOR_SET_INTERFACE = 0x10;
 
-  uint8_t bmRequestType = LIBUSB_ENDPOINT_OUT | LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE;
-  uint8_t bRequest = RQ_VENDOR_SET_INTERFACE;
-  uint16_t wValue = interfaceNumber;
-  uint16_t wIndex = portNumber;
-  unsigned char fakeData;
-  uint16_t wLength = 0;
-  unsigned int timeout = 100;
+  Mdt::Usb::ControlSetup cs;
 
-  int ret = libusb_control_transfer(
-    deviceHandle.libusbHandle(),
-    bmRequestType,
-    bRequest,
-    wValue,
-    wIndex,
-    &fakeData,
-    wLength,
-    timeout
-  );
-  if(ret != 0){
-    qDebug() << "Control transfer failed: " << ret;
-  }
+  cs.setRequestType(Mdt::Usb::RequestType::Vendor);
+  cs.setRecipient(Mdt::Usb::RequestRecipient::Device);
+  cs.setbRequestValue(RQ_VENDOR_SET_INTERFACE);
+  cs.setwValueValue(interfaceNumber);
+  cs.setwIndexValue(portNumber);
+
+  Mdt::Usb::controlTransferWithoutData(deviceHandle, cs, 100ms);
+
+  return;
+
+  // uint8_t bmRequestType = LIBUSB_ENDPOINT_OUT | LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE;
+  // uint8_t bRequest = RQ_VENDOR_SET_INTERFACE;
+  // uint16_t wValue = interfaceNumber;
+  // uint16_t wIndex = portNumber;
+  // unsigned char fakeData;
+  // uint16_t wLength = 0;
+  // unsigned int timeout = 100;
+  // 
+  // int ret = libusb_control_transfer(
+  //   deviceHandle.libusbHandle(),
+  //   bmRequestType,
+  //   bRequest,
+  //   wValue,
+  //   wIndex,
+  //   &fakeData,
+  //   wLength,
+  //   timeout
+  // );
+  // if(ret != 0){
+  //   qDebug() << "Control transfer failed: " << ret;
+  // }
 
 }
 
@@ -269,5 +215,5 @@ TEST_CASE("setup_uport_sandbox")
 
   qDebug() << " -> open device :)";
 
-  setMoxaUportInterfaceNumber(deviceHandle, busDevicePortNumber->portNumber, 2);
+  setMoxaUportInterfaceNumber(deviceHandle, busDevicePortNumber->portNumber, 0);
 }

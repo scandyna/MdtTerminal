@@ -12,6 +12,7 @@
 
 #include <cstdint>
 #include <limits>
+#include <chrono>
 #include <cassert>
 
 namespace Mdt{ namespace Usb{
@@ -22,6 +23,8 @@ namespace Mdt{ namespace Usb{
    *
    * \sa uint8_t_canHoldValueOf_size_t()
    * \sa uint8_t_from_size_t()
+   * \sa unsigned_int_canHoldValueOf_std_chrono_milliseconds()
+   * \sa unsigned_int_from_std_chrono_milliseconds()
    */
 
   /*! \brief Check if an uint8_t can represent given value of type std::size_t
@@ -49,6 +52,34 @@ namespace Mdt{ namespace Usb{
     assert( uint8_t_canHoldValueOf_size_t(s) );
 
     return static_cast<uint8_t>(s);
+  }
+
+  /*! \brief Check if an unsigned int can hold given value of type std::chrono::milliseconds
+   */
+  inline
+  constexpr
+  bool unsigned_int_canHoldValueOf_std_chrono_milliseconds(std::chrono::milliseconds d) noexcept
+  {
+    const auto ticks = d.count();
+    if(ticks < 0){
+      return false;
+    }
+
+    return ticks <= std::numeric_limits<unsigned int>::max();
+  }
+
+  /*! \brief Get an unsigned int representing the count of milliseconds of given duration
+   *
+   * \pre an unsigned int must be able to hold given durantion
+   * \sa unsigned_int_canHoldValueOf_std_chrono_milliseconds()
+   */
+  inline
+  constexpr
+  unsigned int unsigned_int_from_std_chrono_milliseconds(std::chrono::milliseconds d) noexcept
+  {
+    assert( unsigned_int_canHoldValueOf_std_chrono_milliseconds(d) );
+
+    return static_cast<unsigned int>( d.count() );
   }
 
 }} // namespace Mdt{ namespace Usb{
