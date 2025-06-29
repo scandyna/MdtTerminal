@@ -51,6 +51,7 @@ namespace Mdt{ namespace SerialPort{ namespace Unix{
 
   /*! \brief Find the bus, device and port number
    */
+  [[deprecated]]
   MDT_SERIALPORT_EXPORT
   std::optional<UdevBusDevicePortNumber> findBusDevicePortNumber(const UdevDevice & device, const UsbVendorIdProductId & vidPid);
 
@@ -74,6 +75,7 @@ namespace Mdt{ namespace SerialPort{ namespace Unix{
    * \pre 
    * \exception 
    */
+  [[deprecated]]
   MDT_SERIALPORT_EXPORT
   std::optional<UdevBusDevicePortNumber> findBusDevicePortNumberFromPath(const std::filesystem::path & path, const UsbVendorIdProductId & vidPid);
 

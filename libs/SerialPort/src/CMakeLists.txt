@@ -53,6 +53,7 @@ if(UNIX)
         Mdt/SerialPort/Unix/UdevDevice.cpp
         Mdt/SerialPort/Unix/UdevTree.cpp
         Mdt/SerialPort/Unix/UdevBusDevicePortNumber.cpp
+        Mdt/SerialPort/Unix/UdevUsbSerialPort.cpp
       )
   endif()
 endif()

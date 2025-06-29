@@ -30,6 +30,11 @@ size_t stringLength(const char *str, size_t maxLength) noexcept
   return static_cast<size_t>(pos - str);
 }
 
+bool stringStartsWith(const std::string & str, const char *s) noexcept
+{
+  return false;
+}
+
 namespace Impl{
 
   template<typename T>

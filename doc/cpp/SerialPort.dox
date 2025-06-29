@@ -77,6 +77,11 @@
  * \sa Mdt::SerialPort::TestLib::TestPortInfoListTableModel
  * \sa Mdt::SerialPort::TestLib
  *
+ * \section SerialPort_DeviceSpecifics Device sepcifics
+ *
+ * \todo try to put stuff, like Moxa specifics, to some place
+ * NOTE: also USB ?
+ *
  * \section SerialPort_PlatformSpecifics Platform sepcifics
  *
  * \startuml "Engine overview"

@@ -262,6 +262,14 @@ if(UNIX)
         src/UdevBusDevicePortNumberTest.cpp
     )
 
+    mdt_add_test(
+      NAME UnixUdevUsbSerialPortTest
+      TARGET unixUdevUsbSerialPortTest
+      DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+      SOURCE_FILES
+        src/UdevUsbSerialPortTest.cpp
+    )
+
     # TODO: does it work without HW ?
     mdt_add_test(
       NAME SerialPortUnixEngineTest

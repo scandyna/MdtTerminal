@@ -36,6 +36,11 @@ TEST_CASE("stringLength")
   CHECK( stringLength("01234", 7) == 5 );
 }
 
+TEST_CASE("stringStartsWith")
+{
+  REQUIRE(false);
+}
+
 TEST_CASE("uint8_t_valueFromString")
 {
   CHECK( uint8_t_valueFromString("0") == 0 );

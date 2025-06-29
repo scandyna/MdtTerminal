@@ -31,6 +31,7 @@ UdevDevice::~UdevDevice() noexcept
 std::string UdevDevice::getSystemAttributeValue(const std::string & attribute) const noexcept
 {
   assert( !attribute.empty() );
+
 }
 
 UdevDevice UdevDevice::from_devnum(std::shared_ptr<UdevContext> context, FileStatusFileType type, dev_t devnum)
@@ -67,6 +68,42 @@ char UdevDevice::deviceTypeCharFromFileType(FileStatusFileType type) noexcept
   }
 
   return '\0';
+}
+
+std::string UdevDevice::getSystemName(udev_device *device)
+{
+  assert(device != nullptr);
+
+  const char *str = udev_device_get_sysname(device);
+
+  return stdStringFromCString(str, 30);
+}
+
+std::string UdevDevice::getSubsystem(udev_device *device)
+{
+  assert(device != nullptr);
+
+  const char *str = udev_device_get_subsystem(device);
+
+  return stdStringFromCString(str, 30);
+}
+
+std::string UdevDevice::getDriver(udev_device *device)
+{
+  assert(device != nullptr);
+
+  const char *str = udev_device_get_driver(device);
+
+  return stdStringFromCString(str, 30);
+}
+
+std::string UdevDevice::getDeviceType(udev_device *device)
+{
+  assert(device != nullptr);
+
+  const char *str = udev_device_get_devtype(device);
+
+  return stdStringFromCString(str, 50);
 }
 
 std::optional<uint8_t> UdevDevice::getBusNumber(udev_device *device)
@@ -171,13 +208,19 @@ std::string UdevDevice::getSystemAttributeStringValue(udev_device *device, const
   assert(stringLength(attribute, 10) > 0);
 
   const char *str = udev_device_get_sysattr_value(device, attribute);
-  const size_t len = stringLength(str, 10);
+
+  return stdStringFromCString(str, 10);
+}
+
+std::string UdevDevice::stdStringFromCString(const char *cString, size_t maxLength)
+{
+  const size_t len = stringLength(cString, maxLength);
   if(len == 0){
     return std::string();
   }
-  assert(str != nullptr);
+  assert(cString != nullptr);
 
-  return std::string(str, len);
+  return std::string(cString, len);
 }
 
 UdevDevice::UdevDevice(std::shared_ptr<UdevContext> context, udev_device * device)

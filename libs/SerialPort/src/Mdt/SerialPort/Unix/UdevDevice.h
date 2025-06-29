@@ -27,6 +27,7 @@ namespace Mdt{ namespace SerialPort{ namespace Unix{
    *
    * \sa https://man7.org/linux/man-pages/man3/udev_device_new_from_syspath.3.html
    * \sa https://manpages.debian.org/stretch-backports/libudev-dev/udev_device_get_property_value.3.en.html
+   * \sa https://manpages.debian.org/testing/libudev-dev/udev_device_get_driver.3.en.html
    */
   class MDT_SERIALPORT_EXPORT UdevDevice
   {
@@ -42,22 +43,20 @@ namespace Mdt{ namespace SerialPort{ namespace Unix{
     UdevDevice(UdevDevice &&) = delete;
     UdevDevice & operator=(UdevDevice &&) = delete;
 
-    /*! \brief Get the system name
-     */
-    std::string getSystemName() const noexcept;
-
     /*! \brief Get the value for given attribute
      *
      *
      * \pre \a attribute must not be empty
      * \todo private impl that take a const char *
      */
+    [[deprecated]]
     std::string getSystemAttributeValue(const std::string & attribute) const noexcept;
 
     /*! \brief
      *
      * \todo attribute empt vs error (string -> num conversion): exception
      */
+    [[deprecated]]
     std::optional<int> getSomeConcreteThing() const;
 
     /*! \brief Get the udev native pointer
@@ -87,6 +86,47 @@ namespace Mdt{ namespace SerialPort{ namespace Unix{
      */
     static
     char deviceTypeCharFromFileType(FileStatusFileType type) noexcept;
+
+    /*! \brief Get the system name (sysname)
+     *
+     * \note udevadm calls this KERNELS
+     *
+     * \pre \a device must be valid
+     */
+    static
+    std::string getSystemName(udev_device *device);
+
+    /*! \brief Get the subsystem
+     *
+     * Can return an empty string
+     *
+     * \pre \a device must be valid
+     */
+    static
+    std::string getSubsystem(udev_device *device);
+
+    /*! \brief Check if given string represents an USB subsystem
+     */
+    static
+    bool isUsbSubsystem(const std::string & subsystem) noexcept;
+
+    /*! \brief Get the driver
+     *
+     * Can return an empty string
+     *
+     * \pre \a device must be valid
+     */
+    static
+    std::string getDriver(udev_device *device);
+
+    /*! \brief Get the device type (devtype)
+     *
+     * Can return an empty string
+     *
+     * \pre \a device must be valid
+     */
+    static
+    std::string getDeviceType(udev_device *device);
 
     /*! \brief Get the bus number (busnum)
      *
@@ -197,6 +237,15 @@ namespace Mdt{ namespace SerialPort{ namespace Unix{
 
     static
     std::string getSystemAttributeStringValue(udev_device *device, const char *attribute);
+
+    /*! \brief Get a std::string from given C string
+     *
+     * Returns an empty string if \a cString is a nullptr
+     *
+     * \todo should go to StringHelpers
+     */
+    static
+    std::string stdStringFromCString(const char *cString, size_t maxLength);
 
     explicit
     UdevDevice(std::shared_ptr<UdevContext> context, udev_device * device);

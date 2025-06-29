@@ -33,6 +33,13 @@ namespace Mdt{ namespace SerialPort{
   MDT_SERIALPORT_EXPORT
   size_t stringLength(const char *str, size_t maxLength) noexcept;
 
+  /*! \brief
+   *
+   * \todo document + implement
+   */
+  MDT_SERIALPORT_EXPORT
+  bool stringStartsWith(const std::string & str, const char *s) noexcept;
+
   /*! \brief Get a uint8_t value from given string
    *
    * \pre \a str must not be empty
