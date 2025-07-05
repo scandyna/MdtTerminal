@@ -33,12 +33,16 @@ namespace Mdt{ namespace SerialPort{
   MDT_SERIALPORT_EXPORT
   size_t stringLength(const char *str, size_t maxLength) noexcept;
 
-  /*! \brief
+  /*! \brief Checks if the string begins with the given prefix
    *
-   * \todo document + implement
+   * The check is case sensitive (a != A).
+   *
+   * \pre \a prefix must not be a nullptr
+   * \pre \a prefix must not be empty (its length must be > 0)
+   * \pre \a prefix must have a length <= 1000 characters
    */
   MDT_SERIALPORT_EXPORT
-  bool stringStartsWith(const std::string & str, const char *s) noexcept;
+  bool stringStartsWith(const std::string & str, const char *prefix) noexcept;
 
   /*! \brief Get a uint8_t value from given string
    *

@@ -38,7 +38,37 @@ TEST_CASE("stringLength")
 
 TEST_CASE("stringStartsWith")
 {
-  REQUIRE(false);
+  SECTION("empty string")
+  {
+    const std::string str;
+
+    CHECK( !stringStartsWith(str, "a") );
+  }
+
+  SECTION("a")
+  {
+    const std::string str = "a";
+
+    CHECK( stringStartsWith(str, "a") );
+    CHECK( !stringStartsWith(str, "A") );
+    CHECK( !stringStartsWith(str, "b") );
+    CHECK( !stringStartsWith(str, "aa") );
+    CHECK( !stringStartsWith(str, "ab") );
+  }
+
+  SECTION("abc")
+  {
+    const std::string str = "abc";
+
+    CHECK( stringStartsWith(str, "a") );
+    CHECK( !stringStartsWith(str, "b") );
+    CHECK( stringStartsWith(str, "ab") );
+    CHECK( !stringStartsWith(str, "bc") );
+    CHECK( stringStartsWith(str, "abc") );
+    CHECK( !stringStartsWith(str, "aBc") );
+    CHECK( !stringStartsWith(str, "ABC") );
+    CHECK( !stringStartsWith(str, "abca") );
+  }
 }
 
 TEST_CASE("uint8_t_valueFromString")

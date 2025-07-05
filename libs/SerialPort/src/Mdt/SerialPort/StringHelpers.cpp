@@ -30,9 +30,15 @@ size_t stringLength(const char *str, size_t maxLength) noexcept
   return static_cast<size_t>(pos - str);
 }
 
-bool stringStartsWith(const std::string & str, const char *s) noexcept
+bool stringStartsWith(const std::string & str, const char *prefix) noexcept
 {
-  return false;
+  assert(prefix != nullptr);
+
+  const auto prefixLen = stringLength(prefix, 1001);
+  assert(prefixLen > 0);
+  assert(prefixLen <= 1000);
+
+  return str.find(prefix, 0, prefixLen) == 0;
 }
 
 namespace Impl{
