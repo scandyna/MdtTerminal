@@ -31,6 +31,7 @@ bool UdevBusDevicePortNumber::isComplete() const noexcept
   return true;
 }
 
+
 std::optional<UdevBusDevicePortNumber> findBusDevicePortNumber(const UdevDevice & device, const UsbVendorIdProductId & vidPid)
 {
   UdevBusDevicePortNumber result;

@@ -285,7 +285,7 @@ bool isMoxaMxuportDriver(const std::string & driverName) noexcept
 
 TEST_CASE("setup_uport_sandbox")
 {
-  const std::filesystem::path portPath = "/dev/ttyUSB0";
+  const std::filesystem::path portPath = "/dev/ttyUSB1";
 
   const auto udevPort = Mdt::SerialPort::Unix::findUdevUsbSerialPortFromPath(portPath, {0x110A, 0x1250});
   if( !udevPort.has_value() ){
@@ -301,18 +301,18 @@ TEST_CASE("setup_uport_sandbox")
     qDebug() << "Not a Moxa UPort driver";
   }
 
-  const auto busDevicePortNumber = Mdt::SerialPort::Unix::findBusDevicePortNumberFromPath(portPath, {0x110A, 0x1250});
-  if( !busDevicePortNumber.has_value() ){
-    qDebug() << "-> could not find device..";
-    return;
-  }
+  // const auto busDevicePortNumber = Mdt::SerialPort::Unix::findBusDevicePortNumberFromPath(portPath, {0x110A, 0x1250});
+  // if( !busDevicePortNumber.has_value() ){
+  //   qDebug() << "-> could not find device..";
+  //   return;
+  // }
 
-  auto context = std::make_shared<Mdt::Usb::Context>();
+  auto usbContext = std::make_shared<Mdt::Usb::Context>();
 
-  Mdt::Usb::DeviceEnumerator deviceEnumerator(context);
+  Mdt::Usb::DeviceEnumerator deviceEnumerator(usbContext);
   Mdt::Usb::LibusbDeviceList deviceList = deviceEnumerator.scanForAttachedDevices();
 
-  libusb_device *device = deviceList.findLibusbDeviceOnBusWithAddress( busDevicePortNumber->busNumber, busDevicePortNumber->deviceNumber );
+  libusb_device *device = deviceList.findLibusbDeviceOnBusWithAddress( udevPort->usbBusNumber(), udevPort->usbDeviceAddress() );
   if(device == nullptr){
     qDebug() << "device not found...";
     return;
@@ -322,5 +322,5 @@ TEST_CASE("setup_uport_sandbox")
 
   qDebug() << " -> open device :)";
 
-  setMoxaUportInterfaceNumber(deviceHandle, busDevicePortNumber->portNumber, 2);
+  setMoxaUportInterfaceNumber(deviceHandle, udevPort->portNumber(), 3);
 }
