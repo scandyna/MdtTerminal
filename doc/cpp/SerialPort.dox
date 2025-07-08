@@ -82,6 +82,8 @@
  * \todo try to put stuff, like Moxa specifics, to some place
  * NOTE: also USB ?
  *
+ * \sa \ref SerialPort_Device_MoxaUPort
+ *
  * \section SerialPort_PlatformSpecifics Platform sepcifics
  *
  * \startuml "Engine overview"

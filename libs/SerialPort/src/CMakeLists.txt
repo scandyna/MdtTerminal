@@ -36,6 +36,7 @@ add_library(Mdt_SerialPort
   Mdt/SerialPort/AbstractEngine.cpp
   Mdt/SerialPort/PortSetup.cpp
   Mdt/SerialPort/SerialPort.cpp
+  Mdt/SerialPort/Device/MoxaUPort.cpp
 )
 
 if(UNIX)

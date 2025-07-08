@@ -8,6 +8,7 @@
  **
  *****************************************************************************************/
 #include "InterfaceList.h"
+#include "Mdt/SerialPort/Device/MoxaUPort.h"
 #include <algorithm>
 #include <iterator>
 #include <cassert>
@@ -60,23 +61,17 @@ std::optional<InterfaceList::size_type> InterfaceList::findIndexOfStandard(Inter
 
 InterfaceList InterfaceList::fromVendorIdentifierAndProductIdentifier(quint16 vid, quint16 pid)
 {
-  if( vendorIdentifierIsMoxa(vid) ){
+  if( Device::vendorIdentifierIsMoxa(vid) ){
     return fromMoxaProductIdentifier(pid);
   }
 
   return InterfaceList();
 }
 
-bool InterfaceList::vendorIdentifierIsMoxa(quint16 vid) noexcept
-{
-  return vid == 0x110a;
-}
-
 InterfaceList InterfaceList::fromMoxaProductIdentifier(quint16 pid)
 {
-  switch(pid){
-    case 0x1250:
-      return moxaUPort_1250_1450_1650();
+  if( Device::productIdentifierIsMoxaUPort_1250_1450_1650(pid) ){
+    return moxaUPort_1250_1450_1650();
   }
 
   return InterfaceList();

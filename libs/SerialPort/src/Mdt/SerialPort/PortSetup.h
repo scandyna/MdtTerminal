@@ -37,7 +37,7 @@ namespace Mdt{ namespace SerialPort{
      * Sadly, the the official Linux driver, mxuport,
      * does not implement the TIOCGSERIAL and TIOCSSERIAL ioctl's.
      *
-     * The Linux drivers provided by Moxa, also called mxuport, implement those.
+     * The Linux drivers provided by Moxa implement those.
      *
      * It's possible to configure the interface with an USB control call from user space.
      * The port should not be open during this step.
@@ -81,6 +81,10 @@ namespace Mdt{ namespace SerialPort{
      *
      * configureBeforeOpen()
      * consfigureOnceOpen()
+     *
+     * OR simply
+     *
+     * openPort() helper that does all ? hmm.. not here..
      */
 
     /*! \brief Configure the interface for given port

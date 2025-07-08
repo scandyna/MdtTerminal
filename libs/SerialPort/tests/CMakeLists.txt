@@ -202,6 +202,15 @@ mdt_add_test(
     src/UsbVendorIdProductIdTest.cpp
 )
 
+mdt_add_test(
+  NAME SerialPortDeviceMoxaUPortTest
+  TARGET serialPortDeviceMoxaUPortTest
+  DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/MoxaUPortTest.cpp
+)
+
+
 if(UNIX)
 
   mdt_add_test(

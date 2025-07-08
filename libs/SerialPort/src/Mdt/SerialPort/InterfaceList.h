@@ -100,11 +100,6 @@ namespace Mdt{ namespace SerialPort{
     static
     InterfaceList fromVendorIdentifierAndProductIdentifier(quint16 vid, quint16 pid);
 
-    /*! \brief Check if given vendor identifier is Moxa
-     */
-    static
-    bool vendorIdentifierIsMoxa(quint16 vid) noexcept;
-
     /*! \brief Create an interface list for a Moxa serial port
      *
      * \todo Currently only UPort 1250 is supported
