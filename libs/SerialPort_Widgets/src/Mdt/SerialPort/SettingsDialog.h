@@ -18,6 +18,7 @@
 #include <QDialog>
 #include <QSerialPortInfo>
 #include <memory>
+#include <cassert>
 
 namespace Mdt{ namespace SerialPort{
 
@@ -49,6 +50,18 @@ namespace Mdt{ namespace SerialPort{
      * \exception SettingsValidationError
      */
     Settings buildSettings() const;
+
+    /*! \brief Get the current port info
+     *
+     * \pre A current port must have been set
+     * \sa SettingsEditor::currentPortInfo()
+     */
+    const QSerialPortInfo & currentPortInfo() const noexcept
+    {
+      assert( mEditor.hasPortInfoListCurrentRow() );
+
+      return mEditor.currentPortInfo();
+    }
 
    public Q_SLOTS:
 

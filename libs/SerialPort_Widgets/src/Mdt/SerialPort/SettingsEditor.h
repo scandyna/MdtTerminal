@@ -16,6 +16,7 @@
 #include <QAbstractTableModel>
 #include <QSerialPortInfo>
 #include <QObject>
+#include <cassert>
 
 namespace Mdt{ namespace SerialPort{
 
@@ -33,6 +34,19 @@ namespace Mdt{ namespace SerialPort{
      */
     explicit
     SettingsEditor(QObject *parent = nullptr);
+
+    /*! \brief Get the current port info
+     *
+     * \pre A current port must have been set
+     * \sa hasPortInfoListCurrentRow()
+     */
+    const QSerialPortInfo & currentPortInfo() const noexcept
+    {
+      assert( hasPortInfoListCurrentRow() );
+      assert( mPortInfoListTableModel.rowIndexIsInRange( portInfoListCurrentRow() ) );
+
+      return mPortInfoListTableModel.portInfoAtRow( portInfoListCurrentRow() );
+    }
 
    Q_SIGNALS:
 

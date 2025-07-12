@@ -47,6 +47,8 @@ TEST_CASE("setPortInfoListCurrentRowFromUi")
     editor.fetchAvailablePorts();
 
     editor.setPortInfoListCurrentRowFromUi(0);
+    CHECK( editor.hasPortInfoListCurrentRow() );
+    CHECK( !editor.currentPortInfo().portName().isEmpty() );
   }
 
   // This will happen when we refresh port list and no more port is available
