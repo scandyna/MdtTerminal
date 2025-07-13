@@ -8,8 +8,8 @@
  **
  *****************************************************************************************/
 #include "UdevBusDevicePortNumber.h"
-#include "UdevTree.h"
-#include "UdevContext.h"
+#include "Mdt/SerialPort/Linux/UdevTree.h"
+#include "Mdt/SerialPort/Linux/UdevContext.h"
 #include "FileStatus.h"
 #include <memory>
 #include <cassert>

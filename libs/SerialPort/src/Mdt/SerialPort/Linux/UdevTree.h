@@ -7,14 +7,14 @@
  ** Copyright (C) 2025-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
-#ifndef MDT_SERIAL_PORT_UNIX_UDEV_TREE_H
-#define MDT_SERIAL_PORT_UNIX_UDEV_TREE_H
+#ifndef MDT_SERIAL_PORT_LINUX_UDEV_TREE_H
+#define MDT_SERIAL_PORT_LINUX_UDEV_TREE_H
 
-#include "Mdt/SerialPort/Unix/UdevDevice.h"
+#include "Mdt/SerialPort/Linux/UdevDevice.h"
 #include "mdt_serialport_export.h"
 #include <libudev.h>
 
-namespace Mdt{ namespace SerialPort{ namespace Unix{
+namespace Mdt{ namespace SerialPort{ namespace Linux{
 
   /*! \brief Walk an Udev tree branch direction to root
    *
@@ -80,6 +80,6 @@ namespace Mdt{ namespace SerialPort{ namespace Unix{
     walkUdevTreeToRootUntil(device, f, pred);
   }
 
-}}} // namespace Mdt{ namespace SerialPort{ namespace Unix{
+}}} // namespace Mdt{ namespace SerialPort{ namespace Linux{
 
-#endif // #ifndef MDT_SERIAL_PORT_UNIX_UDEV_TREE_H
+#endif // #ifndef MDT_SERIAL_PORT_LINUX_UDEV_TREE_H

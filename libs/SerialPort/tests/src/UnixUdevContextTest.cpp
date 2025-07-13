@@ -7,12 +7,12 @@
  ** Copyright (C) 2025-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
-#include "Mdt/SerialPort/Unix/UdevContext.h"
+#include "Mdt/SerialPort/Linux/UdevContext.h"
 #include "catch2/catch.hpp"
 #include "Catch2QString.h"
 #include <memory>
 
-using namespace Mdt::SerialPort::Unix;
+using namespace Mdt::SerialPort::Linux;
 
 
 TEST_CASE("BasicTest")

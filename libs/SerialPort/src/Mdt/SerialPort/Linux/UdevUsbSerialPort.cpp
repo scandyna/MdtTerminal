@@ -10,11 +10,11 @@
 #include "UdevUsbSerialPort.h"
 #include "UdevTree.h"
 #include "UdevContext.h"
-#include "FileStatus.h"
+#include "Mdt/SerialPort/Unix/FileStatus.h"
 #include <memory>
 #include <cassert>
 
-namespace Mdt{ namespace SerialPort{ namespace Unix{
+namespace Mdt{ namespace SerialPort{ namespace Linux{
 
 void UdevUsbSerialPort::setUsbBusNumber(uint8_t number) noexcept
 {
@@ -134,7 +134,7 @@ std::optional<UdevUsbSerialPort> findUdevUsbSerialPort(const UdevDevice & device
 
 std::optional<UdevUsbSerialPort> findUdevUsbSerialPortFromPath(const std::filesystem::path & path, const UsbVendorIdProductId & vidPid)
 {
-  const auto fileStatus = FileStatus::fromPath(path);
+  const auto fileStatus = Mdt::SerialPort::Unix::FileStatus::fromPath(path);
 
   const auto udevContext = std::make_shared<UdevContext>();
 
@@ -143,4 +143,4 @@ std::optional<UdevUsbSerialPort> findUdevUsbSerialPortFromPath(const std::filesy
   return findUdevUsbSerialPort(device, vidPid);
 }
 
-}}} // namespace Mdt{ namespace SerialPort{ namespace Unix{
+}}} // namespace Mdt{ namespace SerialPort{ namespace Linux{

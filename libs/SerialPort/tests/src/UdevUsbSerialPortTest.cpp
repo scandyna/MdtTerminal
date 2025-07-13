@@ -7,11 +7,11 @@
  ** Copyright (C) 2025-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
-#include "Mdt/SerialPort/Unix/UdevUsbSerialPort.h"
+#include "Mdt/SerialPort/Linux/UdevUsbSerialPort.h"
 #include "catch2/catch.hpp"
 #include "Catch2QString.h"
 
-using namespace Mdt::SerialPort::Unix;
+using namespace Mdt::SerialPort::Linux;
 
 
 TEST_CASE("defaultConstructed")

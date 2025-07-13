@@ -7,18 +7,18 @@
  ** Copyright (C) 2025-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
-#ifndef MDT_SERIAL_PORT_UNIX_UDEV_USB_SERIAL_PORT_H
-#define MDT_SERIAL_PORT_UNIX_UDEV_USB_SERIAL_PORT_H
+#ifndef MDT_SERIAL_PORT_LINUX_UDEV_USB_SERIAL_PORT_H
+#define MDT_SERIAL_PORT_LINUX_UDEV_USB_SERIAL_PORT_H
 
 #include "Mdt/SerialPort/UsbVendorIdProductId.h"
-#include "Mdt/SerialPort/Unix/UdevDevice.h"
+#include "Mdt/SerialPort/Linux/UdevDevice.h"
 #include "mdt_serialport_export.h"
 #include <cstdint>
 #include <optional>
 #include <string>
 #include <filesystem>
 
-namespace Mdt{ namespace SerialPort{ namespace Unix{
+namespace Mdt{ namespace SerialPort{ namespace Linux{
 
   /*! \brief Udev informations about the USB device a given serial port is part of
    *
@@ -172,6 +172,6 @@ namespace Mdt{ namespace SerialPort{ namespace Unix{
   MDT_SERIALPORT_EXPORT
   std::optional<UdevUsbSerialPort> findUdevUsbSerialPortFromPath(const std::filesystem::path & path, const UsbVendorIdProductId & vidPid);
 
-}}} // namespace Mdt{ namespace SerialPort{ namespace Unix{
+}}} // namespace Mdt{ namespace SerialPort{ namespace Linux{
 
-#endif // #ifndef MDT_SERIAL_PORT_UNIX_UDEV_USB_SERIAL_PORT_H
+#endif // #ifndef MDT_SERIAL_PORT_LINUX_UDEV_USB_SERIAL_PORT_H

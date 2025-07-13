@@ -7,13 +7,13 @@
  ** Copyright (C) 2025-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
-#ifndef MDT_SERIAL_PORT_UNIX_UDEV_CONTEXT_H
-#define MDT_SERIAL_PORT_UNIX_UDEV_CONTEXT_H
+#ifndef MDT_SERIAL_PORT_LINUX_UDEV_CONTEXT_H
+#define MDT_SERIAL_PORT_LINUX_UDEV_CONTEXT_H
 
 #include "mdt_serialport_export.h"
 #include <libudev.h>
 
-namespace Mdt{ namespace SerialPort{ namespace Unix{
+namespace Mdt{ namespace SerialPort{ namespace Linux{
 
   /*! \brief Wrapper around a libudev context
    *
@@ -52,6 +52,6 @@ namespace Mdt{ namespace SerialPort{ namespace Unix{
     udev *mContext;
   };
 
-}}} // namespace Mdt{ namespace SerialPort{ namespace Unix{
+}}} // namespace Mdt{ namespace SerialPort{ namespace Linux{
 
-#endif // #ifndef MDT_SERIAL_PORT_UNIX_UDEV_CONTEXT_H
+#endif // #ifndef MDT_SERIAL_PORT_LINUX_UDEV_CONTEXT_H

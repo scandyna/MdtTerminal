@@ -41,15 +41,15 @@
 
 #include "Mdt/SerialPort/Unix/FileStatus.h"
 #include "Mdt/SerialPort/Unix/FileStatusFileType.h"
-#include "Mdt/SerialPort/Unix/UdevContext.h"
-#include "Mdt/SerialPort/Unix/UdevDevice.h"
-#include "Mdt/SerialPort/Unix/UdevTree.h"
+#include "Mdt/SerialPort/Linux/UdevContext.h"
+#include "Mdt/SerialPort/Linux/UdevDevice.h"
+#include "Mdt/SerialPort/Linux/UdevTree.h"
 
 #include "Mdt/SerialPort/UsbVendorIdProductId.h"
 
-#include "Mdt/SerialPort/Unix/UdevBusDevicePortNumber.h"
+// #include "Mdt/SerialPort/Unix/UdevBusDevicePortNumber.h"
 
-#include "Mdt/SerialPort/Unix/UdevUsbSerialPort.h"
+#include "Mdt/SerialPort/Linux/UdevUsbSerialPort.h"
 
 #include "Mdt/SerialPort/StringHelpers.h"
 
@@ -199,7 +199,7 @@ TEST_CASE("libusb_sandbox")
 
 void debugUdevDevice(udev_device *device)
 {
-  using Mdt::SerialPort::Unix::UdevDevice;
+  using Mdt::SerialPort::Linux::UdevDevice;
 
   assert(device != nullptr);
 
@@ -266,10 +266,10 @@ TEST_CASE("udev_sandbox")
   const std::filesystem::path path = "/dev/ttyUSB0";
 
   const auto fileStatus = Mdt::SerialPort::Unix::FileStatus::fromPath(path);
-  const auto udevContext = std::make_shared<Mdt::SerialPort::Unix::UdevContext>();
-  auto device = Mdt::SerialPort::Unix::UdevDevice::from_devnum( udevContext, fileStatus.fileType(), fileStatus.representedDeviceId() );
+  const auto udevContext = std::make_shared<Mdt::SerialPort::Linux::UdevContext>();
+  auto device = Mdt::SerialPort::Linux::UdevDevice::from_devnum( udevContext, fileStatus.fileType(), fileStatus.representedDeviceId() );
 
-  Mdt::SerialPort::Unix::walkUdevTreeToRoot(device, debugUdevDevice);
+  Mdt::SerialPort::Linux::walkUdevTreeToRoot(device, debugUdevDevice);
 }
 
 
@@ -283,11 +283,32 @@ bool isMoxaMxuportDriver(const std::string & driverName) noexcept
   return stringStartsWith(driverName, "MxUPort-") || stringStartsWith(driverName, "MxSerial-") || stringStartsWith(driverName, "MxuportG2-");
 }
 
+  /*! \brief
+   *
+   * \todo Device ......
+   */
+  class Device
+  {
+   public:
+
+    /*! \brief Construct a platform specific device
+     */
+    Device();
+
+    /*! \brief
+     */
+    bool shouldConfigureInterfaceBeforeOpenPort() const;
+
+    /*! \brief
+     */
+    void configureInterface();
+  };
+
 TEST_CASE("setup_uport_sandbox")
 {
   const std::filesystem::path portPath = "/dev/ttyUSB1";
 
-  const auto udevPort = Mdt::SerialPort::Unix::findUdevUsbSerialPortFromPath(portPath, {0x110A, 0x1250});
+  const auto udevPort = Mdt::SerialPort::Linux::findUdevUsbSerialPortFromPath(portPath, {0x110A, 0x1250});
   if( !udevPort.has_value() ){
     qDebug() << "-> could not find device..";
     return;

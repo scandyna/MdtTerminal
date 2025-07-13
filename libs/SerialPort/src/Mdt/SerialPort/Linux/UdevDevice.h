@@ -7,11 +7,11 @@
  ** Copyright (C) 2025-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
-#ifndef MDT_SERIAL_PORT_UNIX_UDEV_DEVICE_H
-#define MDT_SERIAL_PORT_UNIX_UDEV_DEVICE_H
+#ifndef MDT_SERIAL_PORT_LINUX_UDEV_DEVICE_H
+#define MDT_SERIAL_PORT_LINUX_UDEV_DEVICE_H
 
 #include "Mdt/SerialPort/Unix/FileStatusFileType.h"
-#include "Mdt/SerialPort/Unix/UdevContext.h"
+#include "Mdt/SerialPort/Linux/UdevContext.h"
 #include "Mdt/SerialPort/FileOpenError.h"
 #include "Mdt/SerialPort/UsbVendorIdProductId.h"
 #include "mdt_serialport_export.h"
@@ -21,7 +21,7 @@
 #include <memory>
 #include <cstdint>
 
-namespace Mdt{ namespace SerialPort{ namespace Unix{
+namespace Mdt{ namespace SerialPort{ namespace Linux{
 
   /*! \brief Wrapper around an Udev device (udev_device)
    *
@@ -74,7 +74,7 @@ namespace Mdt{ namespace SerialPort{ namespace Unix{
      * \pre \a context must be valid
      */
     static
-    UdevDevice from_devnum(std::shared_ptr<UdevContext> context, FileStatusFileType type, dev_t devnum);
+    UdevDevice from_devnum(std::shared_ptr<UdevContext> context, Mdt::SerialPort::Unix::FileStatusFileType type, dev_t devnum);
 
     /*! \brief Get the char device type representing given type
      *
@@ -85,7 +85,7 @@ namespace Mdt{ namespace SerialPort{ namespace Unix{
      * a null char is returned.
      */
     static
-    char deviceTypeCharFromFileType(FileStatusFileType type) noexcept;
+    char deviceTypeCharFromFileType(Mdt::SerialPort::Unix::FileStatusFileType type) noexcept;
 
     /*! \brief Get the system name (sysname)
      *
@@ -254,6 +254,6 @@ namespace Mdt{ namespace SerialPort{ namespace Unix{
     udev_device *mDevice;
   };
 
-}}} // namespace Mdt{ namespace SerialPort{ namespace Unix{
+}}} // namespace Mdt{ namespace SerialPort{ namespace Linux{
 
-#endif // #ifndef MDT_SERIAL_PORT_UNIX_UDEV_DEVICE_H
+#endif // #ifndef MDT_SERIAL_PORT_LINUX_UDEV_DEVICE_H

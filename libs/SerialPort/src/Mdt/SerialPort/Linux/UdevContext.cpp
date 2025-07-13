@@ -10,7 +10,7 @@
 #include "UdevContext.h"
 #include <new>
 
-namespace Mdt{ namespace SerialPort{ namespace Unix{
+namespace Mdt{ namespace SerialPort{ namespace Linux{
 
 UdevContext::UdevContext()
  : mContext( udev_new() )
@@ -25,4 +25,4 @@ UdevContext::~UdevContext() noexcept
   udev_unref(mContext);
 }
 
-}}} // namespace Mdt{ namespace SerialPort{ namespace Unix{
+}}} // namespace Mdt{ namespace SerialPort{ namespace Linux{

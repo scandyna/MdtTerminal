@@ -15,7 +15,10 @@
 // #include <string.h>
 #include <cassert>
 
-namespace Mdt{ namespace SerialPort{ namespace Unix{
+namespace Mdt{ namespace SerialPort{ namespace Linux{
+
+using Mdt::SerialPort::Unix::FileStatusFileType;
+
 
 QString udevDeviceTr(const char *sourceText) noexcept
 {
@@ -231,4 +234,4 @@ UdevDevice::UdevDevice(std::shared_ptr<UdevContext> context, udev_device * devic
   assert(mDevice != nullptr);
 }
 
-}}} // namespace Mdt{ namespace SerialPort{ namespace Unix{
+}}} // namespace Mdt{ namespace SerialPort{ namespace Linux{

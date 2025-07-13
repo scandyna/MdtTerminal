@@ -11,7 +11,7 @@
 #define MDT_SERIAL_PORT_UNIX_UDEV_BUS_DEVICE_PORT_NUMBER_H
 
 #include "Mdt/SerialPort/UsbVendorIdProductId.h"
-#include "Mdt/SerialPort/Unix/UdevDevice.h"
+#include "Mdt/SerialPort/Linux/UdevDevice.h"
 #include "mdt_serialport_export.h"
 #include <cstdint>
 #include <optional>
