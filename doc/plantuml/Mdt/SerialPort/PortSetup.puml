@@ -1,6 +1,5 @@
 @startuml
 !include Qt/Core/QObject.puml
-!include Mdt/SerialPort/AbstractEngine.puml
 
 
 namespace Mdt.SerialPort {
@@ -10,8 +9,6 @@ namespace Mdt.SerialPort {
     +void setSettingsToPort(Settings s, QSerialPort p)
     +Settings getSettingsFromPort(QSerialPort p)
   }
-
-  PortSetup *--> AbstractEngine
 }
 
 QObject <|-- Mdt.SerialPort.PortSetup

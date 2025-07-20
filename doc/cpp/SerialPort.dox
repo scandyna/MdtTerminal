@@ -61,118 +61,19 @@
  * !include ClassDiagrams/SettingsEditor.puml
  * \enduml
  *
- *
  * \sa Mdt::SerialPort::Settings
  * \sa Mdt::SerialPort::SettingsBuilder
  * \sa Mdt::SerialPort::SettingsDialog
- * 
- *
- * \todo Also something to configure port, like set interface
  *
  *
- * \section SerialPort_PortSetupSandbox Port setup sandbox
+ * \section SerialPort_PortSetup Port setup
  *
  * \startuml "Port setup"
  * !include ClassDiagrams/PortSetup.puml
  * \enduml
  *
- * \todo We don't need a polymorphic monster !
- * What implementation to use is known at compile time.
- * try:
- * \code
- * PortSetup.h
- * 
- * PortSetup_Common.cpp
- * 
- * PortSetup_Linux.cpp
- * PortSetup_Windows.cpp
- * \endcode
- *
- * \code
- * PortSetupImpl_Linux.h
- * PortSetupImpl_Linux.cpp
- * PortSetupImpl_Windows.h
- * PortSetupImpl_Windows.cpp
- * \endcode
- *
- * \code
- * // PortSetup_Linux.cpp
- * #include "PortSetupImpl_Linux.h"
- * \endcode
- *
- * \code
- * // PortSetupImpl.h
- * class PortSetupImpl;
- *
- * void f(PortSetupImpl & psi);
- * \endcode
- *
- * \code
- * // PortSetup_Linux.cpp
- * #include "PortSetupImpl.h"
- *
- * class PortSetupImpl
- * {
- *   SomeUdevThing mUT;
- * };
- *
- * void f(PortSetupImpl & psi)
- * {
- * }
- * \endcode
- *
- *
- * \code
- * // PortSetup.h
- * class PortSetupImpl;
- *
- * class PortSetup
- * {
- *  public:
- *
- *   void f();
- *
- *  private:
- *
- *   void g();
- *
- *   std::unique_ptr<PortSetupImpl> mImpl;
- * };
- * \endcode
- *
- * \code
- * // PortSetup.cpp
- * #include "PortSetup.h"
- *
- * void PortSetup::f()
- * {
- *   // Here, mImpl is opaque, can't dereference. But, simply call impl specific functions :)
- *   ....
- *   g();
- * }
- * \endcode
- *
- * \code
- * // PortSetup_Linux.cpp
- * #include "PortSetup.h"
- *
- * class PortSetupImpl
- * {
- *   SomeUdevThing mUT;
- * };
- *
- * void PortSetup::g()
- * {
- *   ...
- * }
- * \endcode
- *
- * Maybe we need Platform specific state.
- * See how Qt does it.
- *
- * Maybe: PortSetupPlatformSpecific ?
- *
  * \sa Mdt::SerialPort::PortSetup
+ *
  *
  * \section SerialPort_DeviceSpecifics Device sepcifics
  *
