@@ -51,19 +51,25 @@ if(UNIX)
         Mdt/SerialPort/Unix/FileStatus.cpp
         Mdt/SerialPort/Unix/FileStatusFileType.cpp
         # Mdt/SerialPort/Unix/UdevBusDevicePortNumber.cpp TODO remove
-      )
+    )
   endif()
 endif()
 
 if(LINUX)
   target_sources(Mdt_SerialPort
     PRIVATE
-      Mdt/SerialPort/Linux/UdevContext.cpp
-      Mdt/SerialPort/Linux/UdevDevice.cpp
-      Mdt/SerialPort/Linux/UdevTree.cpp
-      Mdt/SerialPort/Linux/UdevUsbSerialPort.cpp
+      Mdt/SerialPort/Linux/MoxaUPort.cpp
       Mdt/SerialPort/PortSetup_Linux.cpp
   )
+  if(BUILD_USB_SANDBOX)
+    target_sources(Mdt_SerialPort
+      PRIVATE
+        Mdt/SerialPort/Linux/UdevContext.cpp
+        Mdt/SerialPort/Linux/UdevDevice.cpp
+        Mdt/SerialPort/Linux/UdevTree.cpp
+        Mdt/SerialPort/Linux/UdevUsbSerialPort.cpp
+    )
+  endif()
 endif()
 
 

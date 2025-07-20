@@ -29,6 +29,7 @@ namespace Mdt{ namespace SerialPort{ namespace Linux{
    *
    * \sa findUdevUsbSerialPort()
    * \sa findUdevUsbSerialPortFromPath()
+   * \sa \ref SerialPort_Linux_MoxaUPort
    */
   class MDT_SERIALPORT_EXPORT UdevUsbSerialPort
   {

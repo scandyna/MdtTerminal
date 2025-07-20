@@ -207,7 +207,7 @@ mdt_add_test(
   TARGET serialPortDeviceMoxaUPortTest
   DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
   SOURCE_FILES
-    src/MoxaUPortTest.cpp
+    src/DeviceMoxaUPortTest.cpp
 )
 
 
@@ -263,13 +263,14 @@ if(UNIX)
         src/UdevDeviceTest.cpp
     )
 
-    mdt_add_test(
-      NAME UnixUdevBusDevicePortNumberTest
-      TARGET unixUdevBusDevicePortNumberTest
-      DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
-      SOURCE_FILES
-        src/UdevBusDevicePortNumberTest.cpp
-    )
+    # TODO remove
+    # mdt_add_test(
+    #   NAME UnixUdevBusDevicePortNumberTest
+    #   TARGET unixUdevBusDevicePortNumberTest
+    #   DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+    #   SOURCE_FILES
+    #     src/UdevBusDevicePortNumberTest.cpp
+    # )
 
     mdt_add_test(
       NAME UnixUdevUsbSerialPortTest
@@ -299,6 +300,18 @@ if(UNIX)
   #   PRIVATE
   #     "/usr/include/libusb-1.0"
   # )
+
+endif()
+
+if(LINUX)
+
+  mdt_add_test(
+    NAME SerialPortLinuxMoxaUPortTest
+    TARGET serialPortLinuxMoxaUPortTest
+    DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+    SOURCE_FILES
+      src/LinuxMoxaUPortTest.cpp
+  )
 
 endif()
 

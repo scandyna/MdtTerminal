@@ -15,15 +15,19 @@
 
 namespace Mdt{ namespace SerialPort{ namespace Device{
 
-  // class MDT_SERIALPORT_EXPORT MoxaUPort
-  // {
-  // };
-
   /*! \page SerialPort_Device_MoxaUPort Moxa UPort
+   *
+   * \sa https://www.moxa.com/en/products/industrial-edge-connectivity/usb-to-serial-converters-usb-hubs/usb-to-serial-converters
+   *
+   * \section SerialPort_Device_MoxaUPort_ModuleFunctions Moxa UPort module functions
+   *
+   * This module provides thoses functions:
+   * - vendorIdentifierIsMoxa()
+   * - productIdentifierIsMoxaUPort_1250_1450_1650()
    *
    * \section SerialPort_Device_MoxaUPort_1200_1400_1600_Series Moxa UPort 1200, 1400, 1600 series (and also G2)
    *
-   * The Moxa UPort Linux driver should support those devices:
+   * The Moxa UPort (%Linux) driver should support those devices:
    *
    * |  Name             | PID  |Ports|RS-232|RS-422|RS-485|
    * |:------------------|:----:|:---:|:----:|:----:|:----:|
@@ -52,7 +56,7 @@ namespace Mdt{ namespace SerialPort{ namespace Device{
    * |UPort 1650I-8-G2-T |0x1???|  8  |  X   |  X   |  X   |
    * |UPort 1650-8-G2-Hub|0x1???|  8  |  X   |  X   |  X   |
    *
-   * \note The official Linux driver seems not to support the G2 series.
+   * \note The official %Linux driver seems not to support the G2 series.
    *
    *
    * \subsection SerialPort_Device_MoxaUPort_1200_1400_1600_Series_SetInterface Set the interface
@@ -68,12 +72,11 @@ namespace Mdt{ namespace SerialPort{ namespace Device{
    * |      0x2      |RS-422    |
    * |      0x3      |RS-485 4W |
    *
-   * \todo explain when using Moxa Linux driver, ioctl's . OR not here ??
    *
    * \section SerialPort_Device_MoxaUPort_1100_Series Moxa UPort 1100 series
    *
    * There is also a UPort 1100 series.
-   * Moxa provides another Linux driver for those interfaces.
+   * Moxa provides another (%Linux) driver for those interfaces.
    * They seems to be different from the above ones.
    *
    * |  Name       | PID  |Ports|RS-232|RS-422|RS-485|
@@ -84,14 +87,6 @@ namespace Mdt{ namespace SerialPort{ namespace Device{
    * |UPort 1150   |0x1???|  1  |  X   |  X   |  X   |
    * |UPort 1150I  |0x1???|  1  |  X   |  X   |  X   |
    *
-   *
-   * \section SerialPort_Device_MoxaUPort_ModuleFunctions Moxa UPort module functions
-   *
-   * This module provides thoses functions:
-   * - vendorIdentifierIsMoxa()
-   * - productIdentifierIsMoxaUPort_1250_1450_1650()
-   *
-   * \sa https://www.moxa.com/en/products/industrial-edge-connectivity/usb-to-serial-converters-usb-hubs/usb-to-serial-converters
    */
 
   /*! \brief Check if given vendor identifier is Moxa
