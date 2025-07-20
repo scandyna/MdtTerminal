@@ -10,6 +10,7 @@
 #include "PortSetup.h"
 #include "SettingsRawData.h"
 #include "SettingsBuilder.h"
+#include "Device/MoxaUPort.h"
 #include <cassert>
 
 /// \todo wrong
@@ -52,6 +53,30 @@ Settings PortSetup::getSettingsFromPort(const QSerialPort & port)
   data.flowControl = port.flowControl();
 
   return SettingsBuilder::settingsFromRawData(data);
+}
+
+bool PortSetup::hasVidAndPid(const QSerialPortInfo & portInfo) noexcept
+{
+  return portInfo.hasVendorIdentifier() && portInfo.hasProductIdentifier();
+}
+
+bool PortSetup::isMoxaUPort_1250_1450_1650(const QSerialPortInfo & portInfo) noexcept
+{
+  if( !hasVidAndPid(portInfo) ){
+    return false;
+  }
+  if( !Device::vendorIdentifierIsMoxa( portInfo.vendorIdentifier() ) ){
+    return false;
+  }
+
+  return Device::productIdentifierIsMoxaUPort_1250_1450_1650( portInfo.productIdentifier() );
+}
+
+UsbVendorIdProductId PortSetup::usbVendorIdProductIdFromPortInfo(const QSerialPortInfo & portInfo) noexcept
+{
+  assert( hasVidAndPid(portInfo) );
+
+  return UsbVendorIdProductId{portInfo.vendorIdentifier(), portInfo.productIdentifier()};
 }
 
 }} // namespace Mdt{ namespace SerialPort{
