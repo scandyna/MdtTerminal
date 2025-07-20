@@ -18,6 +18,7 @@ TEST_CASE("Default_Interface")
   Interface interface;
 
   CHECK( interface.standard() == InterfaceStandard::RS_232 );
+  CHECK( !interface.isConfigurable() );
 }
 
 TEST_CASE("fromStandardAndParameterValue")
@@ -26,4 +27,5 @@ TEST_CASE("fromStandardAndParameterValue")
 
   CHECK( rs422.standard() == InterfaceStandard::RS_422 );
   CHECK( rs422.parameterValue() == 1 );
+  CHECK( rs422.isConfigurable() );
 }

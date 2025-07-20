@@ -35,7 +35,7 @@ std::optional<InterfaceList::size_type> findIndexInInterfaceList(const std::vect
 
 
 InterfaceList::InterfaceList()
- : mList{Interface::fromStandardAndParameterValue(InterfaceStandard::RS_232, 0)}
+ : mList{Interface()}
 {
 }
 

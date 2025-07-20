@@ -69,10 +69,6 @@ namespace Mdt{ namespace SerialPort{
       return count() > 1;
     }
 
-    // bool isConfigurable() const noexcept
-    // {
-    // }
-
     /*! \brief Find the index of given parameter value
      *
      * Return a valid index if an interface with given \a value exists,

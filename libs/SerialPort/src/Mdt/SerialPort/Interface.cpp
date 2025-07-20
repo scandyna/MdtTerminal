@@ -18,7 +18,8 @@ Interface Interface::fromStandardAndParameterValue(InterfaceStandard standard, u
 
 Interface::Interface(InterfaceStandard standard, unsigned int value) noexcept
  : mStandard(standard),
-   mParameterValue(value)
+   mParameterValue(value),
+   mIsConfigurable(true)
 {
 }
 

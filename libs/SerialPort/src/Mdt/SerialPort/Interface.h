@@ -24,6 +24,9 @@ namespace Mdt{ namespace SerialPort{
    public:
 
     /*! \brief Construct a default interface
+     *
+     * A default interface is RS-232
+     * and can't be configured.
      */
     Interface() noexcept = default;
 
@@ -32,6 +35,13 @@ namespace Mdt{ namespace SerialPort{
     InterfaceStandard standard() const noexcept
     {
       return mStandard;
+    }
+
+    /*! \brief Check if the interface is configurable on the device
+     */
+    bool isConfigurable() const noexcept
+    {
+      return mIsConfigurable;
     }
 
     /*! \brief Get the parameter value for this interface
@@ -52,6 +62,7 @@ namespace Mdt{ namespace SerialPort{
 
     InterfaceStandard mStandard = InterfaceStandard::RS_232;
     unsigned int mParameterValue = 0;
+    bool mIsConfigurable = false;
   };
 
 }} // namespace Mdt{ namespace SerialPort{

@@ -21,6 +21,7 @@ TEST_CASE("default_constructed")
   CHECK( list.count() == 1 );
   CHECK( !list.canSelectInterface() );
   CHECK( list.interfaceAt(0).standard() == InterfaceStandard::RS_232 );
+  CHECK( !list.interfaceAt(0).isConfigurable() );
 }
 
 TEST_CASE("fromMoxaProductIdentifier")
@@ -39,6 +40,7 @@ TEST_CASE("fromMoxaProductIdentifier")
     CHECK( list.count() == 1 );
     CHECK( !list.canSelectInterface() );
     CHECK( list.interfaceAt(0).standard() == InterfaceStandard::RS_232 );
+    CHECK( !list.interfaceAt(0).isConfigurable() );
   }
 }
 
@@ -50,12 +52,16 @@ TEST_CASE("moxaUPort_1250_1450_1650")
   CHECK( list.canSelectInterface() );
   CHECK( list.interfaceAt(0).standard() == InterfaceStandard::RS_232 );
   CHECK( list.interfaceAt(0).parameterValue() == 0x00 );
+  CHECK( list.interfaceAt(0).isConfigurable() );
   CHECK( list.interfaceAt(1).standard() == InterfaceStandard::RS_485_2W );
   CHECK( list.interfaceAt(1).parameterValue() == 0x01 );
+  CHECK( list.interfaceAt(1).isConfigurable() );
   CHECK( list.interfaceAt(2).standard() == InterfaceStandard::RS_422 );
   CHECK( list.interfaceAt(2).parameterValue() == 0x02 );
+  CHECK( list.interfaceAt(2).isConfigurable() );
   CHECK( list.interfaceAt(3).standard() == InterfaceStandard::RS_485_4W );
   CHECK( list.interfaceAt(3).parameterValue() == 0x03 );
+  CHECK( list.interfaceAt(3).isConfigurable() );
 }
 
 TEST_CASE("findIndexOfParameterValue")
@@ -89,9 +95,13 @@ TEST_CASE("fromVendorIdentifierAndProductIdentifier")
     CHECK( list.count() == 4 );
     CHECK( list.canSelectInterface() );
     CHECK( list.interfaceAt(0).standard() == InterfaceStandard::RS_232 );
+    CHECK( list.interfaceAt(0).isConfigurable() );
     CHECK( list.interfaceAt(1).standard() == InterfaceStandard::RS_485_2W );
+    CHECK( list.interfaceAt(1).isConfigurable() );
     CHECK( list.interfaceAt(2).standard() == InterfaceStandard::RS_422 );
+    CHECK( list.interfaceAt(2).isConfigurable() );
     CHECK( list.interfaceAt(3).standard() == InterfaceStandard::RS_485_4W );
+    CHECK( list.interfaceAt(3).isConfigurable() );
   }
 
   SECTION("unknown")
@@ -101,6 +111,7 @@ TEST_CASE("fromVendorIdentifierAndProductIdentifier")
     CHECK( list.count() == 1 );
     CHECK( !list.canSelectInterface() );
     CHECK( list.interfaceAt(0).standard() == InterfaceStandard::RS_232 );
+    CHECK( !list.interfaceAt(0).isConfigurable() );
   }
 }
 
