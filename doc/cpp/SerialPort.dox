@@ -83,6 +83,10 @@
  *
  * \section SerialPort_PlatformSpecifics Platform sepcifics
  *
+ * \todo The Engine was a first attempt for specific tasks,
+ * like configure the interface of some serial port devices.
+ * It is only a sandbox, and should be removed.
+ *
  * \startuml "Engine overview"
  * !include ClassDiagrams/Engine.puml
  * \enduml
