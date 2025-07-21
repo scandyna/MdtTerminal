@@ -12,6 +12,7 @@
 
 #include "Mdt/SerialPort/InterfaceStandard.h"
 #include "mdt_serialport_export.h"
+#include <cstdint>
 
 namespace Mdt{ namespace SerialPort{
 
@@ -46,7 +47,7 @@ namespace Mdt{ namespace SerialPort{
 
     /*! \brief Get the parameter value for this interface
      */
-    unsigned int parameterValue() const noexcept
+    uint16_t parameterValue() const noexcept
     {
       return mParameterValue;
     }
@@ -54,14 +55,14 @@ namespace Mdt{ namespace SerialPort{
     /*! \brief Build an interface from given name and parameter value
      */
     static
-    Interface fromStandardAndParameterValue(InterfaceStandard standard, unsigned int value) noexcept;
+    Interface fromStandardAndParameterValue(InterfaceStandard standard, uint16_t value) noexcept;
 
    private:
 
-    Interface(InterfaceStandard standard, unsigned int value) noexcept;
+    Interface(InterfaceStandard standard, uint16_t value) noexcept;
 
     InterfaceStandard mStandard = InterfaceStandard::RS_232;
-    unsigned int mParameterValue = 0;
+    uint16_t mParameterValue = 0;
     bool mIsConfigurable = false;
   };
 

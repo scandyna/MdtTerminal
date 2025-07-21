@@ -11,12 +11,12 @@
 
 namespace Mdt{ namespace SerialPort{
 
-Interface Interface::fromStandardAndParameterValue(InterfaceStandard standard, unsigned int value) noexcept
+Interface Interface::fromStandardAndParameterValue(InterfaceStandard standard, uint16_t value) noexcept
 {
   return Interface(standard, value);
 }
 
-Interface::Interface(InterfaceStandard standard, unsigned int value) noexcept
+Interface::Interface(InterfaceStandard standard, uint16_t value) noexcept
  : mStandard(standard),
    mParameterValue(value),
    mIsConfigurable(true)
