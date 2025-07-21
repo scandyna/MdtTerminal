@@ -34,6 +34,7 @@ add_library(Mdt_SerialPort
   Mdt/SerialPort/SettingsStringFormat.cpp
   Mdt/SerialPort/UsbVendorIdProductId.cpp
   Mdt/SerialPort/AbstractEngine.cpp
+  Mdt/SerialPort/PortSetupError.cpp
   Mdt/SerialPort/PortSetup.cpp
   Mdt/SerialPort/SerialPort.cpp
   Mdt/SerialPort/Device/MoxaUPort.cpp

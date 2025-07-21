@@ -13,44 +13,22 @@
 #include "Mdt/SerialPort/Settings.h"
 #include "Mdt/SerialPort/Interface.h"
 #include "Mdt/SerialPort/UsbVendorIdProductId.h"
+#include "Mdt/SerialPort/PortSetupError.h"
+#include "Mdt/SerialPort/FileOpenError.h"
 #include "mdt_serialport_export.h"
 #include <QSerialPort>
 #include <QSerialPortInfo>
 #include <QObject>
 #include <memory>
 
-#include "Mdt/SerialPort/QRuntimeError.h"
-#include <QString>
 
 namespace Mdt{ namespace SerialPort{
-
-  /*! \brief Port setup error
-   *
-   * \todo should go to its own TU
-   */
-  class MDT_SERIALPORT_EXPORT PortSetupError : public QRuntimeError
-  {
-   public:
-
-    /*! \brief Constructor
-     */
-    explicit
-    PortSetupError(const QString & what)
-      : QRuntimeError(what)
-    {
-    }
-  };
-
 
   /*! \internal
    */
   class PortSetupImpl;
 
   /*! \brief Helper to set settings to a serial port
-   *
-   * \todo Should getting/setting some HW settings,
-   * like interface, be done here ?
-   * This would require to do a basic open..
    *
    * \section SerialPort_PortSetup_ConfigureMoxaUportInterfaceLinux Configure a Moxa Uport interface on Linux
    *
@@ -78,7 +56,8 @@ namespace Mdt{ namespace SerialPort{
      *
      * \pre \a portInfo must have a system location
      *
-     * \exception 
+     * \exception FileOpenError If the port referenced by \a portInfo
+     *  no longer exists (f.ex: USB device has been removed).
      */
     explicit
     PortSetup(const QSerialPortInfo & portInfo, QObject *parent = nullptr);
@@ -86,27 +65,6 @@ namespace Mdt{ namespace SerialPort{
     /*! \brief Destructor
      */
     ~PortSetup() noexcept;
-
-    /*! \brief Fetch some driver features
-     *
-     * For some cases, like Moxa UPort on Linux,
-     * . 
-     *
-     * \todo For the Linux case, we need at least port path + PID, VID .
-     * They are lost (not available in QSerialPort).
-     * See how Qt get them with udev
-     * hmm.. should keep PID, VID somewhere and reuse..
-     * 
-     * Think we should take a QSerialPortInfo here
-     * Also, we could make a constructor taking a QSerialPortInfo.
-     *
-     * \pre \a port must not be open
-     * \pre \a port must have a port name
-     *
-     * \exception 
-     */
-    [[deprecated]]
-    void fetchDriverFeatures(QSerialPort & port);
 
     /*! \brief Check if the interface should be configured before open the port
      *
@@ -132,15 +90,6 @@ namespace Mdt{ namespace SerialPort{
      * \exception PortSetupError
      */
     void configureInterfaceOncePortOpen(const Interface & interface, QSerialPort & port);
-
-    /*! \brief Configure the interface for given port
-     *
-     * \exception PortSetupError
-     * \pre \a port must be open
-     */
-    [[deprecated]]
-    static
-    void configureInterface(const Interface & interface, QSerialPort & port);
 
     /*! \brief Set given settings to given port
      *

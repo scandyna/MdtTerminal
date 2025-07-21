@@ -8,6 +8,7 @@
  * \enduml
  *
  * \sa Mdt::SerialPort::FileOpenError
+ * \sa Mdt::SerialPort::PortSetupError
  *
  *
  * \section SerialPort_PortInfo Serial port info

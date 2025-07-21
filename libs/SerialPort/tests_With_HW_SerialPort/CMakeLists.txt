@@ -14,5 +14,5 @@ mdt_add_test(
   TARGET serialPortPortSetup_With_HW_LinuxTest
   DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
   SOURCE_FILES
-    src/PortPortSetupLinuxTest.cpp
+    src/PortSetupLinuxTest.cpp
 )

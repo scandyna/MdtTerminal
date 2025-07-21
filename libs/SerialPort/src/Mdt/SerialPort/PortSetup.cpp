@@ -13,21 +13,8 @@
 #include "Device/MoxaUPort.h"
 #include <cassert>
 
-/// \todo wrong
-#include "AbstractEngine.h"
-#include "Unix/UnixEngine.h"
 
 namespace Mdt{ namespace SerialPort{
-
-void PortSetup::configureInterface(const Interface & interface, QSerialPort & port)
-{
-  /// \todo pre
-
-  // AbstractEngine e( Handle::fromNativeHandle( port.handle() ) );
-
-  UnixEngine e( port.handle() );
-  e.configureInterface(interface);
-}
 
 void PortSetup::setSettingsToPort(const Settings & settings, QSerialPort & port)
 {
