@@ -16,6 +16,7 @@
 #include <QMainWindow>
 #include <QWidget>
 #include <QSerialPort>
+#include <QSerialPortInfo>
 #include <QString>
 #include <QLabel>
 
@@ -52,6 +53,7 @@ class MainWindow : public QMainWindow
   QLabel *mStatusLabel;
   Mdt::SerialPort::Settings mSerialPortSettings;
   QSerialPort mSerialPort;
+  QSerialPortInfo mSerialPortInfo;
 };
 
 #endif // #ifndef MAIN_WINDOW_H

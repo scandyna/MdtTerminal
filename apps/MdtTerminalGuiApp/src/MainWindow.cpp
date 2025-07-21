@@ -12,9 +12,12 @@
 #include "Mdt/SerialPort/SettingsStringFormat.h"
 #include "Mdt/SerialPort/FlowControlStringFormat.h"
 #include "Mdt/SerialPort/PortSetup.h"
+#include "Mdt/SerialPort/QRuntimeError.h"
 #include <QAction>
 #include <QStatusBar>
 #include <QMessageBox>
+#include <optional>
+#include <cassert>
 
 MainWindow::MainWindow(QWidget* parent)
  : QMainWindow(parent),
@@ -41,11 +44,14 @@ void MainWindow::setupSerialPort()
 
   Mdt::SerialPort::SettingsDialog dialog(this);
 
+  /// \todo Should we set current port info ? Think yes
+  
   dialog.setSettings(mSerialPortSettings);
 
   const int result = dialog.exec();
   if(result == QDialog::Accepted){
     mSerialPortSettings = dialog.buildSettings();
+    mSerialPortInfo = dialog.currentPortInfo();
   }
 }
 
@@ -53,7 +59,31 @@ void MainWindow::openSerialPort()
 {
   /// \todo If no port has been selected, open settings dialog ?
 
-  /// \todo What if port is open ? - Prcondition: GUI must be coherent
+  /// \todo What if port is open ? - Precondition: GUI must be coherent
+
+  const bool shouldConfigureInterface = mSerialPortSettings.interface().isConfigurable();
+
+  std::optional<Mdt::SerialPort::PortSetup> ps;
+  try{
+    ps.emplace(mSerialPortInfo);
+  }catch(const Mdt::SerialPort::QRuntimeError & error){
+    displayErrorMessage( error.text() );
+    return;
+  }
+  assert( ps.has_value() );
+  ps->setSettingsToPort(mSerialPortSettings, mSerialPort);
+
+  const bool shouldConfigureInterfaceBeforeOpenPort = shouldConfigureInterface && ps->shouldConfigureInterfaceBeforeOpenPort();
+  const bool shouldConfigureInterfaceOncePortOpen = shouldConfigureInterface && !shouldConfigureInterfaceBeforeOpenPort;
+
+  if(shouldConfigureInterfaceBeforeOpenPort){
+    try{
+      ps->configureInterfaceBeforeOpenPort( mSerialPortSettings.interface() );
+    }catch(const Mdt::SerialPort::QRuntimeError & error){
+      displayErrorMessage( error.text() );
+      return;
+    }
+  }
 
   Mdt::SerialPort::PortSetup::setSettingsToPort(mSerialPortSettings, mSerialPort);
   if( !mSerialPort.open(QIODevice::ReadWrite) ){
@@ -61,10 +91,15 @@ void MainWindow::openSerialPort()
     return;
   }
 
-  // try{
-    Mdt::SerialPort::PortSetup::configureInterface( mSerialPortSettings.interface(), mSerialPort );
-  // }catch(){
-  // }
+  if(shouldConfigureInterfaceOncePortOpen){
+    try{
+      ps->configureInterfaceOncePortOpen(mSerialPortSettings.interface(), mSerialPort);
+    }catch(const Mdt::SerialPort::QRuntimeError & error){
+      displayErrorMessage( error.text() );
+      mSerialPort.close();
+      return;
+    }
+  }
 
   showPortOpenStatusMessage();
 }
