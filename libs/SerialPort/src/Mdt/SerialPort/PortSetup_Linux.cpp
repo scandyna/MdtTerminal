@@ -26,7 +26,7 @@
  *
  * \todo Remove once we have proper libraries support 
  */
-#define HAS_UDEV_AND_LIBUSB_SUPPORT true
+#define HAS_UDEV_AND_LIBUSB_SUPPORT false
 
 #if HAS_UDEV_AND_LIBUSB_SUPPORT
   #include "Linux/UdevUsbSerialPort.h"
@@ -99,7 +99,8 @@ std::string PortSetupImpl::driverName() const noexcept
 #endif // HAS_UDEV_AND_LIBUSB_SUPPORT
 }
 
-void PortSetupImpl::configureMoxaUPort_1250_1450_1650_UsingUserspaceUsb(const Interface & interface)
+/// \todo remove maybe_unused once libraries support ok
+void PortSetupImpl::configureMoxaUPort_1250_1450_1650_UsingUserspaceUsb([[maybe_unused]] const Interface & interface)
 {
   assert( hasUdevUsbSerialPort() );
 
