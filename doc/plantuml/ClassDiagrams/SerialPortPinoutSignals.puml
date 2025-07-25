@@ -1,0 +1,29 @@
+@startuml
+!include Qt/Core/QObject.puml
+!include Qt/Widgets/QWidget.puml
+
+namespace Mdt.SerialPort {
+
+  class PinoutSignals {
+  }
+
+  class PinoutSignalsUiController {
+  }
+
+  class PinoutSignalsEventController {
+  }
+
+  class PinoutSignalsWidget {
+  }
+
+}
+
+QObject <|-- Mdt.SerialPort.PinoutSignalsUiController
+QObject <|-- Mdt.SerialPort.PinoutSignalsEventController
+QWidget <|-- Mdt.SerialPort.PinoutSignalsWidget
+
+hide QObject methods
+hide QWidget methods
+hide QPaintDevice
+
+@enduml

@@ -1,9 +1,13 @@
 
 /*! \page SerialPort_dox Serial port library
  *
- * \section SerialPort_VariousInfoSandbox Various info sandbox
+ * \section SerialPort_SomeTechnicalInformations Some technical informations
  *
- * \subsection _ DTE and DCE
+ * \sa https://en.wikipedia.org/wiki/RS-232
+ * \sa https://en.wikipedia.org/wiki/Serial_port
+ * \sa https://en.wikibooks.org/wiki/Serial_Programming/RS-232_Connections
+ *
+ * \subsection SerialPort_SomeTechnicalInformations_DteAndDce DTE and DCE
  *
  * In the world of serial communications, there are two different kinds of equipment:
  * |Abbreviation|Name                              |Examples|
@@ -16,18 +20,24 @@
  * \sa https://en.wikipedia.org/wiki/Serial_port#DTE_and_DCE
  *
  *
- * \subsection _ Data and control signals
+ * \subsection SerialPort_SomeTechnicalInformations_PinoutSignals Pinout signals
+ *
+ * |Abbreviation|Name               |Typical purpose                                                                       |Direction     |
+ * |:----------:|:------------------|:-------------------------------------------------------------------------------------|:------------:|
+ * |    RTS     |Request To Send    |DTE requests the DCE prepare to transmit data                                         |DTE &rarr; DCE|
+ * |    CTS     |Clear To Send      |DCE is ready to accept data from the DTE                                              |DTE &larr; DCE|
+ * |    DCD     |Data Carrier Detect|DCE is receiving a carrier from a remote DCE                                          |DTE &larr; DCE|
+ * |    DSR     |Data Set Ready     |DCE is ready to receive and send data                                                 |DTE &larr; DCE|
+ * |    DTR     |Data Terminal Ready|DTE is ready to receive, initiate, or continue a call                                 |DTE &rarr; DCE|
+ * |    RI      |Ring Indicator     |DCE has detected an incoming ring signal on the telephone line                        |DTE &larr; DCE|
+ * |    RTR     |Ready To Receive   |DTE is ready to receive data from DCE. If in use, RTS is assumed to be always asserted|DTE &rarr; DCE|
  *
  * \sa https://en.wikipedia.org/wiki/RS-232#Data_and_control_signals
  * \sa https://en.wikipedia.org/wiki/Serial_port#Pinouts
  * \sa https://en.wikibooks.org/wiki/Serial_Programming/RS-232_Connections#Wiring_Pins_Explained
  *
- * 
- * 
- * HW pinning
- * 
- * 
- * https://en.wikibooks.org/wiki/Serial_Programming/RS-232_Connections#Wiring_Pins_Explained
+ *
+ * \subsection SerialPort_SomeTechnicalInformations_HWpinning HW pinning
  *
  * |9-pin|25-pin|Definition               |Direction (PC view)|
  * |:---:|:----:|:------------------------|:------------------|
@@ -41,31 +51,22 @@
  * |  8  |  5   |CTS (Clear To Send)      | IN                |
  * |  9  |  22  |RI (Ring Indicator)      | IN                |
  *
- * 
- * 
+ * \sa https://en.wikibooks.org/wiki/Serial_Programming/RS-232_Connections#Wiring_Pins_Explained
+ * \sa https://en.wikipedia.org/wiki/Serial_port#Pinouts
+ *
+ *
+ * \subsection SerialPort_SomeTechnicalInformations_OtherStuff Other stuff
+ *
+ *
  * Control signals
  * 
  * https://en.wikipedia.org/wiki/RS-232#Data_and_control_signals
  * 
- * |Abbreviation|Name               |Typical purpose                                                                       |Direction     |
- * |:----------:|:------------------|:-------------------------------------------------------------------------------------|:------------:|
- * |    RTS     |Request To Send    |DTE requests the DCE prepare to transmit data                                         |DTE &rarr; DCE|
- * |    CTS     |Clear To Send      |DCE is ready to accept data from the DTE                                              |DTE &larr; DCE|
- * |    DCD     |Data Carrier Detect|DCE is receiving a carrier from a remote DCE                                          |DTE &larr; DCE|
- * |    DSR     |Data Set Ready     |DCE is ready to receive and send data                                                 |DTE &larr; DCE|
- * |    DTR     |Data Terminal Ready|DTE is ready to receive, initiate, or continue a call                                 |DTE &rarr; DCE|
- * |    RI      |Ring Indicator     |DCE has detected an incoming ring signal on the telephone line                        |DTE &larr; DCE|
- * |    RTR     |Ready To Receive   |DTE is ready to receive data from DCE. If in use, RTS is assumed to be always asserted|DTE &rarr; DCE|
  * 
  * https://doc.qt.io/qt-6/qserialport.html#PinoutSignal-enum
  * 
- * Test bridge plug
  * 
- * |pin|Designation   |
- * |:-:|:-------------|
- * |3-2|TX &rarr; RX  |
- * |7-8|RTS &rarr; CTS|
- * |4-6|DTR &rarr; DSR|
+ * 
  * 
  * QSerialPort::PinoutSignals
  * 
@@ -84,13 +85,40 @@
  * I think PinoutSignals is better (our variant also adds TX/RX)
  * - PinoutSignals
  * - PinoutSignalsModel OR Controller ?
- * - PinoutSignalsWidgets
+ * - PinoutSignalsWidget
  * 
  * \todo Maybe add some definitions and there names from various source. Could help to choose a name.
  * 
- * \sa https://en.wikipedia.org/wiki/RS-232
- * \sa https://en.wikipedia.org/wiki/Serial_port
- * \sa https://en.wikibooks.org/wiki/Serial_Programming/RS-232_Connections
+ *
+ * \section SerialPort_PinoutSignals Pinout signals
+ *
+ * \startuml "Pinout signals"
+ * !include ClassDiagrams/SerialPortPinoutSignals.puml
+ * \enduml
+ *
+ * Mdt::SerialPort::PinoutSignals holds the states of the various signals
+ * (TX, RX, RTS, ...).
+ *
+ * Mdt::SerialPort::PinoutSignalsUiController is a helper to notify
+ * the UI the various states it has to display.
+ * As example, if the CTS is enabled for some microseconds,
+ * we have to display it ON for some minimal time, so it can be visible.
+ *
+ * Mdt::SerialPort::PinoutSignalsEventController is a helper
+ * that receives the various events, like QSerialPort::readyRead(),
+ * QSerialPort::bytesWritten(), QSerialPort::breakEnabledChanged(),
+ * QSerialPort::dataTerminalReadyChanged(), QSerialPort::requestToSendChanged().
+ * It has then to get all pinout signals using QSerialPort::pinoutSignals().
+ * It will then emit a signal to notify that at least some pinout signal has changed.
+ *
+ * Mdt::SerialPort::PinoutSignalsWidget is a UI component
+ * that is easy to use to display the pinout signals.
+ *
+ * Mdt::SerialPort::PinoutSignalsLogger
+ *
+ * Mdt::SerialPort::PinoutSignalsLoggerBackend ?
+ *
+ * Mdt::SerialPort::PinoutSignalsLogsGraphView
  *
  * \section SerialPort_Errors Serial port errors
  *
@@ -195,10 +223,26 @@
  *
  * \sa https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ntddser/ns-ntddser-_serial_commprop
  *
- * \section SerialPort_TestLib Serial port test lib
+ * \section SerialPort_Testing Serial port testing
+ *
+ * \subsection SerialPort_Testing_TestLib Serial port test lib
  *
  * \sa Mdt::SerialPort::TestLib::TestPortInfoListTableModel
  * \sa Mdt::SerialPort::TestLib
+ *
+ * \subsection SerialPort_Testing_WithHW Serial port testing with HW
+ *
+ * Some tests will require a bridge plug.
+ * Here is the pinout for a DB9 connector:
+ *
+ * |pin|Designation   |
+ * |:-:|:-------------|
+ * |3-2|TX &rarr; RX  |
+ * |7-8|RTS &rarr; CTS|
+ * |4-6|DTR &rarr; DSR|
+ *
+ * \todo CMAKE variable
+ *
  */
 
 namespace Mdt{
