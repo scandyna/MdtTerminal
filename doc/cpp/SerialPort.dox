@@ -1,6 +1,97 @@
 
 /*! \page SerialPort_dox Serial port library
  *
+ * \section SerialPort_VariousInfoSandbox Various info sandbox
+ *
+ * \subsection _ DTE and DCE
+ *
+ * In the world of serial communications, there are two different kinds of equipment:
+ * |Abbreviation|Name                              |Examples|
+ * |:----------:|:---------------------------------|:-------|
+ * | DTE        |Data Terminal Equipment           |PC      |
+ * | DCE        |Data Circuit-terminating Equipment|Modem   |
+ * | ^          |Data Communication Equipment      |^       |
+ *
+ * \sa https://en.wikibooks.org/wiki/Serial_Programming/RS-232_Connections#Data_Terminal/Communications_Equipment
+ * \sa https://en.wikipedia.org/wiki/Serial_port#DTE_and_DCE
+ *
+ *
+ * \subsection _ Data and control signals
+ *
+ * \sa https://en.wikipedia.org/wiki/RS-232#Data_and_control_signals
+ * \sa https://en.wikipedia.org/wiki/Serial_port#Pinouts
+ * \sa https://en.wikibooks.org/wiki/Serial_Programming/RS-232_Connections#Wiring_Pins_Explained
+ *
+ * 
+ * 
+ * HW pinning
+ * 
+ * 
+ * https://en.wikibooks.org/wiki/Serial_Programming/RS-232_Connections#Wiring_Pins_Explained
+ *
+ * |9-pin|25-pin|Definition               |Direction (PC view)|
+ * |:---:|:----:|:------------------------|:------------------|
+ * |  1  |  8   |DCD (Data Carrier Detect)| IN                |
+ * |  2  |  3   |RX (Receive Data)        | IN                |
+ * |  3  |  2   |TX (Transmit Data)       | OUT               |
+ * |  4  |  20  |DTR (Data Terminal Ready)| OUT               |
+ * |  5  |  7   |GND (Signal Ground)      | --                |
+ * |  6  |  6   |DSR (Data Set Ready)     | IN                |
+ * |  7  |  4   |RTS (Request To Send)    | OUT               |
+ * |  8  |  5   |CTS (Clear To Send)      | IN                |
+ * |  9  |  22  |RI (Ring Indicator)      | IN                |
+ *
+ * 
+ * 
+ * Control signals
+ * 
+ * https://en.wikipedia.org/wiki/RS-232#Data_and_control_signals
+ * 
+ * |Abbreviation|Name               |Typical purpose                                                                       |Direction     |
+ * |:----------:|:------------------|:-------------------------------------------------------------------------------------|:------------:|
+ * |    RTS     |Request To Send    |DTE requests the DCE prepare to transmit data                                         |DTE &rarr; DCE|
+ * |    CTS     |Clear To Send      |DCE is ready to accept data from the DTE                                              |DTE &larr; DCE|
+ * |    DCD     |Data Carrier Detect|DCE is receiving a carrier from a remote DCE                                          |DTE &larr; DCE|
+ * |    DSR     |Data Set Ready     |DCE is ready to receive and send data                                                 |DTE &larr; DCE|
+ * |    DTR     |Data Terminal Ready|DTE is ready to receive, initiate, or continue a call                                 |DTE &rarr; DCE|
+ * |    RI      |Ring Indicator     |DCE has detected an incoming ring signal on the telephone line                        |DTE &larr; DCE|
+ * |    RTR     |Ready To Receive   |DTE is ready to receive data from DCE. If in use, RTS is assumed to be always asserted|DTE &rarr; DCE|
+ * 
+ * https://doc.qt.io/qt-6/qserialport.html#PinoutSignal-enum
+ * 
+ * Test bridge plug
+ * 
+ * |pin|Designation   |
+ * |:-:|:-------------|
+ * |3-2|TX &rarr; RX  |
+ * |7-8|RTS &rarr; CTS|
+ * |4-6|DTR &rarr; DSR|
+ * 
+ * QSerialPort::PinoutSignals
+ * 
+ * For data, store a TX byte + RX byte ? NO!! just a bool !
+ * 
+ * See bytesWritten() and readyRead()
+ * 
+ * Timestamp ? Not here !
+ * Timestamp should be in a deticaed, like ControlAndDataSignalsLogItem
+ * 
+ * - ControlAndDataSignals
+ * - ControlAndDataSignalsModel (not an item model.. must handle signal emission as some point in time, do not spam the UI)
+ * - ControlAndDataSignalsController  better than model ? No, model is more common in Qt..
+ * - ControlAndDataSignalsWidget
+ * 
+ * I think PinoutSignals is better (our variant also adds TX/RX)
+ * - PinoutSignals
+ * - PinoutSignalsModel OR Controller ?
+ * - PinoutSignalsWidgets
+ * 
+ * \todo Maybe add some definitions and there names from various source. Could help to choose a name.
+ * 
+ * \sa https://en.wikipedia.org/wiki/RS-232
+ * \sa https://en.wikipedia.org/wiki/Serial_port
+ * \sa https://en.wikibooks.org/wiki/Serial_Programming/RS-232_Connections
+ *
  * \section SerialPort_Errors Serial port errors
  *
  * \startuml "Exceptions"
