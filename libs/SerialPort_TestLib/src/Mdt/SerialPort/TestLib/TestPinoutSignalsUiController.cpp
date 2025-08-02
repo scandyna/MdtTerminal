@@ -21,16 +21,6 @@ void TestPinoutSignalsUiController::setTimerTimeoutEvent()
   AbstractPinoutSignalsUiController::setTimerTimeoutEvent();
 }
 
-// bool TestPinoutSignalsUiController::deduceReceiveDataState() const noexcept
-// {
-//   return AbstractPinoutSignalsUiController::deduceReceiveDataState();
-// }
-
-// bool TestPinoutSignalsUiController::shouldNotifyReceiveDataChanged() const noexcept
-// {
-//   return AbstractPinoutSignalsUiController::shouldNotifyReceiveDataChanged();
-// }
-
 bool TestPinoutSignalsUiController::timerIsActive() const
 {
   return mTimerIsActive;

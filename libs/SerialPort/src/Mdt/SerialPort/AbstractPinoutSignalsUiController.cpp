@@ -9,8 +9,6 @@
  *****************************************************************************************/
 #include "AbstractPinoutSignalsUiController.h"
 
-#include <QDebug>
-
 namespace Mdt{ namespace SerialPort{
 
 AbstractPinoutSignalsUiController::AbstractPinoutSignalsUiController(QObject *parent)
@@ -26,9 +24,6 @@ void AbstractPinoutSignalsUiController::setAboutToCloseEvent()
 void AbstractPinoutSignalsUiController::setSignals(const PinoutSignals & ps)
 {
   mReceiveDataState.setSignalOn( ps.receiveDataIsOn() );
-  // if( ps.receiveDataIsOn() ){
-  //   ++mRxOnCount;
-  // }
 
   if( !timerIsActive() ){
     startTimer();
@@ -37,37 +32,10 @@ void AbstractPinoutSignalsUiController::setSignals(const PinoutSignals & ps)
 
 void AbstractPinoutSignalsUiController::setTimerTimeoutEvent()
 {
-  qDebug() << "UI timer timeout ..";
-
   mReceiveDataState.updateState();
   if( mReceiveDataState.stateHasChanged() ){
     emit receiveDataChanged( mReceiveDataState.stateIsOn() );
   }
-
-//   mCurrentUiRx = deduceReceiveDataState();
-//   
-//   mRxOnCount = 0;
-//   
-//   qDebug() << " mCurrentUiRx: " << mCurrentUiRx;
-//   qDebug() << " mPreviousUiRx: " << mPreviousUiRx;
-//   
-//   if( shouldNotifyReceiveDataChanged() ){
-//     mPreviousUiRx = mCurrentUiRx;
-//     emit receiveDataChanged(mCurrentUiRx);
-//   }
 }
-
-// bool AbstractPinoutSignalsUiController::deduceReceiveDataState() const noexcept
-// {
-//   return mRxOnCount > 0;
-// }
-
-// bool AbstractPinoutSignalsUiController::shouldNotifyReceiveDataChanged() const noexcept
-// {
-//   qDebug() << " shouldNotify: mCurrentUiRx: " << mCurrentUiRx;
-//   qDebug() << " shouldNotify: mPreviousUiRx: " << mPreviousUiRx;
-// 
-//   return mCurrentUiRx != mPreviousUiRx;
-// }
 
 }} // namespace Mdt{ namespace SerialPort{

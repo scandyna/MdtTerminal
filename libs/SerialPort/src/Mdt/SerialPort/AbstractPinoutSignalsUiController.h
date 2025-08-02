@@ -14,7 +14,6 @@
 #include "Mdt/SerialPort/PinoutSignalUiState.h"
 #include "mdt_serialport_export.h"
 #include <QObject>
-#include <cstddef>
 
 namespace Mdt{ namespace SerialPort{
 
@@ -55,16 +54,6 @@ namespace Mdt{ namespace SerialPort{
      */
     void setTimerTimeoutEvent();
 
-   protected:
-
-    /*! \internal
-     */
-    // bool deduceReceiveDataState() const noexcept;
-
-    /*! \internal
-     */
-    // bool shouldNotifyReceiveDataChanged() const noexcept;
-
    private:
 
     /*! \brief Start the timer
@@ -83,9 +72,6 @@ namespace Mdt{ namespace SerialPort{
     void stopTimer() = 0;
 
     PinoutSignalUiState mReceiveDataState;
-    // size_t mRxOnCount = 0;
-    // bool mPreviousUiRx = false;
-    // bool mCurrentUiRx = false;
   };
 
 }} // namespace Mdt{ namespace SerialPort{

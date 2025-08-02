@@ -28,9 +28,6 @@ namespace Mdt{ namespace SerialPort{ namespace TestLib{
 
     void setTimerTimeoutEvent();
 
-    // bool deduceReceiveDataState() const noexcept;
-    // bool shouldNotifyReceiveDataChanged() const noexcept;
-
     bool timerIsActive() const override;
 
    private:
