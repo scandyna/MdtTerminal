@@ -1,0 +1,62 @@
+@startuml
+robust "Event notifier" as EventNotifier
+robust "RX" as RX
+robust "RX ON count" as RxOnCount
+robust "RX OFF count" as RxOFFCount
+robust "RX UI" as RxUi
+robust "Timer" as Timer
+
+EventNotifier is processing
+RX is OFF
+RxOnCount is 0
+RxOFFCount is 0
+RxUi is OFF
+Timer is Idle
+
+@0
+EventNotifier is processing
+RX is OFF
+
+@20
+EventNotifier -> RX : sig
+RX is ON
+RxOnCount is 1
+Timer is active
+
+@40
+EventNotifier -> RX : sig
+RX is ON
+RxOnCount is 2
+
+@60
+EventNotifier -> RX : sig
+RX is OFF
+RxOFFCount is 1
+
+@100
+Timer -> RxUi : to
+RxOnCount is 0
+RxOFFCount is 0
+RxUi is ON
+
+@180
+Timer -> RxUi : to
+RxOnCount is 0
+RxOFFCount is 0
+RxUi is OFF
+
+@200
+EventNotifier -> RX : sig
+RX is OFF
+RxOFFCount is 1
+
+
+@300
+EventNotifier -> RX : close
+RxOnCount is 0
+RxOFFCount is 0
+RxUi is OFF
+Timer is Idle
+
+
+@enduml

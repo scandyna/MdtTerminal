@@ -58,18 +58,6 @@
  * \subsection SerialPort_SomeTechnicalInformations_OtherStuff Other stuff
  *
  *
- * Control signals
- * 
- * https://en.wikipedia.org/wiki/RS-232#Data_and_control_signals
- * 
- * 
- * https://doc.qt.io/qt-6/qserialport.html#PinoutSignal-enum
- * 
- * 
- * 
- * 
- * QSerialPort::PinoutSignals
- * 
  * For data, store a TX byte + RX byte ? NO!! just a bool !
  * 
  * See bytesWritten() and readyRead()
@@ -83,12 +71,8 @@
  * - ControlAndDataSignalsWidget
  * 
  * I think PinoutSignals is better (our variant also adds TX/RX)
- * - PinoutSignals
  * - PinoutSignalsModel OR Controller ?
- * - PinoutSignalsWidget
- * 
- * \todo Maybe add some definitions and there names from various source. Could help to choose a name.
- * 
+ *
  *
  * \section SerialPort_PinoutSignals Pinout signals
  *
@@ -99,26 +83,107 @@
  * Mdt::SerialPort::PinoutSignals holds the states of the various signals
  * (TX, RX, RTS, ...).
  *
- * Mdt::SerialPort::PinoutSignalsUiController is a helper to notify
- * the UI the various states it has to display.
- * As example, if the CTS is enabled for some microseconds,
- * we have to display it ON for some minimal time, so it can be visible.
- *
- * Mdt::SerialPort::PinoutSignalsEventController is a helper
+ * Mdt::SerialPort::PinoutSignalsEventNotifier is a helper
  * that receives the various events, like QSerialPort::readyRead(),
  * QSerialPort::bytesWritten(), QSerialPort::breakEnabledChanged(),
  * QSerialPort::dataTerminalReadyChanged(), QSerialPort::requestToSendChanged().
  * It has then to get all pinout signals using QSerialPort::pinoutSignals().
  * It will then emit a signal to notify that at least some pinout signal has changed.
  *
+ * Mdt::SerialPort::PinoutSignalsUiController is a helper to notify
+ * the UI the various states it has to display.
+ * As an example, if the CTS is enabled for some microseconds,
+ * we have to display it ON for some minimal time, so it can be visible.
+ *
  * Mdt::SerialPort::PinoutSignalsWidget is a UI component
- * that is easy to use to display the pinout signals.
+ * to display the pinout signals.
+ *
+ * \code
+ * class MainWindow : public QMainWindow
+ * {
+ *   Q_OBJECT
+ *
+ *  public:
+ *
+ *   explicit
+ *   MainWindow(QWidget *parent = nullptr);
+ *
+ *  private:
+ *
+ *   void openPort();
+ *   void closePort();
+ *
+ *   QSerialPort mSerialPort;
+ *   Mdt::SerialPort::PinoutSignalsEventNotifier mPinoutSignalsEventNotifier;
+ *   Mdt::SerialPort::PinoutSignalsUiController mPinoutSignalsUiController;
+ *   Mdt::SerialPort::PinoutSignalsWidget *mPinoutSignalsWidget;
+ * };
+ * \endcode
+ *
+ * \code
+ * using namespace Mdt::SerialPort;
+ *
+ * MainWindow::MainWindow(QWidget* parent)
+ *  : QMainWindow(parent),
+ *    mPinoutSignalsEventNotifier(&mSerialPort),
+ *    mPinoutSignalsWidget(new PinoutSignalsWidget)
+ * {
+ *   connect(&mSerialPort, &QSerialPort::aboutToClose, &mPinoutSignalsUiController, &PinoutSignalsUiController::setAboutToCloseEvent);
+ *   connect(&mPinoutSignalsEventNotifier, &PinoutSignalsEventNotifier::signalsChanged, &mPinoutSignalsUiController, &PinoutSignalsUiController::setSignals);
+ *
+ *   connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::RX_changed, mPinoutSignalsWidget, &PinoutSignalsWidget::setRX);
+ * }
+ * \endcode
+ *
+ * \code
+ * MainWindow::openPort()
+ * {
+ *   mSerialPort.open(QIODevice::ReadWrite);
+ *   mPinoutSignalsEventNotifier.setPortOpen();
+ * }
+ * \endcode
+ *
+ * \code
+ * MainWindow::closePort()
+ * {
+ *   mSerialPort.close();
+ * }
+ * \endcode
+ *
+ * For pinout signals tracing, the read buffer size of QSerialPort can be adjusted.
+ * This will emit the readyRead signal more often, increasing slightly the accuracy of the RX signal:
+ * \code
+ * mSerialPort.setReadBufferSize(10);
+ * \endcode
+ *
+ *
+ * \code
+ * using namespace Mdt::SerialPort;
+ *
+ * QSerialPort serialPort;
+ *
+ * PinoutSignalsEventNotifier pinoutSignalsNotifier(&serialPort);
+ * PinoutSignalsUiController pinoutSignalsUiController;
+ * PinoutSignalsWidget pinoutSignalsWidget;
+ *
+ * connect(&pinoutSignalsNotifier, &PinoutSignalsEventNotifier::signalsChanged, &pinoutSignalsUiController, &PinoutSignalsUiController::setSignals);
+ *
+ * connect(&pinoutSignalsUiController, &PinoutSignalsUiController::RX_changed, &pinoutSignalsWidget, &PinoutSignalsWidget::setRX);
+ * 
+ * \endcode
+ *
+ * Mdt::SerialPort::PinoutSignalsLogItem ? Would have signals + timestamp... + bytes ?!
  *
  * Mdt::SerialPort::PinoutSignalsLogger
  *
  * Mdt::SerialPort::PinoutSignalsLoggerBackend ?
  *
- * Mdt::SerialPort::PinoutSignalsLogsGraphView
+ * Mdt::SerialPort::PinoutSignalsLogsGraphView ?
+ *
+ * Mdt::SerialPort::PinoutSignalsTrace ?
+ *
+ * \sa https://doc.qt.io/qt-6/qserialport.html#PinoutSignal-enum
+ * \sa \ref SerialPort_SomeTechnicalInformations_PinoutSignals
  *
  * \section SerialPort_Errors Serial port errors
  *
@@ -228,6 +293,7 @@
  * \subsection SerialPort_Testing_TestLib Serial port test lib
  *
  * \sa Mdt::SerialPort::TestLib::TestPortInfoListTableModel
+ * \sa Mdt::SerialPort::TestLib::PinoutSignalUiStateChangedSignalSpy
  * \sa Mdt::SerialPort::TestLib
  *
  * \subsection SerialPort_Testing_WithHW Serial port testing with HW

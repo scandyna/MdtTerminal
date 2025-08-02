@@ -1,0 +1,46 @@
+@startuml
+!include Mdt/SerialPort/PinoutSignals.puml
+!include Qt/Core/QObject.puml
+!include Qt/Core/QIODevice.puml
+!include Qt/Core/QTimer.puml
+!include Qt/SerialPort/QSerialPort.puml
+
+namespace Mdt.SerialPort {
+
+  class AbstractPinoutSignalsEventNotifier {
+  }
+
+  AbstractPinoutSignalsEventNotifier *--> PinoutSignals
+
+  class PinoutSignalsEventNotifier {
+  }
+
+  AbstractPinoutSignalsEventNotifier <|-- PinoutSignalsEventNotifier
+}
+
+QObject <|-- Mdt.SerialPort.AbstractPinoutSignalsEventNotifier
+Mdt.SerialPort.PinoutSignalsEventNotifier --> QSerialPort
+Mdt.SerialPort.PinoutSignalsEventNotifier *--> QTimer
+
+
+namespace Mdt.SerialPort.TestLib {
+
+  class PinoutSignalsEventNotifierTestSerialPort {
+  }
+
+  class TestPinoutSignalsEventNotifier {
+  }
+
+  TestPinoutSignalsEventNotifier --> PinoutSignalsEventNotifierTestSerialPort
+}
+
+
+QIODevice <|-- Mdt.SerialPort.TestLib.PinoutSignalsEventNotifierTestSerialPort
+Mdt.SerialPort.AbstractPinoutSignalsEventNotifier <|-- Mdt.SerialPort.TestLib.TestPinoutSignalsEventNotifier
+
+
+note "See if we really need 1500 classes,\n or can we define a common base in\n AbstractPinoutSignalsEventNotifier.\n Maybe, PinoutSignalsEventNotifierImplementationInterface.\n Concrete depends on QSerialPort and QTimer.\n Test one emulate those.\n NOTE: LESS clean, because user has to care to inject the implementation !\n NOTE2: could simply be defaulted in the CTOR\n Consider move a unique_ptr.." as N1
+Mdt.SerialPort.TestLib.TestPinoutSignalsEventNotifier .. N1
+N1 .. Mdt.SerialPort.TestLib.PinoutSignalsEventNotifierTestSerialPort
+
+@enduml

@@ -1,0 +1,32 @@
+@startuml
+!include Mdt/SerialPort/PinoutSignals.puml
+!include Qt/Core/QObject.puml
+!include Qt/Core/QTimer.puml
+
+namespace Mdt.SerialPort {
+
+  class AbstractPinoutSignalsUiController {
+  }
+
+  AbstractPinoutSignalsUiController *--> PinoutSignals
+
+  class PinoutSignalsUiController {
+  }
+
+  AbstractPinoutSignalsUiController <|-- PinoutSignalsUiController
+}
+
+QObject <|-- Mdt.SerialPort.AbstractPinoutSignalsUiController
+Mdt.SerialPort.PinoutSignalsUiController *--> QTimer
+
+
+namespace Mdt.SerialPort.TestLib {
+
+  class TestPinoutSignalsUiController {
+  }
+
+}
+
+Mdt.SerialPort.AbstractPinoutSignalsUiController <|-- Mdt.SerialPort.TestLib.TestPinoutSignalsUiController
+
+@enduml

@@ -1,29 +1,15 @@
 @startuml
-!include Qt/Core/QObject.puml
-!include Qt/Widgets/QWidget.puml
+!include Mdt/SerialPort/PinoutSignals.puml
+!include Mdt/SerialPort/PinoutSignalsEventNotifier.puml
+!include Mdt/SerialPort/PinoutSignalsUiController.puml
+!include Mdt/SerialPort/PinoutSignalsWidget.puml
 
-namespace Mdt.SerialPort {
 
-  class PinoutSignals {
-  }
-
-  class PinoutSignalsUiController {
-  }
-
-  class PinoutSignalsEventController {
-  }
-
-  class PinoutSignalsWidget {
-  }
-
-}
-
-QObject <|-- Mdt.SerialPort.PinoutSignalsUiController
-QObject <|-- Mdt.SerialPort.PinoutSignalsEventController
-QWidget <|-- Mdt.SerialPort.PinoutSignalsWidget
 
 hide QObject methods
 hide QWidget methods
 hide QPaintDevice
+hide QIODeviceBase
+hide QSerialPortInfo
 
 @enduml
