@@ -22,8 +22,6 @@ TEST_CASE("initialState")
   TestPinoutSignalsUiController psc;
 
   CHECK( !psc.timerIsActive() );
-  // CHECK( psc.deduceReceiveDataState() == false );
-  // CHECK( !psc.shouldNotifyReceiveDataChanged() );
 }
 
 TEST_CASE("firstEventStartsTimer_CloseStopsTimer")
@@ -46,9 +44,6 @@ TEST_CASE("RX")
   PinoutSignals ps;
   TestPinoutSignalsUiController psc;
   PinoutSignalUiStateChangedSignalSpy receiveDataChangedSpy(&psc, &TestPinoutSignalsUiController::receiveDataChanged);
-
-  // REQUIRE( psc.deduceReceiveDataState() == false );
-  // REQUIRE( !psc.shouldNotifyReceiveDataChanged() );
 
   SECTION("only 1 RX ON notified")
   {

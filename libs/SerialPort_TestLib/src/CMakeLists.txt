@@ -4,6 +4,9 @@ include(MdtInstallLibrary)
 
 add_library(Mdt_SerialPort_TestLib
   Mdt/SerialPort/TestLib/TestPortInfoListTableModel.cpp
+  Mdt/SerialPort/TestLib/TestPinoutSignalsEventNotifier.cpp
+  Mdt/SerialPort/TestLib/TestPinoutSignalsUiController.cpp
+  Mdt/SerialPort/TestLib/PinoutSignalUiStateChangedSignalSpy.cpp
 )
 
 add_library(Mdt::SerialPortTestLib ALIAS Mdt_SerialPort_TestLib)

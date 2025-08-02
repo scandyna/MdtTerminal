@@ -6,6 +6,7 @@ add_library(Mdt_SerialPort_Widgets
   Mdt/SerialPort/AbstractSettingsEditor.cpp
   Mdt/SerialPort/SettingsEditor.cpp
   Mdt/SerialPort/SettingsDialog.cpp
+  Mdt/SerialPort/PinoutSignalsWidget.cpp
 )
 
 add_library(Mdt::SerialPort_Widgets ALIAS Mdt_SerialPort_Widgets)

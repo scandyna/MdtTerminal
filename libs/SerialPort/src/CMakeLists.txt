@@ -38,6 +38,12 @@ add_library(Mdt_SerialPort
   Mdt/SerialPort/PortSetup.cpp
   Mdt/SerialPort/SerialPort.cpp
   Mdt/SerialPort/Device/MoxaUPort.cpp
+  Mdt/SerialPort/PinoutSignals.cpp
+  Mdt/SerialPort/AbstractPinoutSignalsEventNotifier.cpp
+  Mdt/SerialPort/PinoutSignalsEventNotifier.cpp
+  Mdt/SerialPort/PinoutSignalUiState.cpp
+  Mdt/SerialPort/AbstractPinoutSignalsUiController.cpp
+  Mdt/SerialPort/PinoutSignalsUiController.cpp
 )
 
 if(UNIX)

@@ -210,6 +210,38 @@ mdt_add_test(
     src/DeviceMoxaUPortTest.cpp
 )
 
+mdt_add_test(
+  NAME SerialPortPinoutSignalsTest
+  TARGET serialPortPinoutSignalsTest
+  DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/PinoutSignalsTest.cpp
+)
+
+mdt_add_test(
+  NAME SerialPortPinoutSignalsEventNotifierTest
+  TARGET serialPortPinoutSignalsEventNotifierTest
+  DEPENDENCIES Mdt::SerialPort Mdt::SerialPortTestLib Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/PinoutSignalsEventNotifierTest.cpp
+)
+
+mdt_add_test(
+  NAME SerialPortPinoutSignalsUiControllerTest
+  TARGET serialPortPinoutSignalsUiControllerTest
+  DEPENDENCIES Mdt::SerialPort Mdt::SerialPortTestLib Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/PinoutSignalsUiControllerTest.cpp
+)
+
+mdt_add_test(
+  NAME SerialPortPinoutSignalUiStateTest
+  TARGET serialPortPinoutSignalUiStateTest
+  DEPENDENCIES Mdt::SerialPort Mdt::SerialPortTestLib Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/PinoutSignalUiStateTest.cpp
+)
+
 
 if(UNIX)
 

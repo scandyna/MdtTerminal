@@ -139,7 +139,7 @@ find_package(Mdt0 REQUIRED COMPONENTS ItemModel)
 
 if(BUILD_TESTS)
   find_package(Catch2 REQUIRED)
-#   find_package(Qt5 REQUIRED COMPONENTS Test)
+  find_package(Qt5 REQUIRED COMPONENTS Test)
 endif()
 
 if(BUILD_BENCHMARKS)
