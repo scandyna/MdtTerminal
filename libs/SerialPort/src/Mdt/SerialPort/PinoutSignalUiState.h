@@ -44,10 +44,6 @@ namespace Mdt{ namespace SerialPort{
     constexpr
     void updateState() noexcept
     {
-      // const bool newState = deduceNewState();
-      // mStateChanged = newState != mState;
-      // mState = newState;
-
       mPreviousState = mState;
       mState = deduceNewState();
       mOnCount = 0;
