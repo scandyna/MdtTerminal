@@ -10,6 +10,7 @@ hide QObject methods
 hide QWidget methods
 hide QPaintDevice
 hide QIODeviceBase
+hide QIODevice
 hide QSerialPortInfo
 
 @enduml
