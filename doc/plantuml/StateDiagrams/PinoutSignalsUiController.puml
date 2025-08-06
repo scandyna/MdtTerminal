@@ -1,0 +1,28 @@
+@startuml
+
+
+[*] --> UiOff
+UiOff --> UiOnHold : signal [ON] / startHoldOnTimer()
+UiOnHold --> UiOnHoldOffRequested : signal [OFF]
+UiOnHold : entry/ startHoldOnTimer()
+
+UiOffHold : entry/ startHoldOffTimer()
+
+UiOnHoldOffRequested --> UiOffHold : holdOnTimeout
+UiOnHold --> UiOn : holdOnTimeout
+UiOn --> UiOffHold : signal [OFF]
+
+UiOnHoldOffRequested --> UiOnHoldOnRequested : signal [ON]
+UiOnHoldOnRequested --> UiOnHoldOffRequested : signal [OFF]
+UiOnHoldOnRequested --> UiOn : holdOnTimeout
+
+UiOffHold --> UiOff : holdOffTimeout
+UiOffHold --> UiOffHoldOnRequested : signal [ON]
+
+UiOffHoldOnRequested --> UiOffHoldOffRequested : signal [OFF]
+UiOffHoldOffRequested --> UiOffHoldOnRequested : signal [ON]
+UiOffHoldOffRequested --> UiOff : holdOffTimeout
+
+UiOffHoldOnRequested --> UiOnHold : holdOffTimeout
+
+@enduml
