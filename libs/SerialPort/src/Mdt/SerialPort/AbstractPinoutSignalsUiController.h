@@ -48,6 +48,14 @@ namespace Mdt{ namespace SerialPort{
      */
     void receiveDataChanged(bool on) const;
 
+    /*! \brief Emitted every time the TX (Transmit Data) state changed
+     */
+    void transmitDataChanged(bool on) const;
+
+    /*! \brief Emitted every time the DTR (Data Terminal Ready) state changed
+     */
+    void dataTerminalReadyChanged(bool on) const;
+
    protected Q_SLOTS:
 
     /*! \brief Set the timer timeout event
@@ -72,6 +80,8 @@ namespace Mdt{ namespace SerialPort{
     void stopTimer() = 0;
 
     PinoutSignalUiState mReceiveDataState;
+    PinoutSignalUiState mTransmitDataState;
+    PinoutSignalUiState mDataTerminalReadyState;
   };
 
 }} // namespace Mdt{ namespace SerialPort{

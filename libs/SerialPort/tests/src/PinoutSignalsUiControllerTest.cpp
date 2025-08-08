@@ -57,3 +57,41 @@ TEST_CASE("RX")
     CHECK( receiveDataChangedSpy.stateAtIsOn(0) );
   }
 }
+
+TEST_CASE("TX")
+{
+  PinoutSignals ps;
+  TestPinoutSignalsUiController psc;
+  PinoutSignalUiStateChangedSignalSpy transmitDataChangedSpy(&psc, &TestPinoutSignalsUiController::transmitDataChanged);
+
+  SECTION("only 1 TX ON notified")
+  {
+    ps.setTransmitDataOn(true);
+
+    psc.setSignals(ps);
+
+    psc.setTimerTimeoutEvent();
+
+    REQUIRE( transmitDataChangedSpy.count() == 1 );
+    CHECK( transmitDataChangedSpy.stateAtIsOn(0) );
+  }
+}
+
+TEST_CASE("DTR")
+{
+  PinoutSignals ps;
+  TestPinoutSignalsUiController psc;
+  PinoutSignalUiStateChangedSignalSpy dataTerminalReadyChangedSpy(&psc, &TestPinoutSignalsUiController::dataTerminalReadyChanged);
+
+  SECTION("only 1 DTR ON notified")
+  {
+    ps.setDataTerminalReadyOn(true);
+
+    psc.setSignals(ps);
+
+    psc.setTimerTimeoutEvent();
+
+    REQUIRE( dataTerminalReadyChangedSpy.count() == 1 );
+    CHECK( dataTerminalReadyChangedSpy.stateAtIsOn(0) );
+  }
+}

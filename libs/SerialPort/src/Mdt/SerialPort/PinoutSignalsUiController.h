@@ -30,11 +30,49 @@ namespace Mdt{ namespace SerialPort{
    * We have to display it ON for some time.
    *
    *
+   * - on pulse to ON, hold for 100ms (each state calculates its own duration)
+   * - x
+   * - setSignals() is a trigger to update UI states
+   * - setSignals() gets current time and pass it to UI states
+   * - at end of setSignals(), a timer is started. It will update the UI states in case no setSignals() has been called for a while
+   * - UI state is ON and new signal is OFF:
+   * - a) UI ON duration < holdOnDuration: UI state stays ON
+   * - b) else: UI state goes OFF
+   * - UI state is OFF and new signal is ON:
+   * - a) UI OFF duration < holdOffDuration: UI state stays OFF AND memorises an ON request
+   * - b) else: UI state goes ON
+   *
+   *
+   * |Previous UI state|UI ON dur < holdOnDur|signal|UI state|Notes           |
+   * |:---------------:|:-------------------:|:----:|:------:|:---------------|
+   * |  OFF            |   false             | OFF  |  OFF   |Do nothing      |
+   * |  OFF            |   false             | ON   |  ON    |Ignore UI ON dur|
+   * |  OFF            |   true              | OFF  |  OFF   |Do nothing      |
+   * |  OFF            |   true              | ON   |  ON    |                |
+   * |  ON             |   false             | OFF  |  OFF   |                |
+   * |  ON             |   false             | ON   |  ON    |Do nothing      |
+   * |  ON             |   true              | OFF  |  ON    |                |
+   * |  ON             |   true              | ON   |  ON    |Do nothing      |
+   *
+   *
+   * \todo Remove entry/ startXXtimer() in states ! Put ir in transitions ! Will reduce states.
+   *
+   * \startuml "Pinout signals UI controller"
+   * !include StateDiagrams/PinoutSignalsUiController.puml
+   * \enduml
+   *
    * \section Mdt_SerialPort_PinoutSignalsUiController_Rationale Rationale
    *
+   * - short ON pulse
+   * - long ON
    *
    * \startuml "Pinout signals UI controller"
    * !include TimingDiagrams/PinoutSignalsUiController.puml
+   * \enduml
+   *
+   *
+   * \startuml "Pinout signals UI controller - RX example of second approach"
+   * !include TimingDiagrams/PinoutSignalsUiControllerRxExampleV02.puml
    * \enduml
    *
    * \subsection Mdt_SerialPort_PinoutSignalsUiController_Rationale_FirstApproach First approach
