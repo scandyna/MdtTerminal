@@ -50,15 +50,12 @@ namespace Mdt{ namespace SerialPort{
    *
    * \todo document: particularité, ne mesure pas le temp lui-même
    *
-   * \todo isActive() ?
-   *
    */
   class MDT_SERIALPORT_EXPORT PinoutSignalUiStateTimer
   {
    public:
 
     using TimePoint = std::chrono::time_point<std::chrono::steady_clock>;
-    // using Duration = std::chrono::milliseconds;
 
     /*! \brief Set the duration until expiration
      */
@@ -96,12 +93,6 @@ namespace Mdt{ namespace SerialPort{
       return mStartTime;
     }
 
-    /*! \brief
-     *
-     * \pre \a t must be >= initialTime
-     */
-    // void setCurrentTime(TimePoint t);
-
     /*! \brief Returns true if expired
      */
     constexpr
@@ -124,8 +115,6 @@ namespace Mdt{ namespace SerialPort{
 
     TimePoint mStartTime = TimePoint( std::chrono::milliseconds(0) );
     std::chrono::milliseconds mDuration = std::chrono::milliseconds(0);
-
-    // TimePoint mCurrentTime;
   };
 
 }} // namespace Mdt{ namespace SerialPort{
