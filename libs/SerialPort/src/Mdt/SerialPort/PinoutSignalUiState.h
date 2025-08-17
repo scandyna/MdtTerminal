@@ -10,73 +10,15 @@
 #ifndef MDT_SERIAL_PORT_PINOUT_SIGNAL_UI_STATE_H
 #define MDT_SERIAL_PORT_PINOUT_SIGNAL_UI_STATE_H
 
+#include "Mdt/SerialPort/PinoutSignalUiStateTimer.h"
+#include "Mdt/SerialPort/PinoutSignalUiStateStateMachine.h"
 #include "mdt_serialport_export.h"
-#include <chrono>
+
 
 #include <cstddef>
 
 
 namespace Mdt{ namespace SerialPort{
-
-  /*! \brief Helper for PinoutSignalUiState
-   *
-   * \todo document: particularité, ne mesure pas le temp lui-même
-   *
-   */
-  class PinoutSignalUiStateTimer
-  {
-   public:
-    
-    using TimePoint = std::chrono::time_point<std::chrono::steady_clock>;
-    // using Duration = std::chrono::milliseconds;
-    
-    void start(TimePoint initialTime);
-    
-    /*! \brief
-     *
-     * \pre \a t must be >= initialTime
-     */
-    void setCurrentTime(TimePoint t);
-    
-    void setDuration(std::chrono::milliseconds d);
-    
-    bool hasExpired() const;
-    
-   private:
-
-    TimePoint mInitialTime;
-    TimePoint mCurrentTime; /// \todo what is defualt contructed time point ??
-  };
-
-  /*! \brief Helper for PinoutSignalUiState
-   *
-   * \todo Concept of some watchdog timer,
-   * that only runs when state hold XY is active.
-   */
-  class PinoutSignalUiStateStateMachine
-  {
-   public:
-
-    /*! \brief
-     */
-    void setSignalOn(bool on, PinoutSignalUiStateTimer::TimePoint now);
-
-    /*! \brief 
-     */
-    void setWatchdogTimeoutEvent(PinoutSignalUiStateTimer::TimePoint now);
-
-    /*! \brief Returns true if current state is a hold state
-     */
-    bool watchdogTimerShouldBeActive();
-    
-    bool shouldStartWatchdogTimer();
-
-    /*! \brief
-     */
-    bool uiOnOffStateHasChanged() const;
-
-    bool stateIsOn() const noexcept;
-  };
 
   /*! \brief Helper class to hold a single pinout signal for the UI
    *
@@ -86,6 +28,20 @@ namespace Mdt{ namespace SerialPort{
   {
    public:
 
+    /*! \brief Set the hold ON duration
+     */
+    constexpr
+    void setHoldOnDuration(std::chrono::milliseconds d) noexcept
+    {
+    }
+
+    /*! \brief Set the hold OFF duration
+     */
+    constexpr
+    void setHoldOffDuration(std::chrono::milliseconds d) noexcept
+    {
+    }
+
     /*! \brief Set the signal ON or OFF
      *
      * This method can be called often.
@@ -93,14 +49,28 @@ namespace Mdt{ namespace SerialPort{
     constexpr
     void setSignalOn(bool on, PinoutSignalUiStateTimer::TimePoint now) noexcept
     {
+      mStateMachine.setSignalOn(on, now);
+
       if(on){
         ++mOnCount;
       }
     }
 
-    /*! \brief 
+    /*! \brief Set the watchdog timeout event
      */
-    void setWatchdogTimeoutEvent(PinoutSignalUiStateTimer::TimePoint now);
+    constexpr
+    void setWatchdogTimeoutEvent(PinoutSignalUiStateTimer::TimePoint now) noexcept
+    {
+      mStateMachine.setWatchdogTimeoutEvent(now);
+    }
+
+    /*! \brief Returns true if current state is a hold state
+     */
+    constexpr
+    bool watchdogTimerShouldBeActive() const noexcept
+    {
+      return mStateMachine.watchdogTimerShouldBeActive();
+    }
 
     /*! \brief Update the state
      *
@@ -134,7 +104,8 @@ namespace Mdt{ namespace SerialPort{
     constexpr
     bool stateIsOn() const noexcept
     {
-      return mState;
+      return mStateMachine.uiStateIsOn();
+      // return mState;
     }
 
    private:
@@ -145,6 +116,8 @@ namespace Mdt{ namespace SerialPort{
       return mOnCount > 0;
     }
 
+    PinoutSignalUiStateStateMachine mStateMachine;
+    
     size_t mOnCount = 0;
     bool mState = false;
     bool mPreviousState = false;
