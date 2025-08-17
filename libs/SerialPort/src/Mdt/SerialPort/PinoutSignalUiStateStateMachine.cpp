@@ -8,7 +8,3 @@
  **
  *****************************************************************************************/
 #include "PinoutSignalUiStateStateMachine.h"
-
-namespace Mdt{ namespace SerialPort{
-
-}} // namespace Mdt{ namespace SerialPort{

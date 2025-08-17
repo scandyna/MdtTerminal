@@ -9,7 +9,6 @@
  *****************************************************************************************/
 #include "Mdt/SerialPort/PinoutSignalUiStateStateMachine.h"
 #include "catch2/catch.hpp"
-#include "Catch2QString.h"
 
 using namespace Mdt::SerialPort;
 using State = PinoutSignalUiStateStateMachine::State;
