@@ -36,6 +36,7 @@ Timer -> UiState : to
 UiState is OffHold
 
 @160
+Timer -> UiState : to
 UiState is Off
 Timer is Idle
 

@@ -7,7 +7,7 @@ UiOnHold --> UiOn : holdOnTimeout
 UiOnHold --> UiOnHoldOffRequested : signal [OFF]
 UiOnHoldOffRequested --> UiOnHold : signal [ON]
 
-UiOnHoldOffRequested --> UiOffHold : holdOnTimeout
+UiOnHoldOffRequested --> UiOffHold : holdOnTimeout / startHoldOffTimer()
 
 UiOn --> UiOffHold : signal [OFF] / startHoldOffTimer()
 
@@ -15,6 +15,6 @@ UiOffHold --> UiOffHoldOnRequested : signal [ON]
 UiOffHoldOnRequested --> UiOffHold : signal [OFF]
 
 UiOffHold --> UiOff : holdOffTimeout
-UiOffHoldOnRequested --> UiOnHold : holdOffTimeout
+UiOffHoldOnRequested --> UiOnHold : holdOffTimeout / startHoldOnTimer()
 
 @enduml
