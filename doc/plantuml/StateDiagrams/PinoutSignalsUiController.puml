@@ -3,7 +3,10 @@
 [*] --> UiOff
 UiOff --> UiOnHold : signal [ON] / startHoldOnTimer()
 
-UiOnHold --> UiOn : holdOnTimeout
+UiOnHold --> UiOn : signal [ON && holdOnTimeout]
+UiOnHold --> UiOn : wdt [holdOnTimeout]
+UiOnHold --> UiOffHold : signal [OFF && holdOnTimeout] / startHoldOffTimer()
+
 UiOnHold --> UiOnHoldOffRequested : signal [OFF]
 UiOnHoldOffRequested --> UiOnHold : signal [ON]
 
@@ -14,7 +17,10 @@ UiOn --> UiOffHold : signal [OFF] / startHoldOffTimer()
 UiOffHold --> UiOffHoldOnRequested : signal [ON]
 UiOffHoldOnRequested --> UiOffHold : signal [OFF]
 
-UiOffHold --> UiOff : holdOffTimeout
+UiOffHold --> UiOff : signal [OFF && holdOffTimeout]
+UiOffHold --> UiOff : wdt [holdOffTimeout]
+UiOffHold --> UiOnHold : signal [ON && holdOffTimeout] / startHoldOnTimer()
+
 UiOffHoldOnRequested --> UiOnHold : holdOffTimeout / startHoldOnTimer()
 
 @enduml

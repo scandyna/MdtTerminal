@@ -57,8 +57,12 @@ namespace Mdt{ namespace SerialPort{
    *
    * \todo Remove entry/ startXXtimer() in states ! Put ir in transitions ! Will reduce states.
    *
-   * \startuml "Pinout signals UI controller"
+   * \startuml "Pinout signals UI controller - RX example"
    * !include StateDiagrams/PinoutSignalsUiController.puml
+   * \enduml
+   *
+   * \startuml "Pinout signals UI controller - RX example"
+   * !include StateDiagrams/PinoutSignalsUiControllerRxExample.puml
    * \enduml
    *
    * \section Mdt_SerialPort_PinoutSignalsUiController_Rationale Rationale

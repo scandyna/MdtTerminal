@@ -18,6 +18,11 @@
 namespace Mdt{ namespace SerialPort{
 
   /*! \brief Helper for PinoutSignalUiState
+   *
+   * \todo try:
+   * - is_on_hold_state()
+   * - enter_on_hold_state()
+   * - handleSignalOnEvent_in_hold_on()
    */
   class MDT_SERIALPORT_EXPORT PinoutSignalUiStateStateMachine
   {
@@ -174,7 +179,11 @@ namespace Mdt{ namespace SerialPort{
       assert(mCurrentState == State::UiOffHold);
 
       if( mHoldOffTimer.hasExpired(now) ){
-        transitFrom_UiOffHold_to_UiOff();
+        if(on){
+          transitFrom_UiOffHold_to_UiOnHold(now);
+        }else{
+          transitFrom_UiOffHold_to_UiOff();
+        }
         return;
       }
 
@@ -222,7 +231,11 @@ namespace Mdt{ namespace SerialPort{
       assert(mCurrentState == State::UiOnHold);
 
       if( mHoldOnTimer.hasExpired(now) ){
-        transitFrom_UiOnHold_to_UiOn();
+        if(on){
+          transitFrom_UiOnHold_to_UiOn();
+        }else{
+          transitFrom_UiOnHold_to_UiOffHold(now);
+        }
         return;
       }
 
@@ -303,6 +316,16 @@ namespace Mdt{ namespace SerialPort{
     }
 
     constexpr
+    void transitFrom_UiOffHold_to_UiOnHold(PinoutSignalUiStateTimer::TimePoint now) noexcept
+    {
+      assert(mCurrentState == State::UiOffHold);
+
+      mCurrentState = State::UiOnHold;
+      mUiOnOffStateHasChanged = true;
+      startHoldOnTimer(now);
+    }
+
+    constexpr
     void transitFrom_UiOffHoldOnRequested_to_UiOffHold() noexcept
     {
       assert(mCurrentState == State::UiOffHoldOnRequested);
@@ -327,6 +350,16 @@ namespace Mdt{ namespace SerialPort{
 
       mCurrentState = State::UiOn;
       mUiOnOffStateHasChanged = false;
+    }
+
+    constexpr
+    void transitFrom_UiOnHold_to_UiOffHold(PinoutSignalUiStateTimer::TimePoint  now) noexcept
+    {
+      assert(mCurrentState == State::UiOnHold);
+
+      mCurrentState = State::UiOffHold;
+      mUiOnOffStateHasChanged = true;
+      startHoldOffTimer(now);
     }
 
     constexpr
@@ -375,12 +408,16 @@ namespace Mdt{ namespace SerialPort{
     constexpr
     bool holdOnTimeout(PinoutSignalUiStateTimer::TimePoint now) const noexcept
     {
+      assert(mCurrentState == State::UiOnHold);
+
       return mHoldOnTimer.hasExpired(now);
     }
 
     constexpr
     void startHoldOffTimer(PinoutSignalUiStateTimer::TimePoint now) noexcept
     {
+      assert(mCurrentState == State::UiOffHold);
+
       mHoldOffTimer.start(now);
     }
 

@@ -235,6 +235,22 @@ mdt_add_test(
 )
 
 mdt_add_test(
+  NAME SerialPortPinoutSignalUiStateTimerTest
+  TARGET serialPortPinoutSignalUiStateTimerTest
+  DEPENDENCIES Mdt::SerialPort Mdt::SerialPortTestLib Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/PinoutSignalUiStateTimerTest.cpp
+)
+
+mdt_add_test(
+  NAME SerialPortPinoutSignalUiStateStateMachineTest
+  TARGET serialPortPinoutSignalUiStateStateMachineTest
+  DEPENDENCIES Mdt::SerialPort Mdt::SerialPortTestLib Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/PinoutSignalUiStateStateMachineTest.cpp
+)
+
+mdt_add_test(
   NAME SerialPortPinoutSignalUiStateTest
   TARGET serialPortPinoutSignalUiStateTest
   DEPENDENCIES Mdt::SerialPort Mdt::SerialPortTestLib Mdt::Catch2Main Mdt::Catch2Qt

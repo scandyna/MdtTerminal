@@ -78,7 +78,7 @@ TEST_CASE("UiOnHold")
   CHECK( sm.uiOnOffStateHasChanged() );
   CHECK( sm.uiStateIsOn() );
 
-  SECTION("signal ON before hold ON timeout - only reset UI state changed")
+  SECTION("signal ON before hold on timeout - only reset UI state changed")
   {
     sm.setSignalOn( true, TimePoint(20ms) );
 
@@ -88,7 +88,7 @@ TEST_CASE("UiOnHold")
     CHECK( sm.uiStateIsOn() );
   }
 
-  SECTION("signal OFF before hold ON timeout - transition to UiOnHoldOffRequested")
+  SECTION("signal OFF before hold on timeout - transition to UiOnHoldOffRequested")
   {
     sm.setSignalOn( false, TimePoint(20ms) );
 
@@ -98,7 +98,7 @@ TEST_CASE("UiOnHold")
     CHECK( sm.uiStateIsOn() );
   }
 
-  SECTION("signal (ON) when hold ON timed out - transition to UiOn")
+  SECTION("signal ON when hold on timed out - transition to UiOn")
   {
     sm.setSignalOn( true, TimePoint(120ms) );
 
@@ -108,17 +108,17 @@ TEST_CASE("UiOnHold")
     CHECK( sm.uiStateIsOn() );
   }
 
-  SECTION("signal (OFF) when hold ON timed out - transition to UiOn")
+  SECTION("signal OFF when hold on timed out - transition to UiOffHold")
   {
     sm.setSignalOn( false, TimePoint(120ms) );
 
-    CHECK( sm.currentState() == State::UiOn );
-    CHECK( !sm.watchdogTimerShouldBeActive() );
-    CHECK( !sm.uiOnOffStateHasChanged() );
-    CHECK( sm.uiStateIsOn() );
+    CHECK( sm.currentState() == State::UiOffHold );
+    CHECK( sm.watchdogTimerShouldBeActive() );
+    CHECK( sm.uiOnOffStateHasChanged() );
+    CHECK( !sm.uiStateIsOn() );
   }
 
-  SECTION("watchdog timeout before hold ON timeout - only reset UI state changed")
+  SECTION("watchdog timeout before hold on timeout - only reset UI state changed")
   {
     sm.setWatchdogTimeoutEvent( TimePoint(20ms) );
 
@@ -128,7 +128,7 @@ TEST_CASE("UiOnHold")
     CHECK( sm.uiStateIsOn() );
   }
 
-  SECTION("watchdog timeout when hold ON timed out - transition to UiOn")
+  SECTION("watchdog timeout when hold on timed out - transition to UiOn")
   {
     sm.setWatchdogTimeoutEvent( TimePoint(120ms) );
 
@@ -360,17 +360,17 @@ TEST_CASE("UiOffHold")
   {
     const auto now = TimePoint(250ms);
 
-    SECTION("signal (ON) - transition to UiOff")
+    SECTION("signal ON - transition to UiOnHold")
     {
       sm.setSignalOn(true, now);
 
-      CHECK( sm.currentState() == State::UiOff );
-      CHECK( !sm.watchdogTimerShouldBeActive() );
-      CHECK( !sm.uiOnOffStateHasChanged() );
-      CHECK( !sm.uiStateIsOn() );
+      CHECK( sm.currentState() == State::UiOnHold );
+      CHECK( sm.watchdogTimerShouldBeActive() );
+      CHECK( sm.uiOnOffStateHasChanged() );
+      CHECK( sm.uiStateIsOn() );
     }
 
-    SECTION("signal (OFF) - transition to UiOff")
+    SECTION("signal OFF - transition to UiOff")
     {
       sm.setSignalOn(false, now);
 
@@ -501,6 +501,28 @@ TEST_CASE("transitionFrom_UiOn_to_UiOffHold_startsHoldOffTimer")
   CHECK( sm.currentState() == State::UiOff );
 }
 
+TEST_CASE("transitionFrom_UiOnHold_to_UiOffHold_startsHoldOffTimer")
+{
+  PinoutSignalUiStateStateMachine sm;
+  sm.setHoldOnDuration(100ms);
+  sm.setHoldOffDuration(40ms);
+  sm.setSignalOn( true, TimePoint(20ms) );    // -> UiOnHold
+  REQUIRE( sm.currentState() == State::UiOnHold );
+
+  // Should start hold off timer
+  const auto now = TimePoint(500ms);
+  sm.setSignalOn( false, now );
+  CHECK( sm.currentState() == State::UiOffHold );
+
+  // Before timeout - signal OFF should not change state
+  sm.setSignalOn( false, now + 20ms );
+  CHECK( sm.currentState() == State::UiOffHold );
+
+  // After timeout - transition to UiOff
+  sm.setSignalOn( false, now + 50ms );
+  CHECK( sm.currentState() == State::UiOff );
+}
+
 TEST_CASE("transitionFrom_UiOnHoldOffRequested_to_UiOffHold_startsHoldOffTimer")
 {
   PinoutSignalUiStateStateMachine sm;
@@ -555,6 +577,30 @@ TEST_CASE("transitionFrom_UiOffHoldOnRequested_to_UiOnHold_startsHoldOnTimer")
   sm.setSignalOn( false, TimePoint(200ms) );  // -> UiOffHold
   sm.setSignalOn( true, TimePoint(210ms) );   // -> UiOffHoldOnRequested
   REQUIRE( sm.currentState() == State::UiOffHoldOnRequested );
+
+  // Should start hold on timer
+  const auto now = TimePoint(500ms);
+  sm.setSignalOn( true, now );
+  CHECK( sm.currentState() == State::UiOnHold );
+
+  // Before timeout - signal ON should not change state
+  sm.setSignalOn( true, now + 20ms );
+  CHECK( sm.currentState() == State::UiOnHold );
+
+  // After timeout - transition to UiOn
+  sm.setSignalOn( true, now + 150ms );
+  CHECK( sm.currentState() == State::UiOn );
+}
+
+TEST_CASE("transitionFrom_UiOffHold_to_UiOnHold_startsHoldOnTimer")
+{
+  PinoutSignalUiStateStateMachine sm;
+  sm.setHoldOnDuration(100ms);
+  sm.setHoldOffDuration(40ms);
+  sm.setSignalOn( true, TimePoint(20ms) );    // -> UiOnHold
+  sm.setSignalOn( false, TimePoint(30ms) );   // -> UiOnHoldOffRequested
+  sm.setSignalOn( false, TimePoint(200ms) );  // -> UiOffHold
+  REQUIRE( sm.currentState() == State::UiOffHold );
 
   // Should start hold on timer
   const auto now = TimePoint(500ms);

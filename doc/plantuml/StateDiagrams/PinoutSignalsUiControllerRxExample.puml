@@ -1,0 +1,44 @@
+@startuml
+
+[*] --> UiOff
+
+UiOff --> on_hold : signal [ON]
+
+UiOn --> off_hold : signal [OFF]
+
+state on_hold {
+  state on_hold_fake_entry
+  on_hold_fake_entry : entry / startHoldOnTimer()
+  [*] --> on_hold_fake_entry
+
+  on_hold_fake_entry --> UiOnHold
+
+  UiOnHold --> UiOnHoldOffRequested : signal [OFF]
+  UiOnHoldOffRequested --> UiOnHold : signal [ON]
+
+  UiOnHold --> UiOn : wdt [holdOnTimeout]
+  UiOnHoldOffRequested --> off_hold : wdt [holdOnTimeout]
+}
+
+on_hold --> UiOn : signal [ON && holdOnTimeout]
+on_hold --> off_hold : signal [OFF && holdOnTimeout]
+
+
+state off_hold {
+  state off_hold_fake_entry
+  off_hold_fake_entry : entry / startHoldOffTimer()
+  [*] --> off_hold_fake_entry
+
+  off_hold_fake_entry --> UiOffHold
+
+  UiOffHold --> UiOffHoldOnRequested : signal [ON]
+  UiOffHoldOnRequested --> UiOffHold : signal [OFF]
+
+  UiOffHold --> UiOff : wdt [holdOffTimeout]
+  UiOffHoldOnRequested --> on_hold : wdt [holdOffTimeout]
+}
+
+off_hold --> UiOff : signal [OFF && holdOffTimeout]
+off_hold --> on_hold : signal [ON && holdOffTimeout]
+
+@enduml

@@ -15,7 +15,7 @@
 #include "mdt_serialport_export.h"
 
 
-#include <cstddef>
+// #include <cstddef>
 
 
 namespace Mdt{ namespace SerialPort{
@@ -33,6 +33,7 @@ namespace Mdt{ namespace SerialPort{
     constexpr
     void setHoldOnDuration(std::chrono::milliseconds d) noexcept
     {
+      mStateMachine.setHoldOnDuration(d);
     }
 
     /*! \brief Set the hold OFF duration
@@ -40,6 +41,7 @@ namespace Mdt{ namespace SerialPort{
     constexpr
     void setHoldOffDuration(std::chrono::milliseconds d) noexcept
     {
+      mStateMachine.setHoldOffDuration(d);
     }
 
     /*! \brief Set the signal ON or OFF
@@ -51,9 +53,9 @@ namespace Mdt{ namespace SerialPort{
     {
       mStateMachine.setSignalOn(on, now);
 
-      if(on){
-        ++mOnCount;
-      }
+      // if(on){
+      //   ++mOnCount;
+      // }
     }
 
     /*! \brief Set the watchdog timeout event
@@ -78,23 +80,21 @@ namespace Mdt{ namespace SerialPort{
      * It will calculate the state regarding given time
      * and the various calls of setSignalOn().
      */
-    [[deprecated]]
-    constexpr
-    void updateState(PinoutSignalUiStateTimer::TimePoint now) noexcept
-    {
-      mPreviousState = mState;
-      mState = deduceNewState();
-      mOnCount = 0;
-    }
+    // [[deprecated]]
+    // constexpr
+    // void updateState(PinoutSignalUiStateTimer::TimePoint now) noexcept
+    // {
+    //   mPreviousState = mState;
+    //   mState = deduceNewState();
+    //   mOnCount = 0;
+    // }
 
     /*! \brief Check if the state has changed
-     *
-     * The returned value has only sense just after a call of updateState().
      */
     constexpr
     bool stateHasChanged() const noexcept
     {
-      return mState != mPreviousState;
+      return mStateMachine.uiOnOffStateHasChanged();
     }
 
     /*! \brief Check if the state is ON
@@ -110,17 +110,17 @@ namespace Mdt{ namespace SerialPort{
 
    private:
 
-    constexpr
-    bool deduceNewState() const noexcept
-    {
-      return mOnCount > 0;
-    }
+    // constexpr
+    // bool deduceNewState() const noexcept
+    // {
+    //   return mOnCount > 0;
+    // }
 
     PinoutSignalUiStateStateMachine mStateMachine;
     
-    size_t mOnCount = 0;
-    bool mState = false;
-    bool mPreviousState = false;
+    // size_t mOnCount = 0;
+    // bool mState = false;
+    // bool mPreviousState = false;
   };
 
 }} // namespace Mdt{ namespace SerialPort{
