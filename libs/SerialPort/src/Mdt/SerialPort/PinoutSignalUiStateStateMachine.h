@@ -148,20 +148,14 @@ namespace Mdt{ namespace SerialPort{
         case State::UiOff:
           handleSignalOnEvent_in_UiOff(on, now);
           break;
-        case State::UiOffHold:
-          ///handleSignalOnEvent_in_UiOffHold(on, now);
-          break;
-        case State::UiOffHoldOnRequested:
-          ///handleSignalOnEvent_in_UiOffHoldOnRequested(on, now);
-          break;
-        case State::UiOnHold:
-          /// handleSignalOnEvent_in_UiOnHold(on, now);
-          break;
-        case State::UiOnHoldOffRequested:
-          /// handleSignalOnEvent_in_UiOnHoldOffRequested(on, now);
-          break;
         case State::UiOn:
           handleSignalOnEvent_in_UiOn(on, now);
+          break;
+        case State::UiOffHold:
+        case State::UiOffHoldOnRequested:
+        case State::UiOnHold:
+        case State::UiOnHoldOffRequested:
+          assert(false);
           break;
       }
     }
@@ -179,24 +173,6 @@ namespace Mdt{ namespace SerialPort{
       if( currentStateIs_off_hold() ){
         handleWatchdogTimeoutEvent_in_off_hold(now);
         return;
-      }
-
-      switch(mCurrentState){
-        case State::UiOnHold:
-          handleWatchdogTimeoutEvent_in_UiOnHold(now);
-          break;
-        case State::UiOnHoldOffRequested:
-          handleWatchdogTimeoutEvent_in_UiOnHoldOffRequested(now);
-          break;
-        case State::UiOffHold:
-          handleWatchdogTimeoutEvent_in_UiOffHold(now);
-          break;
-        case State::UiOffHoldOnRequested:
-          handleWatchdogTimeoutEvent_in_UiOffHoldOnRequested(now);
-          break;
-        case State::UiOn:
-        case State::UiOff:
-          break;
       }
     }
 
@@ -331,60 +307,6 @@ namespace Mdt{ namespace SerialPort{
       }
     }
 
-    [[deprecated]]
-    constexpr
-    void handleSignalOnEvent_in_UiOffHold(bool on, PinoutSignalUiStateTimer::TimePoint now) noexcept
-    {
-      assert(mCurrentState == State::UiOffHold);
-
-      if( mHoldOffTimer.hasExpired(now) ){
-        if(on){
-          transitFrom_UiOffHold_to_UiOnHold(now);
-        }else{
-          transitFrom_UiOffHold_to_UiOff();
-        }
-        return;
-      }
-
-      if(on){
-        transitFrom_UiOffHold_to_UiOffHoldOnRequested();
-      }else{
-        mUiOnOffStateHasChanged = false;
-      }
-    }
-
-    [[deprecated]]
-    constexpr
-    void handleWatchdogTimeoutEvent_in_UiOffHold(PinoutSignalUiStateTimer::TimePoint now) noexcept
-    {
-      assert(mCurrentState == State::UiOffHold);
-
-      handleSignalOnEvent_in_UiOffHold(false, now);
-    }
-
-    constexpr
-    void handleSignalOnEvent_in_UiOffHoldOnRequested(bool on, PinoutSignalUiStateTimer::TimePoint now) noexcept
-    {
-      assert(mCurrentState == State::UiOffHoldOnRequested);
-
-      if( mHoldOffTimer.hasExpired(now) ){
-        transitFrom_UiOffHoldOnRequested_to_UiOnHold(now);
-        return;
-      }
-
-      if(!on){
-        transitFrom_UiOffHoldOnRequested_to_UiOffHold();
-      }
-    }
-
-    constexpr
-    void handleWatchdogTimeoutEvent_in_UiOffHoldOnRequested(PinoutSignalUiStateTimer::TimePoint now) noexcept
-    {
-      assert(mCurrentState == State::UiOffHoldOnRequested);
-
-      handleSignalOnEvent_in_UiOffHoldOnRequested(true, now);
-    }
-
     constexpr
     void handleSignalOnEvent_in_on_hold(bool on, PinoutSignalUiStateTimer::TimePoint now) noexcept
     {
@@ -392,7 +314,7 @@ namespace Mdt{ namespace SerialPort{
 
       if( mHoldOnTimer.hasExpired(now) ){
         if(on){
-          transitFrom_on_hold_to_UiOn(now);
+          transitFrom_on_hold_to_UiOn();
         }else{
           transitFrom_on_hold_to_off_hold(now);
         }
@@ -458,69 +380,13 @@ namespace Mdt{ namespace SerialPort{
       }
     }
 
-    [[deprecated]]
-    constexpr
-    void handleSignalOnEvent_in_UiOnHold(bool on, PinoutSignalUiStateTimer::TimePoint now) noexcept
-    {
-      assert(mCurrentState == State::UiOnHold);
-
-      if( mHoldOnTimer.hasExpired(now) ){
-        if(on){
-          transitFrom_UiOnHold_to_UiOn();
-        }else{
-          transitFrom_UiOnHold_to_UiOffHold(now);
-        }
-        return;
-      }
-
-      if(on){
-        mUiOnOffStateHasChanged = false;
-      }else{
-        transitFrom_UiOnHold_to_UiOnHoldOffRequested();
-      }
-    }
-
-    [[deprecated]]
-    constexpr
-    void handleWatchdogTimeoutEvent_in_UiOnHold(PinoutSignalUiStateTimer::TimePoint now) noexcept
-    {
-      assert(mCurrentState == State::UiOnHold);
-
-      handleSignalOnEvent_in_UiOnHold(true, now);
-    }
-
-    [[deprecated]]
-    constexpr
-    void handleSignalOnEvent_in_UiOnHoldOffRequested(bool on, PinoutSignalUiStateTimer::TimePoint now) noexcept
-    {
-      assert(mCurrentState == State::UiOnHoldOffRequested);
-
-      if( mHoldOnTimer.hasExpired(now) ){
-        transitFrom_UiOnHoldOffRequested_to_UiOffHold(now);
-        return;
-      }
-
-      if(on){
-        transitFrom_UiOnHoldOffRequested_to_UiOnHold();
-      }
-    }
-
-    [[deprecated]]
-    constexpr
-    void handleWatchdogTimeoutEvent_in_UiOnHoldOffRequested(PinoutSignalUiStateTimer::TimePoint now) noexcept
-    {
-      assert(mCurrentState == State::UiOnHoldOffRequested);
-
-      handleSignalOnEvent_in_UiOnHoldOffRequested(false, now);
-    }
-
     constexpr
     void handleSignalOnEvent_in_UiOn(bool on, PinoutSignalUiStateTimer::TimePoint now) noexcept
     {
       assert(mCurrentState == State::UiOn);
 
       if(!on){
-        transitFrom_UiOn_to_UiOffHold(now);
+        transitFrom_UiOn_to_off_hold(now);
       }
     }
 
@@ -578,17 +444,6 @@ namespace Mdt{ namespace SerialPort{
       mUiOnOffStateHasChanged = true;
     }
 
-    [[deprecated]]
-    constexpr
-    void transitFrom_UiOffHold_to_UiOnHold(PinoutSignalUiStateTimer::TimePoint now) noexcept
-    {
-      assert(mCurrentState == State::UiOffHold);
-
-      mCurrentState = State::UiOnHold;
-      mUiOnOffStateHasChanged = true;
-      startHoldOnTimer(now);
-    }
-
     constexpr
     void transitFrom_UiOffHoldOnRequested_to_UiOffHold() noexcept
     {
@@ -598,17 +453,7 @@ namespace Mdt{ namespace SerialPort{
     }
 
     constexpr
-    void transitFrom_UiOffHoldOnRequested_to_UiOnHold(PinoutSignalUiStateTimer::TimePoint now) noexcept
-    {
-      assert(mCurrentState == State::UiOffHoldOnRequested);
-
-      mCurrentState = State::UiOnHold;
-      mUiOnOffStateHasChanged = true;
-      startHoldOnTimer(now);
-    }
-
-    constexpr
-    void transitFrom_on_hold_to_UiOn(PinoutSignalUiStateTimer::TimePoint now) noexcept
+    void transitFrom_on_hold_to_UiOn() noexcept
     {
       assert( currentStateIs_on_hold() );
 
@@ -632,17 +477,6 @@ namespace Mdt{ namespace SerialPort{
 
       mCurrentState = State::UiOn;
       mUiOnOffStateHasChanged = false;
-    }
-
-    [[deprecated]]
-    constexpr
-    void transitFrom_UiOnHold_to_UiOffHold(PinoutSignalUiStateTimer::TimePoint now) noexcept
-    {
-      assert(mCurrentState == State::UiOnHold);
-
-      mCurrentState = State::UiOffHold;
-      mUiOnOffStateHasChanged = true;
-      startHoldOffTimer(now);
     }
 
     constexpr
@@ -671,25 +505,13 @@ namespace Mdt{ namespace SerialPort{
       mUiOnOffStateHasChanged = true;
     }
 
-    [[deprecated]]
     constexpr
-    void transitFrom_UiOnHoldOffRequested_to_UiOffHold(PinoutSignalUiStateTimer::TimePoint now) noexcept
-    {
-      assert(mCurrentState == State::UiOnHoldOffRequested);
-
-      mCurrentState = State::UiOffHold;
-      mUiOnOffStateHasChanged = true;
-      startHoldOffTimer(now);
-    }
-
-    constexpr
-    void transitFrom_UiOn_to_UiOffHold(PinoutSignalUiStateTimer::TimePoint now) noexcept
+    void transitFrom_UiOn_to_off_hold(PinoutSignalUiStateTimer::TimePoint now) noexcept
     {
       assert(mCurrentState == State::UiOn);
 
-      mCurrentState = State::UiOffHold;
+      enter_off_hold_state(now);
       mUiOnOffStateHasChanged = true;
-      startHoldOffTimer(now);
     }
 
     constexpr
