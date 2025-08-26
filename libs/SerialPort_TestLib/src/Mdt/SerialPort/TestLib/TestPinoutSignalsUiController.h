@@ -32,10 +32,12 @@ namespace Mdt{ namespace SerialPort{ namespace TestLib{
 
    private:
 
+    TimePoint getCurrentTime() const override;
     void startTimer() override;
     void stopTimer() override;
 
     bool mTimerIsActive = false;
+    TimePoint mCurrentTime = TimePoint( std::chrono::milliseconds(0) );
   };
 
 }}} // namespace Mdt{ namespace SerialPort{ namespace TestLib{

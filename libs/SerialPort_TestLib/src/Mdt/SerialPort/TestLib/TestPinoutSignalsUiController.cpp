@@ -26,6 +26,11 @@ bool TestPinoutSignalsUiController::timerIsActive() const
   return mTimerIsActive;
 }
 
+TestPinoutSignalsUiController::TimePoint TestPinoutSignalsUiController::getCurrentTime() const
+{
+  return mCurrentTime;
+}
+
 void TestPinoutSignalsUiController::startTimer()
 {
   mTimerIsActive = true;

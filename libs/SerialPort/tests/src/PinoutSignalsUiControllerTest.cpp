@@ -43,6 +43,7 @@ TEST_CASE("RX")
 {
   PinoutSignals ps;
   TestPinoutSignalsUiController psc;
+  
   PinoutSignalUiStateChangedSignalSpy receiveDataChangedSpy(&psc, &TestPinoutSignalsUiController::receiveDataChanged);
 
   SECTION("only 1 RX ON notified")

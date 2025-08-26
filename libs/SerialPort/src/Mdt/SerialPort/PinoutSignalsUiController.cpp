@@ -23,6 +23,11 @@ PinoutSignalsUiController::PinoutSignalsUiController(QObject *parent)
   mTimer.setInterval(100ms);
 }
 
+PinoutSignalsUiController::TimePoint PinoutSignalsUiController::getCurrentTime() const
+{
+  return PinoutSignalUiStateTimer::now();
+}
+
 void PinoutSignalsUiController::startTimer()
 {
   mTimer.start();

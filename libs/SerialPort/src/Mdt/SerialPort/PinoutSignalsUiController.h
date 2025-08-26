@@ -110,6 +110,7 @@ namespace Mdt{ namespace SerialPort{
 
    private:
 
+    TimePoint getCurrentTime() const override;
     void startTimer() override;
     bool timerIsActive() const override;
     void stopTimer() override;
