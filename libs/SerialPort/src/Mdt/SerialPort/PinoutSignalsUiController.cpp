@@ -18,7 +18,7 @@ namespace Mdt{ namespace SerialPort{
 PinoutSignalsUiController::PinoutSignalsUiController(QObject *parent)
  : AbstractPinoutSignalsUiController(parent)
 {
-  connect(&mTimer, &QTimer::timeout, this, &PinoutSignalsUiController::setTimerTimeoutEvent);
+  connect(&mTimer, &QTimer::timeout, this, &PinoutSignalsUiController::setWatchdogTimeoutEvent);
   mTimer.setTimerType(Qt::CoarseTimer);
   mTimer.setInterval(100ms);
 }
@@ -28,17 +28,17 @@ PinoutSignalsUiController::TimePoint PinoutSignalsUiController::getCurrentTime()
   return PinoutSignalUiStateTimer::now();
 }
 
-void PinoutSignalsUiController::startTimer()
+void PinoutSignalsUiController::startWatchdogTimer()
 {
   mTimer.start();
 }
 
-bool PinoutSignalsUiController::timerIsActive() const
+bool PinoutSignalsUiController::watchdogTimerIsActive() const
 {
   return mTimer.isActive();
 }
 
-void PinoutSignalsUiController::stopTimer()
+void PinoutSignalsUiController::stopWatchdogTimer()
 {
   mTimer.stop();
 }

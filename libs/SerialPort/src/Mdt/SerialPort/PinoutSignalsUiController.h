@@ -111,9 +111,9 @@ namespace Mdt{ namespace SerialPort{
    private:
 
     TimePoint getCurrentTime() const override;
-    void startTimer() override;
-    bool timerIsActive() const override;
-    void stopTimer() override;
+    void startWatchdogTimer() override;
+    bool watchdogTimerIsActive() const override;
+    void stopWatchdogTimer() override;
 
     QTimer mTimer;
   };

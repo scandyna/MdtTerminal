@@ -69,40 +69,42 @@ namespace Mdt{ namespace SerialPort{
    protected Q_SLOTS:
 
     /*! \brief Set the timer timeout event
-     *
-     * \todo should rename setWatchdogTimeoutEvent()
      */
-    void setTimerTimeoutEvent();
+    void setWatchdogTimeoutEvent();
 
    protected:
 
     using TimePoint = PinoutSignalUiStateTimer::TimePoint;
 
+    /*! \brief Returns true if current state of any UI state is a hold state
+     */
+    bool watchdogTimerShouldBeActive() const noexcept;
+
    private:
+
+    void notifyChangedStates();
 
     virtual
     TimePoint getCurrentTime() const = 0;
 
+    void startWatchdogTimerIfRequired();
+
     /*! \brief Start the timer
-     *
-     * \todo rename startWatchdogTimer()
      */
     virtual
-    void startTimer() = 0;
+    void startWatchdogTimer() = 0;
 
     /*! \brief Check the timer is active (running)
-     *
-     * \todo rename watchdogTimerIsActive()
      */
     virtual
-    bool timerIsActive() const = 0;
+    bool watchdogTimerIsActive() const = 0;
 
     /*! \brief Stop the timer
      *
      * \todo rename stopWatchdogTimer()
      */
     virtual
-    void stopTimer() = 0;
+    void stopWatchdogTimer() = 0;
 
     PinoutSignalUiState mReceiveDataState;
     PinoutSignalUiState mTransmitDataState;

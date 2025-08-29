@@ -21,20 +21,25 @@ namespace Mdt{ namespace SerialPort{ namespace TestLib{
 
    public:
 
+    using TimePoint = AbstractPinoutSignalsUiController::TimePoint;
+
     /*! \brief Constructor
      */
     explicit
     TestPinoutSignalsUiController(QObject *parent = nullptr);
 
-    void setTimerTimeoutEvent();
+    void setCurrentTime(TimePoint now);
 
-    bool timerIsActive() const override;
+    void setWatchdogTimeoutEvent();
+
+    bool watchdogTimerShouldBeActive() const noexcept;
+    bool watchdogTimerIsActive() const override;
 
    private:
 
     TimePoint getCurrentTime() const override;
-    void startTimer() override;
-    void stopTimer() override;
+    void startWatchdogTimer() override;
+    void stopWatchdogTimer() override;
 
     bool mTimerIsActive = false;
     TimePoint mCurrentTime = TimePoint( std::chrono::milliseconds(0) );

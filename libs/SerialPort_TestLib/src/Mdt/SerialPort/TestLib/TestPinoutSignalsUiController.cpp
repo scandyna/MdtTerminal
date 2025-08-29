@@ -16,12 +16,22 @@ TestPinoutSignalsUiController::TestPinoutSignalsUiController(QObject *parent)
 {
 }
 
-void TestPinoutSignalsUiController::setTimerTimeoutEvent()
+void TestPinoutSignalsUiController::setCurrentTime(TimePoint now)
 {
-  AbstractPinoutSignalsUiController::setTimerTimeoutEvent();
+  mCurrentTime = now;
 }
 
-bool TestPinoutSignalsUiController::timerIsActive() const
+void TestPinoutSignalsUiController::setWatchdogTimeoutEvent()
+{
+  AbstractPinoutSignalsUiController::setWatchdogTimeoutEvent();
+}
+
+bool TestPinoutSignalsUiController::watchdogTimerShouldBeActive() const noexcept
+{
+  return AbstractPinoutSignalsUiController::watchdogTimerShouldBeActive();
+}
+
+bool TestPinoutSignalsUiController::watchdogTimerIsActive() const
 {
   return mTimerIsActive;
 }
@@ -31,12 +41,12 @@ TestPinoutSignalsUiController::TimePoint TestPinoutSignalsUiController::getCurre
   return mCurrentTime;
 }
 
-void TestPinoutSignalsUiController::startTimer()
+void TestPinoutSignalsUiController::startWatchdogTimer()
 {
   mTimerIsActive = true;
 }
 
-void TestPinoutSignalsUiController::stopTimer()
+void TestPinoutSignalsUiController::stopWatchdogTimer()
 {
   mTimerIsActive = false;
 }
