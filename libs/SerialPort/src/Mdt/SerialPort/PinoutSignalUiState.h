@@ -58,6 +58,18 @@ namespace Mdt{ namespace SerialPort{
       // }
     }
 
+    /*! \brief Set the state to OFF now
+     *
+     * Will set this state to OFF immediatly,
+     * independently from the current state (bypasses hold states).
+     * Can typically be called when the port closes.
+     */
+    constexpr
+    void setStateOffNow() noexcept
+    {
+      mStateMachine.setStateOffNow();
+    }
+
     /*! \brief Set the watchdog timeout event
      */
     constexpr

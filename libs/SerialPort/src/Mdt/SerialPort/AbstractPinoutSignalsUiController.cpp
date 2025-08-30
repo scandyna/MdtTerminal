@@ -42,19 +42,25 @@ void AbstractPinoutSignalsUiController::setHoldOffDuration(std::chrono::millisec
 void AbstractPinoutSignalsUiController::setAboutToCloseEvent()
 {
   stopWatchdogTimer();
+
+  mReceiveDataState.setStateOffNow();
+  mTransmitDataState.setStateOffNow();
+  mDataTerminalReadyState.setStateOffNow();
+
+  notifyChangedStates();
 }
 
 void AbstractPinoutSignalsUiController::setSignals(const PinoutSignals & ps)
 {
   stopWatchdogTimer();
 
-  qDebug() << "AbstractPinoutSignalsUiController::setSignals() ...";
+  // qDebug() << "AbstractPinoutSignalsUiController::setSignals() ...";
 
   const TimePoint now = getCurrentTime();
 
-  qDebug() << " now: " << now.time_since_epoch().count();
+  // qDebug() << " now: " << now.time_since_epoch().count();
 
-  qDebug() << " DTR: " << ps.dataTerminalReadyIsOn();
+  // qDebug() << " DTR: " << ps.dataTerminalReadyIsOn();
 
   mReceiveDataState.setSignalOn(ps.receiveDataIsOn(), now);
   mTransmitDataState.setSignalOn(ps.transmitDataIsOn(), now);
@@ -62,7 +68,7 @@ void AbstractPinoutSignalsUiController::setSignals(const PinoutSignals & ps)
 
   // qDebug() << " TX UI: " << mTransmitDataState.stateIsOn();
 
-  qDebug() << " DTR UI state: " << mDataTerminalReadyState.stateIsOn();
+  // qDebug() << " DTR UI state: " << mDataTerminalReadyState.stateIsOn();
 
   notifyChangedStates();
   startWatchdogTimerIfRequired();
@@ -76,12 +82,12 @@ void AbstractPinoutSignalsUiController::setWatchdogTimeoutEvent()
 {
   stopWatchdogTimer();
 
-  qDebug() << "UI wdt";
+  // qDebug() << "UI wdt";
 
   const TimePoint now = getCurrentTime();
 
-  qDebug() << " now: " << now.time_since_epoch().count();
-  qDebug() << " DTR UI state: " << mDataTerminalReadyState.stateIsOn();
+  // qDebug() << " now: " << now.time_since_epoch().count();
+  // qDebug() << " DTR UI state: " << mDataTerminalReadyState.stateIsOn();
 
   // qDebug() << " TX UI: " << mTransmitDataState.stateIsOn();
   // qDebug() << " setWatchdogTimeoutEvent() ...";

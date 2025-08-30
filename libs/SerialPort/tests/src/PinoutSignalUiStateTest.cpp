@@ -24,7 +24,6 @@ TEST_CASE("initialState")
   REQUIRE( !s.stateIsOn() );
 }
 
-
 TEST_CASE("docTimeDiagramExample")
 {
   PinoutSignalUiState s;
@@ -135,6 +134,33 @@ TEST_CASE("docTimeDiagramExample")
   s.setSignalOn( false, TimePoint(740ms) );
   CHECK( !s.stateIsOn() );
   CHECK( !s.stateHasChanged() );
+}
+
+TEST_CASE("setStateOffNow")
+{
+  PinoutSignalUiState s;
+  s.setHoldOnDuration(100ms);
+  s.setHoldOffDuration(40ms);
+  REQUIRE( !s.stateIsOn() );
+
+  SECTION("when already OFF - no change")
+  {
+    s.setStateOffNow();
+
+    CHECK( !s.stateIsOn() );
+    CHECK( !s.stateHasChanged() );
+  }
+
+  SECTION("when currently ON - change to OFF")
+  {
+    s.setSignalOn( true, TimePoint(20ms) );
+    REQUIRE( s.stateIsOn() );
+
+    s.setStateOffNow();
+
+    CHECK( !s.stateIsOn() );
+    CHECK( s.stateHasChanged() );
+  }
 }
 
 // TEST_CASE("PinoutSignalUiState")

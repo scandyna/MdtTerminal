@@ -95,24 +95,43 @@ TEST_CASE("whenAStateIsInHold_WdtIsActive_OtherwiseNot")
 
     CHECK( !psc.watchdogTimerIsActive() );
   }
+
+  SECTION("on aboutToCloseEvent - even in hold state - wdt stops")
+  {
+    psc.setCurrentTime( TimePoint(25ms) );
+
+    psc.setAboutToCloseEvent();
+
+    CHECK( !psc.watchdogTimerIsActive() );
+  }
 }
 
-/// Wrong
-TEST_CASE("firstEventStartsTimer_CloseStopsTimer")
+TEST_CASE("whenPortIsAboutToClose_AllUiStatesGo_OFF")
 {
-  REQUIRE(false);
-
-  TestPinoutSignalsUiController psc;
-  REQUIRE( !psc.watchdogTimerIsActive() );
-
   PinoutSignals ps;
+  TestPinoutSignalsUiController psc;
+  psc.setHoldOnDuration(100ms);
+  psc.setHoldOffDuration(40ms);
+
+  ps.setReceiveDataOn(true);
+  ps.setTransmitDataOn(true);
+  ps.setDataTerminalReadyOn(true);
   psc.setSignals(ps);
 
-  CHECK( psc.watchdogTimerIsActive() );
+  PinoutSignalUiStateChangedSignalSpy receiveDataChangedSpy(&psc, &TestPinoutSignalsUiController::receiveDataChanged);
+  PinoutSignalUiStateChangedSignalSpy transmitDataChangedSpy(&psc, &TestPinoutSignalsUiController::transmitDataChanged);
+  PinoutSignalUiStateChangedSignalSpy dataTerminalReadyChangedSpy(&psc, &TestPinoutSignalsUiController::dataTerminalReadyChanged);
 
   psc.setAboutToCloseEvent();
 
-  CHECK( !psc.watchdogTimerIsActive() );
+  REQUIRE( receiveDataChangedSpy.count() == 1 );
+  CHECK( !receiveDataChangedSpy.stateAtIsOn(0) );
+
+  REQUIRE( transmitDataChangedSpy.count() == 1 );
+  CHECK( !transmitDataChangedSpy.stateAtIsOn(0) );
+
+  REQUIRE( dataTerminalReadyChangedSpy.count() == 1 );
+  CHECK( !dataTerminalReadyChangedSpy.stateAtIsOn(0) );
 }
 
 TEST_CASE("RX")

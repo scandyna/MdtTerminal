@@ -685,6 +685,40 @@ TEST_CASE("off_hold")
   }
 }
 
+TEST_CASE("setStateOffNow")
+{
+  PinoutSignalUiStateStateMachine sm;
+  sm.setHoldOnDuration(100ms);
+  sm.setHoldOffDuration(40ms);
+  REQUIRE( sm.currentState() == State::UiOff );
+  REQUIRE( !sm.uiOnOffStateHasChanged() );
+
+  SECTION("when current state is already UiOff - nothing changes")
+  {
+    sm.setStateOffNow();
+
+    CHECK( sm.currentState() == State::UiOff );
+    CHECK( !sm.watchdogTimerShouldBeActive() );
+    CHECK( !sm.uiOnOffStateHasChanged() );
+    CHECK( !sm.uiStateIsOn() );
+  }
+
+  SECTION("when current state is on_hold - transition to UiOff")
+  {
+    sm.setSignalOn( true, TimePoint(20ms) );    // -> on_hold
+    sm.setSignalOn( true, TimePoint(25ms) );    // to reset UI ON OFF state changed
+    REQUIRE( sm.currentStateIs_on_hold() );
+    REQUIRE( !sm.uiOnOffStateHasChanged() );
+
+    sm.setStateOffNow();
+
+    CHECK( sm.currentState() == State::UiOff );
+    CHECK( !sm.watchdogTimerShouldBeActive() );
+    CHECK( sm.uiOnOffStateHasChanged() );
+    CHECK( !sm.uiStateIsOn() );
+  }
+}
+
 /*
  * This test became redoundant to off_hold
  */
