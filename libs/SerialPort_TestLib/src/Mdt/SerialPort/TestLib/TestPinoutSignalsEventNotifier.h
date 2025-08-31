@@ -31,9 +31,15 @@ namespace Mdt{ namespace SerialPort{ namespace TestLib{
     void setAboutToCloseEvent();
     void setTimerTimeoutEvent();
     void setReadyReadEvent();
+    void setBytesWrittenEvent(qint64 bytes);
+    void setDataTerminalReadyChangedEvent(bool set);
     void setBytesAvailable(qint64 count);
+    void setBytesToWrite(qint64 count);
+    void setPortPinoutSignals(QSerialPort::PinoutSignals ps);
 
     bool shouldNotifySignalsChanged() const noexcept;
+
+    void updateReceiveDataState();
 
     bool timerIsActive() const override;
     bool timerHasBeenReset() const;
@@ -44,10 +50,15 @@ namespace Mdt{ namespace SerialPort{ namespace TestLib{
     void stopTimer() override;
 
     qint64 bytesAvailable() const override;
+    qint64 bytesToWrite() const override;
+
+    QSerialPort::PinoutSignals readPinoutSignals() override;
 
     qint64 mBytesAvailable = 0;
+    qint64 mBytesToWrite = 0;
 
     bool mTimerIsActive = false;
+    QSerialPort::PinoutSignals mPortPinoutSignals = QSerialPort::NoSignal;
   };
 
 }}} // namespace Mdt{ namespace SerialPort{ namespace TestLib{

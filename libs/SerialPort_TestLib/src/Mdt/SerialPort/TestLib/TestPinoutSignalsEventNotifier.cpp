@@ -32,6 +32,16 @@ void TestPinoutSignalsEventNotifier::setReadyReadEvent()
   AbstractPinoutSignalsEventNotifier::setReadyReadEvent();
 }
 
+void TestPinoutSignalsEventNotifier::setBytesWrittenEvent(qint64 bytes)
+{
+  AbstractPinoutSignalsEventNotifier::setBytesWrittenEvent(bytes);
+}
+
+void TestPinoutSignalsEventNotifier::setDataTerminalReadyChangedEvent(bool set)
+{
+  AbstractPinoutSignalsEventNotifier::setDataTerminalReadyChangedEvent(set);
+}
+
 void TestPinoutSignalsEventNotifier::setBytesAvailable(qint64 count)
 {
   assert(count >= 0);
@@ -39,9 +49,26 @@ void TestPinoutSignalsEventNotifier::setBytesAvailable(qint64 count)
   mBytesAvailable = count;
 }
 
+void TestPinoutSignalsEventNotifier::setBytesToWrite(qint64 count)
+{
+  assert(count >= 0);
+
+  mBytesToWrite = count;
+}
+
+void TestPinoutSignalsEventNotifier::setPortPinoutSignals(QSerialPort::PinoutSignals ps)
+{
+  mPortPinoutSignals = ps;
+}
+
 bool TestPinoutSignalsEventNotifier::shouldNotifySignalsChanged() const noexcept
 {
   return AbstractPinoutSignalsEventNotifier::shouldNotifySignalsChanged();
+}
+
+void TestPinoutSignalsEventNotifier::updateReceiveDataState()
+{
+  AbstractPinoutSignalsEventNotifier::updateReceiveDataState();
 }
 
 bool TestPinoutSignalsEventNotifier::timerIsActive() const
@@ -62,6 +89,16 @@ void TestPinoutSignalsEventNotifier::stopTimer()
 qint64 TestPinoutSignalsEventNotifier::bytesAvailable() const
 {
   return mBytesAvailable;
+}
+
+qint64 TestPinoutSignalsEventNotifier::bytesToWrite() const
+{
+  return mBytesToWrite;
+}
+
+QSerialPort::PinoutSignals TestPinoutSignalsEventNotifier::readPinoutSignals()
+{
+  return mPortPinoutSignals;
 }
 
 }}} // namespace Mdt{ namespace SerialPort{ namespace TestLib{

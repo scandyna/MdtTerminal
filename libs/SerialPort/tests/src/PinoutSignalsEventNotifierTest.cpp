@@ -35,6 +35,20 @@ TEST_CASE("openClose")
   CHECK( !psn.timerIsActive() );
 }
 
+TEST_CASE("updateReceiveDataState")
+{
+  TestPinoutSignalsEventNotifier psn;
+  REQUIRE( !psn.currentSignals().receiveDataIsOn() );
+
+  psn.setBytesAvailable(10);
+  psn.updateReceiveDataState();
+  CHECK( psn.currentSignals().receiveDataIsOn() );
+
+  psn.setBytesAvailable(0);
+  psn.updateReceiveDataState();
+  CHECK( !psn.currentSignals().receiveDataIsOn() );
+}
+
 TEST_CASE("readyRead_sets_RX_ON_then_OFF_whenNoBytesAvailable")
 {
   TestPinoutSignalsEventNotifier psn;
@@ -55,5 +69,43 @@ TEST_CASE("readyRead_sets_RX_ON_then_OFF_whenNoBytesAvailable")
   psn.setTimerTimeoutEvent();
 
   CHECK( !psn.currentSignals().receiveDataIsOn() );
+  CHECK( psn.shouldNotifySignalsChanged() );
+}
+
+TEST_CASE("bytesWritten_sets_TX_ON_then_OFF_when_NoBytesToWrite")
+{
+  TestPinoutSignalsEventNotifier psn;
+
+  psn.setBytesToWrite(10);
+  psn.setBytesWrittenEvent(5);
+
+  CHECK( psn.currentSignals().transmitDataIsOn() );
+  CHECK( psn.shouldNotifySignalsChanged() );
+
+  psn.setBytesToWrite(5);
+  psn.setTimerTimeoutEvent();
+
+  CHECK( psn.currentSignals().transmitDataIsOn() );
+  CHECK( !psn.shouldNotifySignalsChanged() );
+
+  psn.setBytesWrittenEvent(5);
+
+  CHECK( psn.currentSignals().transmitDataIsOn() );
+  CHECK( !psn.shouldNotifySignalsChanged() );
+
+  psn.setBytesToWrite(0);
+  psn.setTimerTimeoutEvent();
+
+  CHECK( !psn.currentSignals().transmitDataIsOn() );
+  CHECK( psn.shouldNotifySignalsChanged() );
+}
+
+TEST_CASE("DTR_changes")
+{
+  TestPinoutSignalsEventNotifier psn;
+
+  psn.setDataTerminalReadyChangedEvent(true);
+
+  CHECK( psn.currentSignals().dataTerminalReadyIsOn() );
   CHECK( psn.shouldNotifySignalsChanged() );
 }

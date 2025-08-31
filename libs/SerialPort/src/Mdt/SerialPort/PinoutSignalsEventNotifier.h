@@ -48,10 +48,6 @@ namespace Mdt{ namespace SerialPort{
    *                Ti
    * \endcode
    *
-   * \todo Should be do some mock here ?
-   * Yes, maybe sublass QIODevice
-   *
-   * \todo Also mock timer !
    *
    * \todo How can we make TX and RX a bit reliable ?
    * bytesWritten() TX ON. TX OFF: when ?
@@ -88,6 +84,9 @@ namespace Mdt{ namespace SerialPort{
     void stopTimer() override;
 
     qint64 bytesAvailable() const override;
+    qint64 bytesToWrite() const override;
+
+    QSerialPort::PinoutSignals readPinoutSignals() override;
 
     QPointer<QSerialPort> mSerialPort;
     QTimer mTimer;

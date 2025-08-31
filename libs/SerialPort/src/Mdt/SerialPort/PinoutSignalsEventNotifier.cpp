@@ -24,6 +24,8 @@ PinoutSignalsEventNotifier::PinoutSignalsEventNotifier(QSerialPort *serialPort, 
 
   connect(mSerialPort, &QSerialPort::aboutToClose, this, &PinoutSignalsEventNotifier::setAboutToCloseEvent);
   connect(mSerialPort, &QSerialPort::readyRead, this, &PinoutSignalsEventNotifier::setReadyReadEvent);
+  connect(mSerialPort, &QSerialPort::bytesWritten, this, &PinoutSignalsEventNotifier::setBytesWrittenEvent);
+  connect(mSerialPort, &QSerialPort::dataTerminalReadyChanged, this, &PinoutSignalsEventNotifier::setDataTerminalReadyChangedEvent);
 
   connect(&mTimer, &QTimer::timeout, this, &PinoutSignalsEventNotifier::setTimerTimeoutEvent);
   mTimer.setTimerType(Qt::CoarseTimer);
@@ -50,6 +52,20 @@ qint64 PinoutSignalsEventNotifier::bytesAvailable() const
   assert( !mSerialPort.isNull() );
 
   return mSerialPort->bytesAvailable();
+}
+
+qint64 PinoutSignalsEventNotifier::bytesToWrite() const
+{
+  assert( !mSerialPort.isNull() );
+
+  return mSerialPort->bytesToWrite();
+}
+
+QSerialPort::PinoutSignals PinoutSignalsEventNotifier::readPinoutSignals()
+{
+  assert( !mSerialPort.isNull() );
+
+  return mSerialPort->pinoutSignals();
 }
 
 }} // namespace Mdt{ namespace SerialPort{

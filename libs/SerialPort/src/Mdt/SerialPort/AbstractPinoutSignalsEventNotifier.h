@@ -12,6 +12,7 @@
 
 #include "Mdt/SerialPort/PinoutSignals.h"
 #include "mdt_serialport_export.h"
+#include <QSerialPort>
 #include <QObject>
 
 namespace Mdt{ namespace SerialPort{
@@ -66,11 +67,23 @@ namespace Mdt{ namespace SerialPort{
      */
     void setReadyReadEvent();
 
+    /*! \brief Set the bytesWritten event
+     */
+    void setBytesWrittenEvent(qint64 bytes);
+
+    /*! \brief Set the dataTerminalReadyChanged (DTR) event
+     */
+    void setDataTerminalReadyChangedEvent(bool set);
+
    protected:
 
     /*! \internal
      */
     bool shouldNotifySignalsChanged() const noexcept;
+
+    /*! \internal
+     */
+    void updateReceiveDataState();
 
    private:
 
@@ -93,6 +106,16 @@ namespace Mdt{ namespace SerialPort{
      */
     virtual
     qint64 bytesAvailable() const = 0;
+
+    /*! \brief Get the number of bytes waiting to be written
+     */
+    virtual
+    qint64 bytesToWrite() const = 0;
+
+    /*! \brief Read the pinout signals
+     */
+    virtual
+    QSerialPort::PinoutSignals readPinoutSignals() = 0;
 
     PinoutSignals mPreviousPinoutSignals;
     PinoutSignals mCurrentPinoutSignals;
