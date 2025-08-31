@@ -83,7 +83,15 @@ namespace Mdt{ namespace SerialPort{
 
     /*! \internal
      */
+    void notifySignalsIfChanged() const;
+
+    /*! \internal
+     */
     void updateReceiveDataState();
+
+    /*! \internal
+     */
+    void readAndUpdatePinoutSignalsStates();
 
    private:
 

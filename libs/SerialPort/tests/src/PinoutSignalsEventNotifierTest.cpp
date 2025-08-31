@@ -35,6 +35,46 @@ TEST_CASE("openClose")
   CHECK( !psn.timerIsActive() );
 }
 
+TEST_CASE("readAndUpdatePinoutSignalsStates")
+{
+  TestPinoutSignalsEventNotifier psn;
+  QSerialPort::PinoutSignals qps;
+
+  SECTION("DTR ON")
+  {
+    qps.setFlag(QSerialPort::DataTerminalReadySignal, true);
+    psn.setPortPinoutSignals(qps);
+
+    psn.readAndUpdatePinoutSignalsStates();
+
+    CHECK( psn.currentSignals().dataTerminalReadyIsOn() );
+  }
+}
+
+TEST_CASE("openReads_DTR_AndNotifiesIfON")
+{
+  TestPinoutSignalsEventNotifier psn;
+  QSerialPort::PinoutSignals qps;
+
+  qps.setFlag(QSerialPort::DataTerminalReadySignal, true);
+  psn.setPortPinoutSignals(qps);
+
+  psn.setPortOpen();
+
+  CHECK( psn.shouldNotifySignalsChanged() );
+  CHECK( psn.currentSignals().dataTerminalReadyIsOn() );
+
+  // Produce a timer timout event - so previous states is updated
+  psn.setTimerTimeoutEvent();
+
+  psn.setAboutToCloseEvent();
+
+  psn.setPortOpen();
+
+  CHECK( psn.shouldNotifySignalsChanged() );
+  CHECK( psn.currentSignals().dataTerminalReadyIsOn() );
+}
+
 TEST_CASE("updateReceiveDataState")
 {
   TestPinoutSignalsEventNotifier psn;

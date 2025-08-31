@@ -40,6 +40,7 @@ namespace Mdt{ namespace SerialPort{ namespace TestLib{
     bool shouldNotifySignalsChanged() const noexcept;
 
     void updateReceiveDataState();
+    void readAndUpdatePinoutSignalsStates();
 
     bool timerIsActive() const override;
     bool timerHasBeenReset() const;

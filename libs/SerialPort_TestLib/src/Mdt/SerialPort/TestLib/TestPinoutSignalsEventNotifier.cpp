@@ -71,6 +71,11 @@ void TestPinoutSignalsEventNotifier::updateReceiveDataState()
   AbstractPinoutSignalsEventNotifier::updateReceiveDataState();
 }
 
+void TestPinoutSignalsEventNotifier::readAndUpdatePinoutSignalsStates()
+{
+  AbstractPinoutSignalsEventNotifier::readAndUpdatePinoutSignalsStates();
+}
+
 bool TestPinoutSignalsEventNotifier::timerIsActive() const
 {
   return mTimerIsActive;
