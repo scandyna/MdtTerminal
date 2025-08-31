@@ -89,6 +89,20 @@ TEST_CASE("updateReceiveDataState")
   CHECK( !psn.currentSignals().receiveDataIsOn() );
 }
 
+TEST_CASE("updateTransmitDataState")
+{
+  TestPinoutSignalsEventNotifier psn;
+  REQUIRE( !psn.currentSignals().transmitDataIsOn() );
+
+  psn.setBytesToWrite(10);
+  psn.updateTransmitDataState();
+  CHECK( psn.currentSignals().transmitDataIsOn() );
+
+  psn.setBytesToWrite(0);
+  psn.updateTransmitDataState();
+  CHECK( !psn.currentSignals().transmitDataIsOn() );
+}
+
 TEST_CASE("readyRead_sets_RX_ON_then_OFF_whenNoBytesAvailable")
 {
   TestPinoutSignalsEventNotifier psn;

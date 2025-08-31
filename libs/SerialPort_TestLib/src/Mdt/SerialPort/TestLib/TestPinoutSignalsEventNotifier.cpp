@@ -71,6 +71,11 @@ void TestPinoutSignalsEventNotifier::updateReceiveDataState()
   AbstractPinoutSignalsEventNotifier::updateReceiveDataState();
 }
 
+void TestPinoutSignalsEventNotifier::updateTransmitDataState()
+{
+  AbstractPinoutSignalsEventNotifier::updateTransmitDataState();
+}
+
 void TestPinoutSignalsEventNotifier::readAndUpdatePinoutSignalsStates()
 {
   AbstractPinoutSignalsEventNotifier::readAndUpdatePinoutSignalsStates();

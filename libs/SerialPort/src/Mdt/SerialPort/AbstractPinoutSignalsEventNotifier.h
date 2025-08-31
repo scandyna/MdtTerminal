@@ -91,6 +91,10 @@ namespace Mdt{ namespace SerialPort{
 
     /*! \internal
      */
+    void updateTransmitDataState();
+
+    /*! \internal
+     */
     void readAndUpdatePinoutSignalsStates();
 
    private:

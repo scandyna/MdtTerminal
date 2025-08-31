@@ -21,8 +21,6 @@ AbstractPinoutSignalsEventNotifier::AbstractPinoutSignalsEventNotifier(QObject *
 
 void AbstractPinoutSignalsEventNotifier::setPortOpen()
 {
-  // qDebug() << "setPortOpen() ...";
-
   readAndUpdatePinoutSignalsStates();
   notifySignalsIfChanged();
   startTimer();
@@ -30,8 +28,6 @@ void AbstractPinoutSignalsEventNotifier::setPortOpen()
 
 void AbstractPinoutSignalsEventNotifier::setAboutToCloseEvent()
 {
-  // qDebug() << "setAboutToCloseEvent() ...";
-
   stopTimer();
   mPreviousPinoutSignals.clear();
   mCurrentPinoutSignals.clear();
@@ -42,25 +38,11 @@ void AbstractPinoutSignalsEventNotifier::setTimerTimeoutEvent()
   stopTimer();
   mPreviousPinoutSignals = mCurrentPinoutSignals;
 
-  /// \todo maybe, otherwise set true ??
   updateReceiveDataState();
-  if( bytesToWrite() <= 0 ){
-    mCurrentPinoutSignals.setTransmitDataOn(false);
-  }
+  updateTransmitDataState();
+  readAndUpdatePinoutSignalsStates();
 
-  // qDebug() << "TO - PO sigs: " << readPinoutSignals();
-  // qDebug() << " DTR: " << mCurrentPinoutSignals.dataTerminalReadyIsOn();
-
-  /// \todo Also read other pinout signals - add heler
-  
-  /// handleCommonEvents() ?
-
-  /// \todo check if something changed - add helper
-
-  if( shouldNotifySignalsChanged() ){
-    emit signalsChanged(mCurrentPinoutSignals);
-  }
-
+  notifySignalsIfChanged();
   startTimer();
 }
 
@@ -71,17 +53,15 @@ void AbstractPinoutSignalsEventNotifier::setReadyReadEvent()
 
   mCurrentPinoutSignals.setReceiveDataOn(true);
 
+  updateTransmitDataState();
+  readAndUpdatePinoutSignalsStates();
+
   /// \todo Also read other pinout signals - add heler
   
   /// handleCommonEvents() ?
   
 
-  /// \todo check if something changed - add helper
-
-  if( shouldNotifySignalsChanged() ){
-    emit signalsChanged(mCurrentPinoutSignals);
-  }
-
+  notifySignalsIfChanged();
   startTimer();
 }
 
@@ -90,25 +70,25 @@ void AbstractPinoutSignalsEventNotifier::setBytesWrittenEvent(qint64 /*bytes*/)
   stopTimer();
   mPreviousPinoutSignals = mCurrentPinoutSignals;
 
+  // qDebug() << "setBytesWrittenEvent() - bytes written: " << bytes;
+
   mCurrentPinoutSignals.setTransmitDataOn(true);
+
+  updateReceiveDataState();
+  readAndUpdatePinoutSignalsStates();
 
   /// \todo Also read other pinout signals - add heler
   
   /// handleCommonEvents() ?
   
 
-  /// \todo check if something changed - add helper
-
-  if( shouldNotifySignalsChanged() ){
-    emit signalsChanged(mCurrentPinoutSignals);
-  }
-
+  notifySignalsIfChanged();
   startTimer();
 }
 
 void AbstractPinoutSignalsEventNotifier::setDataTerminalReadyChangedEvent(bool set)
 {
-  qDebug() << "setDataTerminalReadyChangedEvent() : " << set;
+  // qDebug() << "setDataTerminalReadyChangedEvent() : " << set;
 
   stopTimer();
   mPreviousPinoutSignals = mCurrentPinoutSignals;
@@ -120,12 +100,7 @@ void AbstractPinoutSignalsEventNotifier::setDataTerminalReadyChangedEvent(bool s
   /// handleCommonEvents() ?
   
 
-  /// \todo check if something changed - add helper
-
-  if( shouldNotifySignalsChanged() ){
-    emit signalsChanged(mCurrentPinoutSignals);
-  }
-
+  notifySignalsIfChanged();
   startTimer();
 }
 
@@ -136,11 +111,6 @@ bool AbstractPinoutSignalsEventNotifier::shouldNotifySignalsChanged() const noex
 
 void AbstractPinoutSignalsEventNotifier::notifySignalsIfChanged() const
 {
-  // qDebug() << "notifySignalsIfChanged()...";
-  // qDebug() << " cur DTR: " << mCurrentPinoutSignals.dataTerminalReadyIsOn();
-  // qDebug() << " prev DTR: " << mPreviousPinoutSignals.dataTerminalReadyIsOn();
-  // qDebug() << " should notify: " << shouldNotifySignalsChanged();
-
   if( shouldNotifySignalsChanged() ){
     emit signalsChanged(mCurrentPinoutSignals);
   }
@@ -153,13 +123,22 @@ void AbstractPinoutSignalsEventNotifier::updateReceiveDataState()
   mCurrentPinoutSignals.setReceiveDataOn(bytesAvailable() > 0);
 }
 
+void AbstractPinoutSignalsEventNotifier::updateTransmitDataState()
+{
+  assert( !timerIsActive() );
+
+  if( bytesToWrite() > 0 ){
+    qDebug() << "bytesToWrite: " << bytesToWrite();
+  }
+
+  mCurrentPinoutSignals.setTransmitDataOn(bytesToWrite() > 0);
+}
+
 void AbstractPinoutSignalsEventNotifier::readAndUpdatePinoutSignalsStates()
 {
   assert( !timerIsActive() );
 
   mCurrentPinoutSignals.setSignals( readPinoutSignals() );
-
-  // qDebug() << "readAndUpdatePinoutSignalsStates() - DTR: " << mCurrentPinoutSignals.dataTerminalReadyIsOn();
 }
 
 }} // namespace Mdt{ namespace SerialPort{
