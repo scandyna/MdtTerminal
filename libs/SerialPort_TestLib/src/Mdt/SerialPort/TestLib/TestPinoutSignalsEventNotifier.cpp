@@ -42,6 +42,11 @@ void TestPinoutSignalsEventNotifier::setDataTerminalReadyChangedEvent(bool set)
   AbstractPinoutSignalsEventNotifier::setDataTerminalReadyChangedEvent(set);
 }
 
+void TestPinoutSignalsEventNotifier::setRequestToSendChangedEvent(bool set)
+{
+  AbstractPinoutSignalsEventNotifier::setRequestToSendChangedEvent(set);
+}
+
 void TestPinoutSignalsEventNotifier::setBytesAvailable(qint64 count)
 {
   assert(count >= 0);

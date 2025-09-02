@@ -49,6 +49,16 @@ TEST_CASE("readAndUpdatePinoutSignalsStates")
 
     CHECK( psn.currentSignals().dataTerminalReadyIsOn() );
   }
+
+  SECTION("RTS ON")
+  {
+    qps.setFlag(QSerialPort::RequestToSendSignal, true);
+    psn.setPortPinoutSignals(qps);
+
+    psn.readAndUpdatePinoutSignalsStates();
+
+    CHECK( psn.currentSignals().requestToSendIsOn() );
+  }
 }
 
 TEST_CASE("openReads_DTR_AndNotifiesIfON")
@@ -154,12 +164,22 @@ TEST_CASE("bytesWritten_sets_TX_ON_then_OFF_when_NoBytesToWrite")
   CHECK( psn.shouldNotifySignalsChanged() );
 }
 
-TEST_CASE("DTR_changes")
+TEST_CASE("DTR_changedEvent")
 {
   TestPinoutSignalsEventNotifier psn;
 
   psn.setDataTerminalReadyChangedEvent(true);
 
   CHECK( psn.currentSignals().dataTerminalReadyIsOn() );
+  CHECK( psn.shouldNotifySignalsChanged() );
+}
+
+TEST_CASE("RTS_changedEvent")
+{
+  TestPinoutSignalsEventNotifier psn;
+
+  psn.setRequestToSendChangedEvent(true);
+
+  CHECK( psn.currentSignals().requestToSendIsOn() );
   CHECK( psn.shouldNotifySignalsChanged() );
 }

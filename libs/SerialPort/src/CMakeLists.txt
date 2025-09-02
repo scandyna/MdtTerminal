@@ -41,6 +41,8 @@ add_library(Mdt_SerialPort
   Mdt/SerialPort/PinoutSignals.cpp
   Mdt/SerialPort/AbstractPinoutSignalsEventNotifier.cpp
   Mdt/SerialPort/PinoutSignalsEventNotifier.cpp
+  Mdt/SerialPort/PinoutSignalUiStateTimer.cpp
+  Mdt/SerialPort/PinoutSignalUiStateStateMachine.cpp
   Mdt/SerialPort/PinoutSignalUiState.cpp
   Mdt/SerialPort/AbstractPinoutSignalsUiController.cpp
   Mdt/SerialPort/PinoutSignalsUiController.cpp

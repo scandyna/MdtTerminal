@@ -66,6 +66,10 @@ namespace Mdt{ namespace SerialPort{
      */
     void dataTerminalReadyChanged(bool on) const;
 
+    /*! \brief Emitted every time the RTS (Request To Send) state changed
+     */
+    void requestToSendChanged(bool on) const;
+
    protected Q_SLOTS:
 
     /*! \brief Set the timer timeout event
@@ -109,6 +113,7 @@ namespace Mdt{ namespace SerialPort{
     PinoutSignalUiState mReceiveDataState;
     PinoutSignalUiState mTransmitDataState;
     PinoutSignalUiState mDataTerminalReadyState;
+    PinoutSignalUiState mRequestToSendState;
   };
 
 }} // namespace Mdt{ namespace SerialPort{

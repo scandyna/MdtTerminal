@@ -43,7 +43,17 @@ namespace Mdt{ namespace SerialPort{
      */
     void setReceiveDataOn(bool on);
 
-    // void setReceiveDataOn(bool on) noexcept;
+    /*! \brief Set TX (Transmit Data) signal ON or OFF
+     */
+    void setTransmitDataOn(bool on);
+
+    /*! \brief Set DTR (Data Terminal Ready) signal ON or OFF
+     */
+    void setDataTerminalReadyOn(bool on);
+
+    /*! \brief Set RTS (Request To Send) ON or OFF
+     */
+    void setRequestToSendOn(bool on);
 
    private:
 

@@ -75,6 +75,10 @@ namespace Mdt{ namespace SerialPort{
      */
     void setDataTerminalReadyChangedEvent(bool set);
 
+    /*! \brief Set the requestToSendChanged (RTS) event
+     */
+    void setRequestToSendChangedEvent(bool set);
+
    protected:
 
     /*! \internal

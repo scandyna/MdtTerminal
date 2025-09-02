@@ -60,6 +60,14 @@ TEST_CASE("watchdogTimerShouldBeActive")
 
     CHECK( psc.watchdogTimerShouldBeActive() );
   }
+
+  SECTION("when RTS UI goes ON (hold state) - wdt shoud be active")
+  {
+    ps.setRequestToSendOn(true);
+    psc.setSignals(ps);
+
+    CHECK( psc.watchdogTimerShouldBeActive() );
+  }
 }
 
 TEST_CASE("whenAStateIsInHold_WdtIsActive_OtherwiseNot")
@@ -116,11 +124,13 @@ TEST_CASE("whenPortIsAboutToClose_AllUiStatesGo_OFF")
   ps.setReceiveDataOn(true);
   ps.setTransmitDataOn(true);
   ps.setDataTerminalReadyOn(true);
+  ps.setRequestToSendOn(true);
   psc.setSignals(ps);
 
   PinoutSignalUiStateChangedSignalSpy receiveDataChangedSpy(&psc, &TestPinoutSignalsUiController::receiveDataChanged);
   PinoutSignalUiStateChangedSignalSpy transmitDataChangedSpy(&psc, &TestPinoutSignalsUiController::transmitDataChanged);
   PinoutSignalUiStateChangedSignalSpy dataTerminalReadyChangedSpy(&psc, &TestPinoutSignalsUiController::dataTerminalReadyChanged);
+  PinoutSignalUiStateChangedSignalSpy requestToSendChangedSpy(&psc, &TestPinoutSignalsUiController::requestToSendChanged);
 
   psc.setAboutToCloseEvent();
 
@@ -132,6 +142,9 @@ TEST_CASE("whenPortIsAboutToClose_AllUiStatesGo_OFF")
 
   REQUIRE( dataTerminalReadyChangedSpy.count() == 1 );
   CHECK( !dataTerminalReadyChangedSpy.stateAtIsOn(0) );
+
+  REQUIRE( requestToSendChangedSpy.count() == 1 );
+  CHECK( !requestToSendChangedSpy.stateAtIsOn(0) );
 }
 
 TEST_CASE("RX")
@@ -407,10 +420,10 @@ TEST_CASE("DTR")
   SECTION("When DTR UI became OFF")
   {
     ps.setDataTerminalReadyOn(true);
-    psc.setSignals(ps);
+    psc.setSignals(ps); // SM: --> on_hold
     psc.setCurrentTime( TimePoint(200ms) );
     ps.setDataTerminalReadyOn(false);
-    psc.setSignals(ps);
+    psc.setSignals(ps); // SM: --> off_hold
     dataTerminalReadyChangedSpy.clear();
 
     ps.setDataTerminalReadyOn(true);
@@ -446,4 +459,92 @@ TEST_CASE("DTR")
   //   REQUIRE( dataTerminalReadyChangedSpy.count() == 1 );
   //   CHECK( dataTerminalReadyChangedSpy.stateAtIsOn(0) );
   // }
+}
+
+TEST_CASE("RTS")
+{
+  PinoutSignals ps;
+  TestPinoutSignalsUiController psc;
+  psc.setHoldOnDuration(100ms);
+  psc.setHoldOffDuration(40ms);
+  PinoutSignalUiStateChangedSignalSpy requestToSendChangedSpy(&psc, &TestPinoutSignalsUiController::requestToSendChanged);
+
+  SECTION("RTS ON notified - UI goes ON")
+  {
+    ps.setRequestToSendOn(true);
+
+    psc.setSignals(ps);
+
+    REQUIRE( requestToSendChangedSpy.count() == 1 );
+    CHECK( requestToSendChangedSpy.stateAtIsOn(0) );
+  }
+
+  SECTION("When RTS UI is ON")
+  {
+    ps.setRequestToSendOn(true);
+    psc.setSignals(ps);
+    requestToSendChangedSpy.clear();
+
+    SECTION("It stays ON on wathchdog event after hold on timed out")
+    {
+      psc.setCurrentTime( TimePoint(150ms) );
+      psc.setWatchdogTimeoutEvent();
+
+      REQUIRE( requestToSendChangedSpy.count() == 0 );
+    }
+
+    SECTION("when RTS OFF is notified before hold on timed out - UI stays ON")
+    {
+      psc.setCurrentTime( TimePoint(20ms) );
+      ps.setRequestToSendOn(false);
+      psc.setSignals(ps);
+
+      REQUIRE( requestToSendChangedSpy.count() == 0 );
+    }
+
+    SECTION("When RTS OFF is notified - RTS UI goes OFF on wathchdog event after hold on timed out")
+    {
+      psc.setCurrentTime( TimePoint(20ms) );
+      ps.setRequestToSendOn(false);
+      psc.setSignals(ps);
+      REQUIRE( requestToSendChangedSpy.count() == 0 );
+
+      psc.setCurrentTime( TimePoint(150ms) );
+      psc.setWatchdogTimeoutEvent();
+
+      REQUIRE( requestToSendChangedSpy.count() == 1 );
+      CHECK( !requestToSendChangedSpy.stateAtIsOn(0) );
+    }
+  }
+
+  SECTION("When RTS UI became OFF")
+  {
+    ps.setRequestToSendOn(true);
+    psc.setSignals(ps); // SM: --> on_hold
+    psc.setCurrentTime( TimePoint(200ms) );
+    ps.setRequestToSendOn(false);
+    psc.setSignals(ps); // SM: --> off_hold
+    requestToSendChangedSpy.clear();
+
+    ps.setRequestToSendOn(true);
+
+    SECTION("when RTS ON is notified before hold off timed out - RTS UI stays OFF")
+    {
+      psc.setCurrentTime( TimePoint(220ms) );
+
+      psc.setSignals(ps);
+
+      REQUIRE( requestToSendChangedSpy.count() == 0 );
+    }
+
+    SECTION("when RTS ON is notified after hold off timed out - RTS UI goes ON")
+    {
+      psc.setCurrentTime( TimePoint(250ms) );
+
+      psc.setSignals(ps);
+
+      REQUIRE( requestToSendChangedSpy.count() == 1 );
+      CHECK( requestToSendChangedSpy.stateAtIsOn(0) );
+    }
+  }
 }

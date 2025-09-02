@@ -104,6 +104,19 @@ void AbstractPinoutSignalsEventNotifier::setDataTerminalReadyChangedEvent(bool s
   startTimer();
 }
 
+void AbstractPinoutSignalsEventNotifier::setRequestToSendChangedEvent(bool set)
+{
+  stopTimer();
+  mPreviousPinoutSignals = mCurrentPinoutSignals;
+
+  mCurrentPinoutSignals.setRequestToSendOn(set);
+
+  /// \todo Also read other pinout signals - add heler
+
+  notifySignalsIfChanged();
+  startTimer();
+}
+
 bool AbstractPinoutSignalsEventNotifier::shouldNotifySignalsChanged() const noexcept
 {
   return mCurrentPinoutSignals != mPreviousPinoutSignals;

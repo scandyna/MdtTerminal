@@ -28,7 +28,34 @@ void PinoutSignalsWidget::setReceiveDataOn(bool on)
   if(on){
     mUi->RXsignal->setText( QLatin1String("ON") );
   }else{
-    mUi->RXsignal->setText( QLatin1String("OFF") );
+    mUi->RXsignal->setText( QLatin1String("  ") );
+  }
+}
+
+void PinoutSignalsWidget::setTransmitDataOn(bool on)
+{
+  if(on){
+    mUi->TXsignal->setText( QLatin1String("ON") );
+  }else{
+    mUi->TXsignal->setText( QLatin1String("  ") );
+  }
+}
+
+void PinoutSignalsWidget::setDataTerminalReadyOn(bool on)
+{
+  if(on){
+    mUi->DTRsignal->setText( QLatin1String("ON") );
+  }else{
+    mUi->DTRsignal->setText( QLatin1String("  ") );
+  }
+}
+
+void PinoutSignalsWidget::setRequestToSendOn(bool on)
+{
+  if(on){
+    mUi->RTSsignal->setText( QLatin1String("ON") );
+  }else{
+    mUi->RTSsignal->setText( QLatin1String("  ") );
   }
 }
 
