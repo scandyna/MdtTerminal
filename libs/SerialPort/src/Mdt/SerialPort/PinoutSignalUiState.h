@@ -14,15 +14,39 @@
 #include "Mdt/SerialPort/PinoutSignalUiStateStateMachine.h"
 #include "mdt_serialport_export.h"
 
-
-// #include <cstddef>
-
-
 namespace Mdt{ namespace SerialPort{
 
   /*! \brief Helper class to hold a single pinout signal for the UI
    *
+   * Notify the UI to often has no sense, is a waste of resources,
+   * and could also crash the application (f.ex. event queue overflow).
+   *
+   * If a signal is only ON for some milliseconds,
+   * it will not be visible on the UI.
+   * We have to display it ON for some time.
+   *
+   * This helper has methods that can be called often,
+   * but will tell if the UI state should be changed at given time.
+   *
+   * It will also cares about holding the ON or OFF state for some minimal amount of time.
+   *
+   * Here is a timing diagram that shows a scenario:
+   *
+   * \startuml "Pinout signal UI state - RX example"
+   * !include TimingDiagrams/PinoutSignalUiStateRxExample.puml
+   * \enduml
+   *
+   * This class uses PinoutSignalUiStateStateMachine as implementation.
+   *
+   * Also, under the hood, no real timer is used,
+   * but only a thin wrapper arount std::chrono .
+   *
+   * This alows to reduce system calls when having multiple states
+   * (and can also be tested in a more robust way).
+   *
    * \sa PinoutSignalsUiController
+   * \sa PinoutSignalUiStateStateMachine
+   * \sa PinoutSignalUiStateTimer
    */
   class MDT_SERIALPORT_EXPORT PinoutSignalUiState
   {
@@ -52,10 +76,6 @@ namespace Mdt{ namespace SerialPort{
     void setSignalOn(bool on, PinoutSignalUiStateTimer::TimePoint now) noexcept
     {
       mStateMachine.setSignalOn(on, now);
-
-      // if(on){
-      //   ++mOnCount;
-      // }
     }
 
     /*! \brief Set the state to OFF now
@@ -86,21 +106,6 @@ namespace Mdt{ namespace SerialPort{
       return mStateMachine.watchdogTimerShouldBeActive();
     }
 
-    /*! \brief Update the state
-     *
-     * This method should be called jut before stateIsOn().
-     * It will calculate the state regarding given time
-     * and the various calls of setSignalOn().
-     */
-    // [[deprecated]]
-    // constexpr
-    // void updateState(PinoutSignalUiStateTimer::TimePoint now) noexcept
-    // {
-    //   mPreviousState = mState;
-    //   mState = deduceNewState();
-    //   mOnCount = 0;
-    // }
-
     /*! \brief Check if the state has changed
      */
     constexpr
@@ -117,22 +122,11 @@ namespace Mdt{ namespace SerialPort{
     bool stateIsOn() const noexcept
     {
       return mStateMachine.uiStateIsOn();
-      // return mState;
     }
 
    private:
 
-    // constexpr
-    // bool deduceNewState() const noexcept
-    // {
-    //   return mOnCount > 0;
-    // }
-
     PinoutSignalUiStateStateMachine mStateMachine;
-    
-    // size_t mOnCount = 0;
-    // bool mState = false;
-    // bool mPreviousState = false;
   };
 
 }} // namespace Mdt{ namespace SerialPort{

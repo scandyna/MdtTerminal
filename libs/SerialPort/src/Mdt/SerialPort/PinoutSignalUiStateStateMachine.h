@@ -18,6 +18,11 @@
 namespace Mdt{ namespace SerialPort{
 
   /*! \brief Helper for PinoutSignalUiState
+   *
+   * \startuml "Pinout signal UI state machine"
+   * !include StateDiagrams/PinoutSignalUiStateMachine.puml
+   * \enduml
+   *
    */
   class MDT_SERIALPORT_EXPORT PinoutSignalUiStateStateMachine
   {

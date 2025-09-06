@@ -286,32 +286,6 @@ TEST_CASE("RX")
       CHECK( receiveDataChangedSpy.stateAtIsOn(0) );
     }
   }
-
-  /// \todo Wrong ! Must request OFF before
-  // SECTION("UI is ON and goes OFF on wathchdog event after hold on timed out")
-  // {
-  //   ps.setReceiveDataOn(true);
-  //   psc.setSignals(ps);
-  //   receiveDataChangedSpy.clear();
-  // 
-  //   psc.setCurrentTime( TimePoint(150ms) );
-  //   psc.setWatchdogTimeoutEvent();
-  // 
-  //   REQUIRE( receiveDataChangedSpy.count() == 1 );
-  //   CHECK( !receiveDataChangedSpy.stateAtIsOn(0) );
-  // }
-
-  // SECTION("only 1 RX ON notified")
-  // {
-  //   ps.setReceiveDataOn(true);
-  // 
-  //   psc.setSignals(ps);
-  // 
-  //   psc.setTimerTimeoutEvent();
-  // 
-  //   REQUIRE( receiveDataChangedSpy.count() == 1 );
-  //   CHECK( receiveDataChangedSpy.stateAtIsOn(0) );
-  // }
 }
 
 TEST_CASE("TX")
@@ -400,18 +374,6 @@ TEST_CASE("TX")
       CHECK( transmitDataChangedSpy.stateAtIsOn(0) );
     }
   }
-
-  // SECTION("only 1 TX ON notified")
-  // {
-  //   ps.setTransmitDataOn(true);
-  // 
-  //   psc.setSignals(ps);
-  // 
-  //   psc.setWatchdogTimeoutEvent();
-  // 
-  //   REQUIRE( transmitDataChangedSpy.count() == 1 );
-  //   CHECK( transmitDataChangedSpy.stateAtIsOn(0) );
-  // }
 }
 
 TEST_CASE("RTS")
@@ -852,18 +814,6 @@ TEST_CASE("DTR")
       CHECK( dataTerminalReadyChangedSpy.stateAtIsOn(0) );
     }
   }
-
-  // SECTION("only 1 DTR ON notified")
-  // {
-  //   ps.setDataTerminalReadyOn(true);
-  // 
-  //   psc.setSignals(ps);
-  // 
-  //   psc.setWatchdogTimeoutEvent();
-  // 
-  //   REQUIRE( dataTerminalReadyChangedSpy.count() == 1 );
-  //   CHECK( dataTerminalReadyChangedSpy.stateAtIsOn(0) );
-  // }
 }
 
 TEST_CASE("RNG")

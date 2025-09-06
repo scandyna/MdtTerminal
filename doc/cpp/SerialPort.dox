@@ -164,21 +164,6 @@
  * \endcode
  *
  *
- * \code
- * using namespace Mdt::SerialPort;
- *
- * QSerialPort serialPort;
- *
- * PinoutSignalsEventNotifier pinoutSignalsNotifier(&serialPort);
- * PinoutSignalsUiController pinoutSignalsUiController;
- * PinoutSignalsWidget pinoutSignalsWidget;
- *
- * connect(&pinoutSignalsNotifier, &PinoutSignalsEventNotifier::signalsChanged, &pinoutSignalsUiController, &PinoutSignalsUiController::setSignals);
- *
- * connect(&pinoutSignalsUiController, &PinoutSignalsUiController::RX_changed, &pinoutSignalsWidget, &PinoutSignalsWidget::setRX);
- * 
- * \endcode
- *
  * Mdt::SerialPort::PinoutSignalsLogItem ? Would have signals + timestamp... + bytes ?!
  *
  * Mdt::SerialPort::PinoutSignalsLogger

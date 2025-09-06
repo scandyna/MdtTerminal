@@ -11,8 +11,6 @@
 #include <chrono>
 #include <cassert>
 
-#include <QDebug>
-
 using namespace std::chrono_literals;
 
 
@@ -69,13 +67,7 @@ void AbstractPinoutSignalsUiController::setSignals(const PinoutSignals & ps)
 {
   stopWatchdogTimer();
 
-  // qDebug() << "AbstractPinoutSignalsUiController::setSignals() ...";
-
   const TimePoint now = getCurrentTime();
-
-  // qDebug() << " now: " << now.time_since_epoch().count();
-
-  // qDebug() << " DTR: " << ps.dataTerminalReadyIsOn();
 
   mReceiveDataState.setSignalOn(ps.receiveDataIsOn(), now);
   mTransmitDataState.setSignalOn(ps.transmitDataIsOn(), now);
@@ -86,31 +78,15 @@ void AbstractPinoutSignalsUiController::setSignals(const PinoutSignals & ps)
   mDataTerminalReadyState.setSignalOn(ps.dataTerminalReadyIsOn(), now);
   mRingIndicatorState.setSignalOn(ps.ringIndicatorIsOn(), now);
 
-  // qDebug() << " TX UI: " << mTransmitDataState.stateIsOn();
-
-  // qDebug() << " DTR UI state: " << mDataTerminalReadyState.stateIsOn();
-
   notifyChangedStates();
   startWatchdogTimerIfRequired();
-
-  // if( !watchdogTimerIsActive() ){
-  //   startWatchdogTimer();
-  // }
 }
 
 void AbstractPinoutSignalsUiController::setWatchdogTimeoutEvent()
 {
   stopWatchdogTimer();
 
-  // qDebug() << "UI wdt";
-
   const TimePoint now = getCurrentTime();
-
-  // qDebug() << " now: " << now.time_since_epoch().count();
-  // qDebug() << " DTR UI state: " << mDataTerminalReadyState.stateIsOn();
-
-  // qDebug() << " TX UI: " << mTransmitDataState.stateIsOn();
-  // qDebug() << " setWatchdogTimeoutEvent() ...";
 
   mReceiveDataState.setWatchdogTimeoutEvent(now);
   mTransmitDataState.setWatchdogTimeoutEvent(now);
@@ -120,15 +96,6 @@ void AbstractPinoutSignalsUiController::setWatchdogTimeoutEvent()
   mDataCarrierDetectState.setWatchdogTimeoutEvent(now);
   mDataSetReadyState.setWatchdogTimeoutEvent(now);
   mRingIndicatorState.setWatchdogTimeoutEvent(now);
-
-  // mTransmitDataState.updateState();
-  // if( mTransmitDataState.stateHasChanged() ){
-  //   emit transmitDataChanged( mTransmitDataState.stateIsOn() );
-  // }
-
-  // mDataTerminalReadyState.updateState();
-
-  // qDebug() << " UI DTR UI state to: " << mDataTerminalReadyState.stateIsOn();
 
   notifyChangedStates();
   startWatchdogTimerIfRequired();

@@ -10,8 +10,6 @@
 #include "AbstractPinoutSignalsEventNotifier.h"
 #include <cassert>
 
-#include <QDebug>
-
 namespace Mdt{ namespace SerialPort{
 
 AbstractPinoutSignalsEventNotifier::AbstractPinoutSignalsEventNotifier(QObject *parent)
@@ -56,11 +54,6 @@ void AbstractPinoutSignalsEventNotifier::setReadyReadEvent()
   updateTransmitDataState();
   readAndUpdatePinoutSignalsStates();
 
-  /// \todo Also read other pinout signals - add heler
-  
-  /// handleCommonEvents() ?
-  
-
   notifySignalsIfChanged();
   startTimer();
 }
@@ -70,17 +63,10 @@ void AbstractPinoutSignalsEventNotifier::setBytesWrittenEvent(qint64 /*bytes*/)
   stopTimer();
   mPreviousPinoutSignals = mCurrentPinoutSignals;
 
-  // qDebug() << "setBytesWrittenEvent() - bytes written: " << bytes;
-
   mCurrentPinoutSignals.setTransmitDataOn(true);
 
   updateReceiveDataState();
   readAndUpdatePinoutSignalsStates();
-
-  /// \todo Also read other pinout signals - add heler
-  
-  /// handleCommonEvents() ?
-  
 
   notifySignalsIfChanged();
   startTimer();
@@ -88,17 +74,12 @@ void AbstractPinoutSignalsEventNotifier::setBytesWrittenEvent(qint64 /*bytes*/)
 
 void AbstractPinoutSignalsEventNotifier::setDataTerminalReadyChangedEvent(bool set)
 {
-  // qDebug() << "setDataTerminalReadyChangedEvent() : " << set;
-
   stopTimer();
   mPreviousPinoutSignals = mCurrentPinoutSignals;
 
   mCurrentPinoutSignals.setDataTerminalReadyOn(set);
 
-  /// \todo Also read other pinout signals - add heler
-  
-  /// handleCommonEvents() ?
-  
+  /// \todo Also read other pinout signals and RX TX ?
 
   notifySignalsIfChanged();
   startTimer();
@@ -111,7 +92,7 @@ void AbstractPinoutSignalsEventNotifier::setRequestToSendChangedEvent(bool set)
 
   mCurrentPinoutSignals.setRequestToSendOn(set);
 
-  /// \todo Also read other pinout signals - add heler
+  /// \todo Also read other pinout signals and RX TX ?
 
   notifySignalsIfChanged();
   startTimer();
@@ -139,10 +120,6 @@ void AbstractPinoutSignalsEventNotifier::updateReceiveDataState()
 void AbstractPinoutSignalsEventNotifier::updateTransmitDataState()
 {
   assert( !timerIsActive() );
-
-  if( bytesToWrite() > 0 ){
-    qDebug() << "bytesToWrite: " << bytesToWrite();
-  }
 
   mCurrentPinoutSignals.setTransmitDataOn(bytesToWrite() > 0);
 }
