@@ -11,6 +11,9 @@
 #define MAIN_WINDOW_H
 
 #include "Mdt/SerialPort/Settings.h"
+#include "Mdt/SerialPort/PinoutSignalsEventNotifier.h"
+#include "Mdt/SerialPort/PinoutSignalsUiController.h"
+#include "Mdt/SerialPort/PinoutSignalsWidget.h"
 #include "ui_MainWindow.h"
 #include "CentralWidget.h"
 #include <QMainWindow>
@@ -40,6 +43,11 @@ class MainWindow : public QMainWindow
   void openSerialPort();
   void closeSerialPort();
 
+  void submitCommand(const QString & command);
+  void readFromPort();
+
+  void setDTR(bool on);
+
  private:
 
   void showStatusMessage(const QString &message);
@@ -51,9 +59,12 @@ class MainWindow : public QMainWindow
   Ui::MainWindow mUi;
   CentralWidget *mCentralWidget;
   QLabel *mStatusLabel;
+  Mdt::SerialPort::PinoutSignalsWidget *mPinoutSignalsWidget;
   Mdt::SerialPort::Settings mSerialPortSettings;
   QSerialPort mSerialPort;
   QSerialPortInfo mSerialPortInfo;
+  Mdt::SerialPort::PinoutSignalsEventNotifier mPinoutSignalsEventNotifier;
+  Mdt::SerialPort::PinoutSignalsUiController mPinoutSignalsUiController;
 };
 
 #endif // #ifndef MAIN_WINDOW_H

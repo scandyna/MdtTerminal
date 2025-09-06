@@ -19,21 +19,46 @@
 #include <optional>
 #include <cassert>
 
+#include <QDebug>
+
+using namespace Mdt::SerialPort;
+
+
 MainWindow::MainWindow(QWidget* parent)
  : QMainWindow(parent),
    mCentralWidget(new CentralWidget),
    mStatusLabel(new QLabel),
-   mSerialPortSettings( Mdt::SerialPort::Settings::defaultSettings() )
+   mPinoutSignalsWidget(new Mdt::SerialPort::PinoutSignalsWidget),
+   mSerialPortSettings( Mdt::SerialPort::Settings::defaultSettings() ),
+   mPinoutSignalsEventNotifier(&mSerialPort)
 {
   mUi.setupUi(this);
   setCentralWidget(mCentralWidget);
   mCentralWidget->setFocusToCommandEdit();
 
   statusBar()->addWidget(mStatusLabel);
+  statusBar()->addPermanentWidget(mPinoutSignalsWidget);
 
   connect(mUi.actionConfigurePort, &QAction::triggered, this, &MainWindow::setupSerialPort);
   connect(mUi.actionOpenPort, &QAction::triggered, this, &MainWindow::openSerialPort);
   connect(mUi.actionClosePort, &QAction::triggered, this, &MainWindow::closeSerialPort);
+  connect(mUi.actionSetDTR, &QAction::triggered, this, &MainWindow::setDTR);
+
+  connect(mCentralWidget, &CentralWidget::sendCommandRequested, this, &MainWindow::submitCommand);
+
+  connect(&mSerialPort, &QSerialPort::readyRead, this, &MainWindow::readFromPort);
+
+  connect(&mSerialPort, &QSerialPort::aboutToClose, &mPinoutSignalsUiController, &PinoutSignalsUiController::setAboutToCloseEvent);
+  connect(&mPinoutSignalsEventNotifier, &PinoutSignalsEventNotifier::signalsChanged, &mPinoutSignalsUiController, &PinoutSignalsUiController::setSignals);
+
+  connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::receiveDataChanged, mPinoutSignalsWidget, &PinoutSignalsWidget::setReceiveDataOn);
+  connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::transmitDataChanged, mPinoutSignalsWidget, &PinoutSignalsWidget::setTransmitDataOn);
+  connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::requestToSendChanged, mPinoutSignalsWidget, &PinoutSignalsWidget::setRequestToSendOn);
+  connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::clearToSendChanged, mPinoutSignalsWidget, &PinoutSignalsWidget::setClearToSendOn);
+  connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::dataCarrierDetectChanged, mPinoutSignalsWidget, &PinoutSignalsWidget::setDataCarrierDetectOn);
+  connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::dataSetReadyChanged, mPinoutSignalsWidget, &PinoutSignalsWidget::setDataSetReadyOn);
+  connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::dataTerminalReadyChanged, mPinoutSignalsWidget, &PinoutSignalsWidget::setDataTerminalReadyOn);
+  connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::ringIndicatorChanged, mPinoutSignalsWidget, &PinoutSignalsWidget::setRingIndicatorOn);
 
   showPortClosedStatusMessage();
 }
@@ -86,10 +111,12 @@ void MainWindow::openSerialPort()
   }
 
   Mdt::SerialPort::PortSetup::setSettingsToPort(mSerialPortSettings, mSerialPort);
+  /// mSerialPort.setReadBufferSize(10);
   if( !mSerialPort.open(QIODevice::ReadWrite) ){
     displayErrorMessage( tr("Error while open serial port: %1").arg( mSerialPort.errorString() ) );
     return;
   }
+  mPinoutSignalsEventNotifier.setPortOpen();
 
   if(shouldConfigureInterfaceOncePortOpen){
     try{
@@ -111,6 +138,33 @@ void MainWindow::closeSerialPort()
   }
 
   showPortClosedStatusMessage();
+}
+
+void MainWindow::submitCommand(const QString & command)
+{
+  assert( mSerialPort.isOpen() );
+
+  qDebug() << "submit command: " << command;
+
+  // mCentralWidget->addTextToConsole(command);
+
+  mSerialPort.write( command.toLocal8Bit() );
+}
+
+void MainWindow::readFromPort()
+{
+  assert( mSerialPort.isOpen() );
+
+  mCentralWidget->addTextToConsole( QString::fromLocal8Bit( mSerialPort.readAll() ) );
+}
+
+void MainWindow::setDTR(bool on)
+{
+  assert( mSerialPort.isOpen() );
+
+  if( !mSerialPort.setDataTerminalReady(on) ){
+    displayErrorMessage( mSerialPort.errorString() );
+  }
 }
 
 void MainWindow::showStatusMessage(const QString &message)

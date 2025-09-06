@@ -34,6 +34,7 @@
     </property>
     <addaction name="actionOpenPort"/>
     <addaction name="actionClosePort"/>
+    <addaction name="actionSetDTR"/>
    </widget>
    <widget class="QMenu" name="menu_Settings">
     <property name="title">
@@ -58,14 +59,14 @@
    </attribute>
    <addaction name="actionOpenPort"/>
    <addaction name="actionClosePort"/>
+   <addaction name="actionSetDTR"/>
   </widget>
   <action name="actionOpenPort">
-   <property name="icon">
-    <iconset theme="Ctrl+O">
-     <normaloff>.</normaloff>.</iconset>
-   </property>
    <property name="text">
     <string>&amp;Open port</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
    </property>
   </action>
   <action name="actionClosePort">
@@ -76,6 +77,14 @@
   <action name="actionConfigurePort">
    <property name="text">
     <string>&amp;Configure port</string>
+   </property>
+  </action>
+  <action name="actionSetDTR">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;DTR</string>
    </property>
   </action>
  </widget>
