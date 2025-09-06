@@ -35,6 +35,7 @@
     <addaction name="actionOpenPort"/>
     <addaction name="actionClosePort"/>
     <addaction name="actionSetDTR"/>
+    <addaction name="actionSetRTS"/>
    </widget>
    <widget class="QMenu" name="menu_Settings">
     <property name="title">
@@ -60,6 +61,7 @@
    <addaction name="actionOpenPort"/>
    <addaction name="actionClosePort"/>
    <addaction name="actionSetDTR"/>
+   <addaction name="actionSetRTS"/>
   </widget>
   <action name="actionOpenPort">
    <property name="text">
@@ -85,6 +87,14 @@
    </property>
    <property name="text">
     <string>&amp;DTR</string>
+   </property>
+  </action>
+  <action name="actionSetRTS">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;RTS</string>
    </property>
   </action>
  </widget>

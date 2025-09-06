@@ -47,6 +47,7 @@ class MainWindow : public QMainWindow
   void readFromPort();
 
   void setDTR(bool on);
+  void setRTS(bool on);
 
  private:
 

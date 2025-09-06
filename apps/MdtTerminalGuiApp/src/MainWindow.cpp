@@ -42,7 +42,12 @@ MainWindow::MainWindow(QWidget* parent)
   connect(mUi.actionConfigurePort, &QAction::triggered, this, &MainWindow::setupSerialPort);
   connect(mUi.actionOpenPort, &QAction::triggered, this, &MainWindow::openSerialPort);
   connect(mUi.actionClosePort, &QAction::triggered, this, &MainWindow::closeSerialPort);
+
+  connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::dataTerminalReadyChanged, mUi.actionSetDTR, &QAction::setChecked);
   connect(mUi.actionSetDTR, &QAction::triggered, this, &MainWindow::setDTR);
+
+  connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::requestToSendChanged, mUi.actionSetRTS, &QAction::setChecked);
+  connect(mUi.actionSetRTS, &QAction::triggered, this, &MainWindow::setRTS);
 
   connect(mCentralWidget, &CentralWidget::sendCommandRequested, this, &MainWindow::submitCommand);
 
@@ -163,6 +168,15 @@ void MainWindow::setDTR(bool on)
   assert( mSerialPort.isOpen() );
 
   if( !mSerialPort.setDataTerminalReady(on) ){
+    displayErrorMessage( mSerialPort.errorString() );
+  }
+}
+
+void MainWindow::setRTS(bool on)
+{
+  assert( mSerialPort.isOpen() );
+
+  if( !mSerialPort.setRequestToSend(on) ){
     displayErrorMessage( mSerialPort.errorString() );
   }
 }
