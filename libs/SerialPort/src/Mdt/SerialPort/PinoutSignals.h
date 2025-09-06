@@ -66,6 +66,22 @@ namespace Mdt{ namespace SerialPort{
       mPinoutSignals = ps;
     }
 
+    /*! \brief Set DSR (Data Set Ready ) ON or OFF
+     */
+    constexpr
+    void setDataSetReadyOn(bool on) noexcept
+    {
+      mPinoutSignals.setFlag(QSerialPort::DataSetReadySignal, on);
+    }
+
+    /*! \brief Check if DSR (Data Set Ready ) is ON
+     */
+    constexpr
+    bool dataSetReadyIsOn() const noexcept
+    {
+      return mPinoutSignals.testFlag(QSerialPort::DataSetReadySignal);
+    }
+
     /*! \brief Set DTR (Data Terminal Ready) ON or OFF
      */
     constexpr
@@ -98,12 +114,52 @@ namespace Mdt{ namespace SerialPort{
       return mPinoutSignals.testFlag(QSerialPort::RequestToSendSignal);
     }
 
+    /*! \brief Set CTS (Clear To Send) ON or OFF
+     */
+    constexpr
+    void setClearToSendOn(bool on) noexcept
+    {
+      mPinoutSignals.setFlag(QSerialPort::ClearToSendSignal, on);
+    }
+
+    /*! \brief Check if CTS (Clear To Send) is ON
+     */
+    constexpr
+    bool clearToSendIsOn() const noexcept
+    {
+      return mPinoutSignals.testFlag(QSerialPort::ClearToSendSignal);
+    }
+
+    /*! \brief Set DCD (Data Carrier Detect) ON or OFF
+     */
+    constexpr
+    void setDataCarrierDetectOn(bool on) noexcept
+    {
+      mPinoutSignals.setFlag(QSerialPort::DataCarrierDetectSignal, on);
+    }
+
     /*! \brief Check if DCD (Data Carrier Detect) is ON
      */
     constexpr
     bool dataCarrierDetectIsOn() const noexcept
     {
       return mPinoutSignals.testFlag(QSerialPort::DataCarrierDetectSignal);
+    }
+
+    /*! \brief Set RI or RNG (Ring Indicator) ON or OFF  RNG
+     */
+    constexpr
+    void setRingIndicatorOn(bool on) noexcept
+    {
+      mPinoutSignals.setFlag(QSerialPort::RingIndicatorSignal, on);
+    }
+
+    /*! \brief Check if RI or RNG (Ring Indicator) is ON
+     */
+    constexpr
+    bool ringIndicatorIsOn() const noexcept
+    {
+      return mPinoutSignals.testFlag(QSerialPort::RingIndicatorSignal);
     }
 
     /*! \brief Clear this signals

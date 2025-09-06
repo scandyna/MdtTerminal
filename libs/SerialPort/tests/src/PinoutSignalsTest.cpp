@@ -20,8 +20,12 @@ TEST_CASE("defaultConstructed")
 
   CHECK( !ps.receiveDataIsOn() );
   CHECK( !ps.transmitDataIsOn() );
-  CHECK( !ps.dataTerminalReadyIsOn() );
   CHECK( !ps.requestToSendIsOn() );
+  CHECK( !ps.clearToSendIsOn() );
+  CHECK( !ps.dataCarrierDetectIsOn() );
+  CHECK( !ps.dataSetReadyIsOn() );
+  CHECK( !ps.dataTerminalReadyIsOn() );
+  CHECK( !ps.ringIndicatorIsOn() );
 }
 
 TEST_CASE("set_RX")
@@ -51,6 +55,14 @@ TEST_CASE("setSignals")
   PinoutSignals ps;
   QSerialPort::PinoutSignals sps = QSerialPort::NoSignal;
 
+  SECTION("DSR")
+  {
+    sps = QSerialPort::DataSetReadySignal;
+
+    ps.setSignals(sps);
+    CHECK( ps.dataSetReadyIsOn() );
+  }
+
   SECTION("DTR is ON")
   {
     sps = QSerialPort::DataTerminalReadySignal;
@@ -67,6 +79,14 @@ TEST_CASE("setSignals")
     CHECK( ps.requestToSendIsOn() );
   }
 
+  SECTION("CTS is ON")
+  {
+    sps = QSerialPort::ClearToSendSignal;
+
+    ps.setSignals(sps);
+    CHECK( ps.clearToSendIsOn() );
+  }
+
   SECTION("DCD is ON")
   {
     sps = QSerialPort::DataCarrierDetectSignal;
@@ -74,6 +94,31 @@ TEST_CASE("setSignals")
     ps.setSignals(sps);
     CHECK( ps.dataCarrierDetectIsOn() );
   }
+
+  SECTION("RNG is ON")
+  {
+    sps = QSerialPort::RingIndicatorSignal;
+
+    ps.setSignals(sps);
+    CHECK( ps.ringIndicatorIsOn() );
+  }
+}
+
+TEST_CASE("setDataSetReadyOn")
+{
+  PinoutSignals ps;
+  QSerialPort::PinoutSignals sps = QSerialPort::DataCarrierDetectSignal;
+  ps.setSignals(sps);
+  REQUIRE( !ps.dataSetReadyIsOn() );
+  REQUIRE( ps.dataCarrierDetectIsOn() );
+
+  ps.setDataSetReadyOn(true);
+  CHECK( ps.dataSetReadyIsOn() );
+  CHECK( ps.dataCarrierDetectIsOn() );
+
+  ps.setDataSetReadyOn(false);
+  CHECK( !ps.dataSetReadyIsOn() );
+  CHECK( ps.dataCarrierDetectIsOn() );
 }
 
 TEST_CASE("setDataTerminalReadyOn")
@@ -107,6 +152,57 @@ TEST_CASE("setRequestToSendOn")
 
   ps.setRequestToSendOn(false);
   CHECK( !ps.requestToSendIsOn() );
+  CHECK( ps.dataCarrierDetectIsOn() );
+}
+
+TEST_CASE("setClearToSendOn")
+{
+  PinoutSignals ps;
+  QSerialPort::PinoutSignals sps = QSerialPort::DataCarrierDetectSignal;
+  ps.setSignals(sps);
+  REQUIRE( !ps.clearToSendIsOn() );
+  REQUIRE( ps.dataCarrierDetectIsOn() );
+
+  ps.setClearToSendOn(true);
+  CHECK( ps.clearToSendIsOn() );
+  CHECK( ps.dataCarrierDetectIsOn() );
+
+  ps.setClearToSendOn(false);
+  CHECK( !ps.clearToSendIsOn() );
+  CHECK( ps.dataCarrierDetectIsOn() );
+}
+
+TEST_CASE("setDataCarrierDetectOn")
+{
+  PinoutSignals ps;
+  QSerialPort::PinoutSignals sps = QSerialPort::RequestToSendSignal;
+  ps.setSignals(sps);
+  REQUIRE( !ps.dataCarrierDetectIsOn() );
+  REQUIRE( ps.requestToSendIsOn() );
+
+  ps.setDataCarrierDetectOn(true);
+  CHECK( ps.dataCarrierDetectIsOn() );
+  CHECK( ps.requestToSendIsOn() );
+
+  ps.setDataCarrierDetectOn(false);
+  CHECK( !ps.dataCarrierDetectIsOn() );
+  CHECK( ps.requestToSendIsOn() );
+}
+
+TEST_CASE("setRingIndicatorOn")
+{
+  PinoutSignals ps;
+  QSerialPort::PinoutSignals sps = QSerialPort::DataCarrierDetectSignal;
+  ps.setSignals(sps);
+  REQUIRE( !ps.ringIndicatorIsOn() );
+  REQUIRE( ps.dataCarrierDetectIsOn() );
+
+  ps.setRingIndicatorOn(true);
+  CHECK( ps.ringIndicatorIsOn() );
+  CHECK( ps.dataCarrierDetectIsOn() );
+
+  ps.setRingIndicatorOn(false);
+  CHECK( !ps.ringIndicatorIsOn() );
   CHECK( ps.dataCarrierDetectIsOn() );
 }
 

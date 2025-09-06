@@ -41,6 +41,42 @@ void PinoutSignalsWidget::setTransmitDataOn(bool on)
   }
 }
 
+void PinoutSignalsWidget::setRequestToSendOn(bool on)
+{
+  if(on){
+    mUi->RTSsignal->setText( QLatin1String("ON") );
+  }else{
+    mUi->RTSsignal->setText( QLatin1String("  ") );
+  }
+}
+
+void PinoutSignalsWidget::setClearToSendOn(bool on)
+{
+  if(on){
+    mUi->CTSsignal->setText( QLatin1String("ON") );
+  }else{
+    mUi->CTSsignal->setText( QLatin1String("  ") );
+  }
+}
+
+void PinoutSignalsWidget::setDataCarrierDetectOn(bool on)
+{
+  if(on){
+    mUi->DCDsignal->setText( QLatin1String("ON") );
+  }else{
+    mUi->DCDsignal->setText( QLatin1String("  ") );
+  }
+}
+
+void PinoutSignalsWidget::setDataSetReadyOn(bool on)
+{
+  if(on){
+    mUi->DSRsignal->setText( QLatin1String("ON") );
+  }else{
+    mUi->DSRsignal->setText( QLatin1String("  ") );
+  }
+}
+
 void PinoutSignalsWidget::setDataTerminalReadyOn(bool on)
 {
   if(on){
@@ -50,12 +86,12 @@ void PinoutSignalsWidget::setDataTerminalReadyOn(bool on)
   }
 }
 
-void PinoutSignalsWidget::setRequestToSendOn(bool on)
+void PinoutSignalsWidget::setRingIndicatorOn(bool on)
 {
   if(on){
-    mUi->RTSsignal->setText( QLatin1String("ON") );
+    mUi->RIsignal->setText( QLatin1String("ON") );
   }else{
-    mUi->RTSsignal->setText( QLatin1String("  ") );
+    mUi->RIsignal->setText( QLatin1String("  ") );
   }
 }
 

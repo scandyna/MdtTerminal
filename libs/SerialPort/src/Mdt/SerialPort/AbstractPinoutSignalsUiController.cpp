@@ -31,6 +31,10 @@ void AbstractPinoutSignalsUiController::setHoldOnDuration(std::chrono::milliseco
   mTransmitDataState.setHoldOnDuration(d);
   mDataTerminalReadyState.setHoldOnDuration(d);
   mRequestToSendState.setHoldOnDuration(d);
+  mClearToSendState.setHoldOnDuration(d);
+  mDataCarrierDetectState.setHoldOnDuration(d);
+  mDataSetReadyState.setHoldOnDuration(d);
+  mRingIndicatorState.setHoldOnDuration(d);
 }
 
 void AbstractPinoutSignalsUiController::setHoldOffDuration(std::chrono::milliseconds d) noexcept
@@ -39,6 +43,10 @@ void AbstractPinoutSignalsUiController::setHoldOffDuration(std::chrono::millisec
   mTransmitDataState.setHoldOffDuration(d);
   mDataTerminalReadyState.setHoldOffDuration(d);
   mRequestToSendState.setHoldOffDuration(d);
+  mClearToSendState.setHoldOffDuration(d);
+  mDataCarrierDetectState.setHoldOffDuration(d);
+  mDataSetReadyState.setHoldOffDuration(d);
+  mRingIndicatorState.setHoldOffDuration(d);
 }
 
 void AbstractPinoutSignalsUiController::setAboutToCloseEvent()
@@ -49,6 +57,10 @@ void AbstractPinoutSignalsUiController::setAboutToCloseEvent()
   mTransmitDataState.setStateOffNow();
   mDataTerminalReadyState.setStateOffNow();
   mRequestToSendState.setStateOffNow();
+  mClearToSendState.setStateOffNow();
+  mDataCarrierDetectState.setStateOffNow();
+  mDataSetReadyState.setStateOffNow();
+  mRingIndicatorState.setStateOffNow();
 
   notifyChangedStates();
 }
@@ -67,8 +79,12 @@ void AbstractPinoutSignalsUiController::setSignals(const PinoutSignals & ps)
 
   mReceiveDataState.setSignalOn(ps.receiveDataIsOn(), now);
   mTransmitDataState.setSignalOn(ps.transmitDataIsOn(), now);
-  mDataTerminalReadyState.setSignalOn(ps.dataTerminalReadyIsOn(), now);
   mRequestToSendState.setSignalOn(ps.requestToSendIsOn(), now);
+  mClearToSendState.setSignalOn(ps.clearToSendIsOn(), now);
+  mDataCarrierDetectState.setSignalOn(ps.dataCarrierDetectIsOn(), now);
+  mDataSetReadyState.setSignalOn(ps.dataSetReadyIsOn(), now);
+  mDataTerminalReadyState.setSignalOn(ps.dataTerminalReadyIsOn(), now);
+  mRingIndicatorState.setSignalOn(ps.ringIndicatorIsOn(), now);
 
   // qDebug() << " TX UI: " << mTransmitDataState.stateIsOn();
 
@@ -100,6 +116,10 @@ void AbstractPinoutSignalsUiController::setWatchdogTimeoutEvent()
   mTransmitDataState.setWatchdogTimeoutEvent(now);
   mDataTerminalReadyState.setWatchdogTimeoutEvent(now);
   mRequestToSendState.setWatchdogTimeoutEvent(now);
+  mClearToSendState.setWatchdogTimeoutEvent(now);
+  mDataCarrierDetectState.setWatchdogTimeoutEvent(now);
+  mDataSetReadyState.setWatchdogTimeoutEvent(now);
+  mRingIndicatorState.setWatchdogTimeoutEvent(now);
 
   // mTransmitDataState.updateState();
   // if( mTransmitDataState.stateHasChanged() ){
@@ -128,6 +148,18 @@ bool AbstractPinoutSignalsUiController::watchdogTimerShouldBeActive() const noex
   if( mRequestToSendState.watchdogTimerShouldBeActive() ){
     return true;
   }
+  if( mClearToSendState.watchdogTimerShouldBeActive() ){
+    return true;
+  }
+  if( mDataCarrierDetectState.watchdogTimerShouldBeActive() ){
+    return true;
+  }
+  if( mDataSetReadyState.watchdogTimerShouldBeActive() ){
+    return true;
+  }
+  if( mRingIndicatorState.watchdogTimerShouldBeActive() ){
+    return true;
+  }
 
   return false;
 }
@@ -140,11 +172,23 @@ void AbstractPinoutSignalsUiController::notifyChangedStates()
   if( mTransmitDataState.stateHasChanged() ){
     emit transmitDataChanged( mTransmitDataState.stateIsOn() );
   }
+  if( mRequestToSendState.stateHasChanged() ){
+    emit requestToSendChanged( mRequestToSendState.stateIsOn() );
+  }
+  if( mClearToSendState.stateHasChanged() ){
+    emit clearToSendChanged( mClearToSendState.stateIsOn() );
+  }
+  if( mDataCarrierDetectState.stateHasChanged() ){
+    emit dataCarrierDetectChanged( mDataCarrierDetectState.stateIsOn() );
+  }
+  if( mDataSetReadyState.stateHasChanged() ){
+    emit dataSetReadyChanged( mDataSetReadyState.stateIsOn() );
+  }
   if( mDataTerminalReadyState.stateHasChanged() ){
     emit dataTerminalReadyChanged( mDataTerminalReadyState.stateIsOn() );
   }
-  if( mRequestToSendState.stateHasChanged() ){
-    emit requestToSendChanged( mRequestToSendState.stateIsOn() );
+  if( mRingIndicatorState.stateHasChanged() ){
+    emit ringIndicatorChanged( mRingIndicatorState.stateIsOn() );
   }
 }
 

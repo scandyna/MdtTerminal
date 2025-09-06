@@ -29,7 +29,7 @@
  * |    DCD     |Data Carrier Detect|DCE is receiving a carrier from a remote DCE                                          |DTE &larr; DCE|
  * |    DSR     |Data Set Ready     |DCE is ready to receive and send data                                                 |DTE &larr; DCE|
  * |    DTR     |Data Terminal Ready|DTE is ready to receive, initiate, or continue a call                                 |DTE &rarr; DCE|
- * |    RI      |Ring Indicator     |DCE has detected an incoming ring signal on the telephone line                        |DTE &larr; DCE|
+ * | RI or RNG  |Ring Indicator     |DCE has detected an incoming ring signal on the telephone line                        |DTE &larr; DCE|
  * |    RTR     |Ready To Receive   |DTE is ready to receive data from DCE. If in use, RTS is assumed to be always asserted|DTE &rarr; DCE|
  *
  * \sa https://en.wikipedia.org/wiki/RS-232#Data_and_control_signals
@@ -133,8 +133,12 @@
  *
  *   connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::receiveDataChanged, mPinoutSignalsWidget, &PinoutSignalsWidget::setReceiveDataOn);
  *   connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::transmitDataChanged, mPinoutSignalsWidget, &PinoutSignalsWidget::setTransmitDataOn);
- *   connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::dataTerminalReadyChanged, mPinoutSignalsWidget, &PinoutSignalsWidget::setDataTerminalReadyOn);
  *   connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::requestToSendChanged, mPinoutSignalsWidget, &PinoutSignalsWidget::setRequestToSendOn);
+ *   connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::clearToSendChanged, mPinoutSignalsWidget, &PinoutSignalsWidget::setClearToSendOn);
+ *   connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::dataCarrierDetectChanged, mPinoutSignalsWidget, &PinoutSignalsWidget::setDataCarrierDetectOn);
+ *   connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::dataSetReadyChanged, mPinoutSignalsWidget, &PinoutSignalsWidget::setDataSetReadyOn);
+ *   connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::dataTerminalReadyChanged, mPinoutSignalsWidget, &PinoutSignalsWidget::setDataTerminalReadyOn);
+ *   connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::ringIndicatorChanged, mPinoutSignalsWidget, &PinoutSignalsWidget::setRingIndicatorOn);
  * }
  * \endcode
  *

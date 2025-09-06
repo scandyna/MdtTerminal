@@ -47,13 +47,29 @@ namespace Mdt{ namespace SerialPort{
      */
     void setTransmitDataOn(bool on);
 
+    /*! \brief Set RTS (Request To Send) ON or OFF
+     */
+    void setRequestToSendOn(bool on);
+
+    /*! \brief Set CTS (Clear To Send) ON or OFF
+     */
+    void setClearToSendOn(bool on);
+
+    /*! \brief Set DCD (Data Carrier Detect) ON or OFF
+     */
+    void setDataCarrierDetectOn(bool on);
+
+    /*! \brief Set DSR (Data Set Ready ) ON or OFF
+     */
+    void setDataSetReadyOn(bool on);
+
     /*! \brief Set DTR (Data Terminal Ready) signal ON or OFF
      */
     void setDataTerminalReadyOn(bool on);
 
-    /*! \brief Set RTS (Request To Send) ON or OFF
+    /*! \brief Set RI or RNG (Ring Indicator) ON or OFF  RNG
      */
-    void setRequestToSendOn(bool on);
+    void setRingIndicatorOn(bool on);
 
    private:
 

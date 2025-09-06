@@ -62,13 +62,29 @@ namespace Mdt{ namespace SerialPort{
      */
     void transmitDataChanged(bool on) const;
 
+    /*! \brief Emitted every time the RTS (Request To Send) state changed
+     */
+    void requestToSendChanged(bool on) const;
+
+    /*! \brief Emitted every time the CTS (Clear To Send) state changed
+     */
+    void clearToSendChanged(bool on) const;
+
+    /*! \brief Emitted every time the DCD (Data Carrier Detect) state changed
+     */
+    void dataCarrierDetectChanged(bool on) const;
+
+    /*! \brief Emitted every time the DSR (Data Set Ready) state changed
+     */
+    void dataSetReadyChanged(bool on) const;
+
     /*! \brief Emitted every time the DTR (Data Terminal Ready) state changed
      */
     void dataTerminalReadyChanged(bool on) const;
 
-    /*! \brief Emitted every time the RTS (Request To Send) state changed
+    /*! \brief Emitted every time the RNG (Ring Indicator) state changed
      */
-    void requestToSendChanged(bool on) const;
+    void ringIndicatorChanged(bool on) const;
 
    protected Q_SLOTS:
 
@@ -112,8 +128,12 @@ namespace Mdt{ namespace SerialPort{
 
     PinoutSignalUiState mReceiveDataState;
     PinoutSignalUiState mTransmitDataState;
-    PinoutSignalUiState mDataTerminalReadyState;
     PinoutSignalUiState mRequestToSendState;
+    PinoutSignalUiState mClearToSendState;
+    PinoutSignalUiState mDataCarrierDetectState;
+    PinoutSignalUiState mDataSetReadyState;
+    PinoutSignalUiState mDataTerminalReadyState;
+    PinoutSignalUiState mRingIndicatorState;
   };
 
 }} // namespace Mdt{ namespace SerialPort{
