@@ -49,6 +49,14 @@ MainWindow::MainWindow(QWidget* parent)
   connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::requestToSendChanged, mUi.actionSetRTS, &QAction::setChecked);
   connect(mUi.actionSetRTS, &QAction::triggered, this, &MainWindow::setRTS);
 
+  connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::breakChanged, mUi.actionSetBreak, &QAction::setChecked);
+  connect(mUi.actionSetBreak, &QAction::triggered, this, &MainWindow::setBreak);
+
+  connect(mUi.actionsandbox, &QAction::triggered, this, &MainWindow::sandboxCommand);
+
+  connect(mUi.actionSendXON, &QAction::triggered, this, &MainWindow::sendXON);
+  connect(mUi.actionSendXOFF, &QAction::triggered, this, &MainWindow::sendXOFF);
+
   connect(mCentralWidget, &CentralWidget::sendCommandRequested, this, &MainWindow::submitCommand);
 
   connect(&mSerialPort, &QSerialPort::readyRead, this, &MainWindow::readFromPort);
@@ -64,6 +72,7 @@ MainWindow::MainWindow(QWidget* parent)
   connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::dataSetReadyChanged, mPinoutSignalsWidget, &PinoutSignalsWidget::setDataSetReadyOn);
   connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::dataTerminalReadyChanged, mPinoutSignalsWidget, &PinoutSignalsWidget::setDataTerminalReadyOn);
   connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::ringIndicatorChanged, mPinoutSignalsWidget, &PinoutSignalsWidget::setRingIndicatorOn);
+  connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::breakChanged, mPinoutSignalsWidget, &PinoutSignalsWidget::setBreakOn);
 
   showPortClosedStatusMessage();
 }
@@ -153,6 +162,7 @@ void MainWindow::submitCommand(const QString & command)
 
   // mCentralWidget->addTextToConsole(command);
 
+  /// \todo return value ?
   mSerialPort.write( command.toLocal8Bit() );
 }
 
@@ -160,7 +170,19 @@ void MainWindow::readFromPort()
 {
   assert( mSerialPort.isOpen() );
 
-  mCentralWidget->addTextToConsole( QString::fromLocal8Bit( mSerialPort.readAll() ) );
+  /// \todo sandboxing
+
+  QByteArray data = mSerialPort.readAll();
+  for(char c : data){
+    qDebug() << "0x" << QString::number(c, 16);
+    if(c == 0){
+      qDebug() << "ZERO  0";
+    }
+  }
+
+  mCentralWidget->addTextToConsole( QString::fromLocal8Bit(data) );
+
+  /// mCentralWidget->addTextToConsole( QString::fromLocal8Bit( mSerialPort.readAll() ) );
 }
 
 void MainWindow::setDTR(bool on)
@@ -179,6 +201,63 @@ void MainWindow::setRTS(bool on)
   if( !mSerialPort.setRequestToSend(on) ){
     displayErrorMessage( mSerialPort.errorString() );
   }
+}
+
+void MainWindow::setBreak(bool on)
+{
+  assert( mSerialPort.isOpen() );
+
+  if( !mSerialPort.setBreakEnabled(on) ){
+    displayErrorMessage( mSerialPort.errorString() );
+  }
+}
+
+void MainWindow::sandboxCommand()
+{
+  qDebug() << "sanboxCommand() ..";
+
+  // const QChar data[2] = {0x0011, 0x0013};
+  // 
+  // mCentralWidget->addTextToConsole( QString(data, 2) );
+  // 
+  // // mCentralWidget->addTextToConsole( QChar(0x2411) );
+  // // mCentralWidget->addTextToConsole( QChar::fromLatin1(0x13) );
+  // // mCentralWidget->addTextToConsole( QChar::fromLatin1(0x21) );
+  // 
+  // return;
+
+  assert( mSerialPort.isOpen() );
+
+  mSerialPort.write( QByteArray(1, 0x11) );
+
+  return;
+
+  qDebug() << "setBreakEnabled..";
+  if( !mSerialPort.setBreakEnabled(false) ){
+    displayErrorMessage( mSerialPort.errorString() );
+  }
+}
+
+void MainWindow::sendXON()
+{
+  assert( mSerialPort.isOpen() );
+
+  sendAsciiControl(0x11);
+}
+
+void MainWindow::sendXOFF()
+{
+  assert( mSerialPort.isOpen() );
+
+  sendAsciiControl(0x13);
+}
+
+void MainWindow::sendAsciiControl(char c)
+{
+  assert( mSerialPort.isOpen() );
+
+  /// \todo return value ?
+  mSerialPort.write( QByteArray(1, c) );
 }
 
 void MainWindow::showStatusMessage(const QString &message)

@@ -48,8 +48,16 @@ class MainWindow : public QMainWindow
 
   void setDTR(bool on);
   void setRTS(bool on);
+  void setBreak(bool on);
+
+  void sandboxCommand();
+
+  void sendXON();
+  void sendXOFF();
 
  private:
+
+  void sendAsciiControl(char c);
 
   void showStatusMessage(const QString &message);
   void displayErrorMessage(const QString & message);

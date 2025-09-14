@@ -36,6 +36,10 @@
     <addaction name="actionClosePort"/>
     <addaction name="actionSetDTR"/>
     <addaction name="actionSetRTS"/>
+    <addaction name="actionSetBreak"/>
+    <addaction name="actionsandbox"/>
+    <addaction name="actionSendXON"/>
+    <addaction name="actionSendXOFF"/>
    </widget>
    <widget class="QMenu" name="menu_Settings">
     <property name="title">
@@ -62,6 +66,10 @@
    <addaction name="actionClosePort"/>
    <addaction name="actionSetDTR"/>
    <addaction name="actionSetRTS"/>
+   <addaction name="actionSetBreak"/>
+   <addaction name="actionsandbox"/>
+   <addaction name="actionSendXON"/>
+   <addaction name="actionSendXOFF"/>
   </widget>
   <action name="actionOpenPort">
    <property name="text">
@@ -95,6 +103,35 @@
    </property>
    <property name="text">
     <string>&amp;RTS</string>
+   </property>
+  </action>
+  <action name="actionsandbox">
+   <property name="text">
+    <string>sandbox</string>
+   </property>
+  </action>
+  <action name="actionSendXON">
+   <property name="text">
+    <string>Send XON (DC1)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="actionSendXOFF">
+   <property name="text">
+    <string>Send XOFF (DC3)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionSetBreak">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Break</string>
    </property>
   </action>
  </widget>

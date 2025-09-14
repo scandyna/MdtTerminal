@@ -10,12 +10,18 @@
 #include "CentralWidget.h"
 #include <QPushButton>
 
+// #include <QFont>
+
 CentralWidget::CentralWidget(QWidget *parent)
  : QWidget(parent)
 {
   mUi.setupUi(this);
 
   connect(mUi.sendCommandButton, &QPushButton::clicked, this, &CentralWidget::requestSendCommand);
+
+  // QFont font = mUi.console->document()->defaultFont();
+  // font.setPointSize(20);
+  // mUi.console->document()->setDefaultFont(font);
 }
 
 void CentralWidget::setFocusToCommandEdit()
