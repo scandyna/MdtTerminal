@@ -23,3 +23,8 @@ and don't work if we send bytes at the normal predefined rate
 # Status
 
 Currently, I only work on RS-232 serial port.
+
+# Existing projects
+
+- https://github.com/Duolabs/SerialTool
+- https://realterm.sourceforge.io/
