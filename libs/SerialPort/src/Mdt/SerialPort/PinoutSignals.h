@@ -162,6 +162,22 @@ namespace Mdt{ namespace SerialPort{
       return mPinoutSignals.testFlag(QSerialPort::RingIndicatorSignal);
     }
 
+    /*! \brief Set break ON or OFF  RNG
+     */
+    constexpr
+    void setBreakOn(bool on) noexcept
+    {
+      mBreak = on;
+    }
+
+    /*! \brief Check break is ON
+     */
+    constexpr
+    bool breakIsOn() const noexcept
+    {
+      return mBreak;
+    }
+
     /*! \brief Clear this signals
      *
      * Will set all signals to OFF
@@ -171,6 +187,7 @@ namespace Mdt{ namespace SerialPort{
     {
       mRX = false;
       mTX = false;
+      mBreak = false;
       mPinoutSignals = QSerialPort::NoSignal;
     }
 
@@ -184,6 +201,9 @@ namespace Mdt{ namespace SerialPort{
         return false;
       }
       if(a.mTX != b.mTX){
+        return false;
+      }
+      if(a.mBreak != b.mBreak){
         return false;
       }
       if(a.mPinoutSignals != b.mPinoutSignals){
@@ -206,6 +226,7 @@ namespace Mdt{ namespace SerialPort{
 
     bool mRX = false;
     bool mTX = false;
+    bool mBreak = false;
     QSerialPort::PinoutSignals mPinoutSignals = QSerialPort::NoSignal;
   };
 

@@ -55,8 +55,40 @@
  * \sa https://en.wikipedia.org/wiki/Serial_port#Pinouts
  *
  *
- * \subsection SerialPort_SomeTechnicalInformations_OtherStuff Other stuff
+ * \subsection SerialPort_SomeTechnicalInformations_Break Break
  *
+ *
+ * \todo talk about break
+ *
+ * - A logical 0 is a positive voltage.
+ * - A logical 1 is a negative voltage.
+ * - The Idle state is a negative voltage (logical 1), called the MARK state.
+ * - Keep TX pin at positive voltage (logical 0) is called a SPACE or BREAK.
+ *
+ * \todo check with a voltmeter
+ *
+ * \sa https://man7.org/linux/man-pages/man2/TCSBRK.2const.html
+ * \sa https://stackoverflow.com/questions/14803434/receive-read-break-condition-on-linux-serial-port
+ * \sa https://wcscnet.com/tutorials/introduction-to-rs232-serial-communication/
+ * \sa https://en.wikipedia.org/wiki/RS-232#Physical_interface
+ * \sa https://doc.qt.io/qt-6/qserialport.html#breakEnabled-prop
+ * \sa https://e2e.ti.com/support/microcontrollers/msp-low-power-microcontrollers-group/msp430/f/msp-low-power-microcontroller-forum/152249/serial-port-break-clarification-2
+ * \sa https://stackoverflow.com/questions/37540293/what-does-break-mean-in-real-terms-while-using-a-uart
+ *
+ *
+ * \subsection SerialPort_SomeTechnicalInformations_AsciiControlCharacters ASCII control characters
+ *
+ * \todo talk about ASCII controls
+ *
+ * |Hex|Abbreviation|Unicode Control Pictures|Caret notation|C escape sequence|
+ * |:-:|:----------:|:----------------------:|:------------:|:---------------:|
+ * |11 | DC1 (XON)  |     U+2411             |  ^Q          |                 |
+ * |13 | DC3 (XOFF) |     U+2413             |  ^S          |                 |
+ *
+ * \sa https://en.wikipedia.org/wiki/ASCII#Control_code_table
+ *
+ *
+ * \subsection SerialPort_SomeTechnicalInformations_OtherStuff Other stuff
  *
  * For data, store a TX byte + RX byte ? NO!! just a bool !
  * 
@@ -139,6 +171,7 @@
  *   connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::dataSetReadyChanged, mPinoutSignalsWidget, &PinoutSignalsWidget::setDataSetReadyOn);
  *   connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::dataTerminalReadyChanged, mPinoutSignalsWidget, &PinoutSignalsWidget::setDataTerminalReadyOn);
  *   connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::ringIndicatorChanged, mPinoutSignalsWidget, &PinoutSignalsWidget::setRingIndicatorOn);
+ *   connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::breakChanged, mPinoutSignalsWidget, &PinoutSignalsWidget::setBreakOn);
  * }
  * \endcode
  *
@@ -176,6 +209,19 @@
  *
  * \sa https://doc.qt.io/qt-6/qserialport.html#PinoutSignal-enum
  * \sa \ref SerialPort_SomeTechnicalInformations_PinoutSignals
+ *
+ * \subsection SerialPort_PinoutSignals_Reliability Pinout signals reliability
+ *
+ * \todo Open issue and explain reliability of TX / RX pinout signals.
+ *
+ * \todo Explain buffering (Qt + native API ? + driver)
+ *
+ * \todo Approximate mode , trace mode (system read/write, bypasses QIODevice buffer), spy mode (special driver, allmost bit level)
+ *
+ * \sa https://gitlab.com/scandyna/mdtterminal/-/issues/3
+ * \sa https://stackoverflow.com/questions/940374/how-can-i-monitor-data-on-a-serial-port-in-linux
+ * \sa https://serialtool.com/_en/serial-com-sniffer.php
+ *
  *
  * \section SerialPort_Errors Serial port errors
  *

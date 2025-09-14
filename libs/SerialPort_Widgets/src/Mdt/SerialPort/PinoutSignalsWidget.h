@@ -71,6 +71,10 @@ namespace Mdt{ namespace SerialPort{
      */
     void setRingIndicatorOn(bool on);
 
+    /*! \brief Set break ON or OFF  RNG
+     */
+    void setBreakOn(bool on);
+
    private:
 
     std::unique_ptr<Ui::PinoutSignalsWidget> mUi;

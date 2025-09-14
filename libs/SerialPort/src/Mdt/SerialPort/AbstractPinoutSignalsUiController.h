@@ -86,6 +86,10 @@ namespace Mdt{ namespace SerialPort{
      */
     void ringIndicatorChanged(bool on) const;
 
+    /*! \brief Emitted every time the break state changed
+     */
+    void breakChanged(bool on) const;
+
    protected Q_SLOTS:
 
     /*! \brief Set the timer timeout event
@@ -134,6 +138,7 @@ namespace Mdt{ namespace SerialPort{
     PinoutSignalUiState mDataSetReadyState;
     PinoutSignalUiState mDataTerminalReadyState;
     PinoutSignalUiState mRingIndicatorState;
+    PinoutSignalUiState mBreakState;
   };
 
 }} // namespace Mdt{ namespace SerialPort{

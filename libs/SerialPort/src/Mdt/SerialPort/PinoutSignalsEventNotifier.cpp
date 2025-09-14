@@ -25,7 +25,9 @@ PinoutSignalsEventNotifier::PinoutSignalsEventNotifier(QSerialPort *serialPort, 
   connect(mSerialPort, &QSerialPort::aboutToClose, this, &PinoutSignalsEventNotifier::setAboutToCloseEvent);
   connect(mSerialPort, &QSerialPort::readyRead, this, &PinoutSignalsEventNotifier::setReadyReadEvent);
   connect(mSerialPort, &QSerialPort::bytesWritten, this, &PinoutSignalsEventNotifier::setBytesWrittenEvent);
+  connect(mSerialPort, &QSerialPort::requestToSendChanged, this, &PinoutSignalsEventNotifier::setRequestToSendChangedEvent);
   connect(mSerialPort, &QSerialPort::dataTerminalReadyChanged, this, &PinoutSignalsEventNotifier::setDataTerminalReadyChangedEvent);
+  connect(mSerialPort, &QSerialPort::breakEnabledChanged, this, &PinoutSignalsEventNotifier::setBreakEnabledChangedEvent);
 
   connect(&mTimer, &QTimer::timeout, this, &PinoutSignalsEventNotifier::setTimerTimeoutEvent);
   mTimer.setTimerType(Qt::CoarseTimer);

@@ -100,6 +100,14 @@ TEST_CASE("watchdogTimerShouldBeActive")
 
     CHECK( psc.watchdogTimerShouldBeActive() );
   }
+
+  SECTION("when break UI goes ON (hold state) - wdt shoud be active")
+  {
+    ps.setBreakOn(true);
+    psc.setSignals(ps);
+
+    CHECK( psc.watchdogTimerShouldBeActive() );
+  }
 }
 
 TEST_CASE("whenAStateIsInHold_WdtIsActive_OtherwiseNot")
@@ -161,6 +169,7 @@ TEST_CASE("whenPortIsAboutToClose_AllUiStatesGo_OFF")
   ps.setDataSetReadyOn(true);
   ps.setDataTerminalReadyOn(true);
   ps.setRingIndicatorOn(true);
+  ps.setBreakOn(true);
   psc.setSignals(ps);
 
   PinoutSignalUiStateChangedSignalSpy receiveDataChangedSpy(&psc, &TestPinoutSignalsUiController::receiveDataChanged);
@@ -172,6 +181,8 @@ TEST_CASE("whenPortIsAboutToClose_AllUiStatesGo_OFF")
   PinoutSignalUiStateChangedSignalSpy dataSetReadyChangedSpy(&psc, &TestPinoutSignalsUiController::dataSetReadyChanged);
   PinoutSignalUiStateChangedSignalSpy dataTerminalReadyChangedSpy(&psc, &TestPinoutSignalsUiController::dataTerminalReadyChanged);
   PinoutSignalUiStateChangedSignalSpy ringIndicatorChangedSpy(&psc, &TestPinoutSignalsUiController::ringIndicatorChanged);
+
+  PinoutSignalUiStateChangedSignalSpy breakChangedSpy(&psc, &TestPinoutSignalsUiController::breakChanged);
 
   psc.setAboutToCloseEvent();
 
@@ -198,6 +209,9 @@ TEST_CASE("whenPortIsAboutToClose_AllUiStatesGo_OFF")
 
   REQUIRE( ringIndicatorChangedSpy.count() == 1 );
   CHECK( !ringIndicatorChangedSpy.stateAtIsOn(0) );
+
+  REQUIRE( breakChangedSpy.count() == 1 );
+  CHECK( !breakChangedSpy.stateAtIsOn(0) );
 }
 
 TEST_CASE("RX")
@@ -900,6 +914,94 @@ TEST_CASE("RNG")
 
       REQUIRE( ringIndicatorChangedSpy.count() == 1 );
       CHECK( ringIndicatorChangedSpy.stateAtIsOn(0) );
+    }
+  }
+}
+
+TEST_CASE("break")
+{
+  PinoutSignals ps;
+  TestPinoutSignalsUiController psc;
+  psc.setHoldOnDuration(100ms);
+  psc.setHoldOffDuration(40ms);
+  PinoutSignalUiStateChangedSignalSpy breakChangedSpy(&psc, &TestPinoutSignalsUiController::breakChanged);
+
+  SECTION("break ON notified - UI goes ON")
+  {
+    ps.setBreakOn(true);
+
+    psc.setSignals(ps);
+
+    REQUIRE( breakChangedSpy.count() == 1 );
+    CHECK( breakChangedSpy.stateAtIsOn(0) );
+  }
+
+  SECTION("When break UI is ON")
+  {
+    ps.setBreakOn(true);
+    psc.setSignals(ps);
+    breakChangedSpy.clear();
+
+    SECTION("It stays ON on wathchdog event after hold on timed out")
+    {
+      psc.setCurrentTime( TimePoint(150ms) );
+      psc.setWatchdogTimeoutEvent();
+
+      REQUIRE( breakChangedSpy.count() == 0 );
+    }
+
+    SECTION("when break OFF is notified before hold on timed out - UI stays ON")
+    {
+      psc.setCurrentTime( TimePoint(20ms) );
+      ps.setBreakOn(false);
+      psc.setSignals(ps);
+
+      REQUIRE( breakChangedSpy.count() == 0 );
+    }
+
+    SECTION("When break OFF is notified - break UI goes OFF on wathchdog event after hold on timed out")
+    {
+      psc.setCurrentTime( TimePoint(20ms) );
+      ps.setBreakOn(false);
+      psc.setSignals(ps);
+      REQUIRE( breakChangedSpy.count() == 0 );
+
+      psc.setCurrentTime( TimePoint(150ms) );
+      psc.setWatchdogTimeoutEvent();
+
+      REQUIRE( breakChangedSpy.count() == 1 );
+      CHECK( !breakChangedSpy.stateAtIsOn(0) );
+    }
+  }
+
+  SECTION("When break UI became OFF")
+  {
+    ps.setBreakOn(true);
+    psc.setSignals(ps); // SM: --> on_hold
+    psc.setCurrentTime( TimePoint(200ms) );
+    ps.setBreakOn(false);
+    psc.setSignals(ps); // SM: --> off_hold
+    breakChangedSpy.clear();
+
+    ps.setBreakOn(true);
+
+    SECTION("when break ON is notified before hold off timed out - break UI stays OFF")
+    {
+      psc.setCurrentTime( TimePoint(220ms) );
+
+      psc.setSignals(ps);
+
+      REQUIRE( breakChangedSpy.count() == 0 );
+    }
+
+    SECTION("when break ON is notified after hold off timed out - break UI goes ON")
+    {
+      psc.setCurrentTime( TimePoint(250ms) );
+
+      psc.setSignals(ps);
+
+      REQUIRE( breakChangedSpy.count() == 1 );
+      CHECK( breakChangedSpy.stateAtIsOn(0) );
     }
   }
 }

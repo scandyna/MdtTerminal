@@ -33,6 +33,7 @@ void AbstractPinoutSignalsUiController::setHoldOnDuration(std::chrono::milliseco
   mDataCarrierDetectState.setHoldOnDuration(d);
   mDataSetReadyState.setHoldOnDuration(d);
   mRingIndicatorState.setHoldOnDuration(d);
+  mBreakState.setHoldOnDuration(d);
 }
 
 void AbstractPinoutSignalsUiController::setHoldOffDuration(std::chrono::milliseconds d) noexcept
@@ -45,6 +46,7 @@ void AbstractPinoutSignalsUiController::setHoldOffDuration(std::chrono::millisec
   mDataCarrierDetectState.setHoldOffDuration(d);
   mDataSetReadyState.setHoldOffDuration(d);
   mRingIndicatorState.setHoldOffDuration(d);
+  mBreakState.setHoldOffDuration(d);
 }
 
 void AbstractPinoutSignalsUiController::setAboutToCloseEvent()
@@ -59,6 +61,7 @@ void AbstractPinoutSignalsUiController::setAboutToCloseEvent()
   mDataCarrierDetectState.setStateOffNow();
   mDataSetReadyState.setStateOffNow();
   mRingIndicatorState.setStateOffNow();
+  mBreakState.setStateOffNow();
 
   notifyChangedStates();
 }
@@ -77,6 +80,7 @@ void AbstractPinoutSignalsUiController::setSignals(const PinoutSignals & ps)
   mDataSetReadyState.setSignalOn(ps.dataSetReadyIsOn(), now);
   mDataTerminalReadyState.setSignalOn(ps.dataTerminalReadyIsOn(), now);
   mRingIndicatorState.setSignalOn(ps.ringIndicatorIsOn(), now);
+  mBreakState.setSignalOn(ps.breakIsOn(), now);
 
   notifyChangedStates();
   startWatchdogTimerIfRequired();
@@ -96,6 +100,7 @@ void AbstractPinoutSignalsUiController::setWatchdogTimeoutEvent()
   mDataCarrierDetectState.setWatchdogTimeoutEvent(now);
   mDataSetReadyState.setWatchdogTimeoutEvent(now);
   mRingIndicatorState.setWatchdogTimeoutEvent(now);
+  mBreakState.setWatchdogTimeoutEvent(now);
 
   notifyChangedStates();
   startWatchdogTimerIfRequired();
@@ -127,6 +132,9 @@ bool AbstractPinoutSignalsUiController::watchdogTimerShouldBeActive() const noex
   if( mRingIndicatorState.watchdogTimerShouldBeActive() ){
     return true;
   }
+  if( mBreakState.watchdogTimerShouldBeActive() ){
+    return true;
+  }
 
   return false;
 }
@@ -156,6 +164,9 @@ void AbstractPinoutSignalsUiController::notifyChangedStates()
   }
   if( mRingIndicatorState.stateHasChanged() ){
     emit ringIndicatorChanged( mRingIndicatorState.stateIsOn() );
+  }
+  if( mBreakState.stateHasChanged() ){
+    emit breakChanged( mBreakState.stateIsOn() );
   }
 }
 

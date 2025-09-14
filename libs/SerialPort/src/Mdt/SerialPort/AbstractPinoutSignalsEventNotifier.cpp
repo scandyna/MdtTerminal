@@ -10,6 +10,7 @@
 #include "AbstractPinoutSignalsEventNotifier.h"
 #include <cassert>
 
+
 namespace Mdt{ namespace SerialPort{
 
 AbstractPinoutSignalsEventNotifier::AbstractPinoutSignalsEventNotifier(QObject *parent)
@@ -91,6 +92,19 @@ void AbstractPinoutSignalsEventNotifier::setRequestToSendChangedEvent(bool set)
   mPreviousPinoutSignals = mCurrentPinoutSignals;
 
   mCurrentPinoutSignals.setRequestToSendOn(set);
+
+  /// \todo Also read other pinout signals and RX TX ?
+
+  notifySignalsIfChanged();
+  startTimer();
+}
+
+void AbstractPinoutSignalsEventNotifier::setBreakEnabledChangedEvent(bool set)
+{
+  stopTimer();
+  mPreviousPinoutSignals = mCurrentPinoutSignals;
+
+  mCurrentPinoutSignals.setBreakOn(set);
 
   /// \todo Also read other pinout signals and RX TX ?
 

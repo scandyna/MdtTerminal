@@ -26,6 +26,7 @@ TEST_CASE("defaultConstructed")
   CHECK( !ps.dataSetReadyIsOn() );
   CHECK( !ps.dataTerminalReadyIsOn() );
   CHECK( !ps.ringIndicatorIsOn() );
+  CHECK( !ps.breakIsOn() );
 }
 
 TEST_CASE("set_RX")
@@ -206,6 +207,17 @@ TEST_CASE("setRingIndicatorOn")
   CHECK( ps.dataCarrierDetectIsOn() );
 }
 
+TEST_CASE("set_Break")
+{
+  PinoutSignals ps;
+
+  ps.setBreakOn(true);
+  CHECK( ps.breakIsOn() );
+
+  ps.setBreakOn(false);
+  CHECK( !ps.breakIsOn() );
+}
+
 TEST_CASE("clear")
 {
   PinoutSignals ps;
@@ -214,6 +226,7 @@ TEST_CASE("clear")
   ps.setTransmitDataOn(true);
   ps.setDataTerminalReadyOn(true);
   ps.setRequestToSendOn(true);
+  ps.setBreakOn(true);
 
   ps.clear();
 
@@ -221,6 +234,7 @@ TEST_CASE("clear")
   CHECK( !ps.transmitDataIsOn() );
   CHECK( !ps.dataTerminalReadyIsOn() );
   CHECK( !ps.requestToSendIsOn() );
+  CHECK( !ps.breakIsOn() );
 }
 
 TEST_CASE("comparison")
@@ -262,6 +276,13 @@ TEST_CASE("comparison")
   {
     sps = QSerialPort::RequestToSendSignal;
     a.setSignals(sps);
+
+    CHECK( a != b );
+  }
+
+  SECTION("break differs")
+  {
+    a.setBreakOn(true);
 
     CHECK( a != b );
   }

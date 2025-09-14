@@ -79,6 +79,10 @@ namespace Mdt{ namespace SerialPort{
      */
     void setRequestToSendChangedEvent(bool set);
 
+    /*! \brief Set the breakEnabled (RTS) event
+     */
+    void setBreakEnabledChangedEvent(bool set);
+
    protected:
 
     /*! \internal

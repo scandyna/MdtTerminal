@@ -95,4 +95,13 @@ void PinoutSignalsWidget::setRingIndicatorOn(bool on)
   }
 }
 
+void PinoutSignalsWidget::setBreakOn(bool on)
+{
+  if(on){
+    mUi->BreakSignal->setText( QLatin1String("ON") );
+  }else{
+    mUi->BreakSignal->setText( QLatin1String("  ") );
+  }
+}
+
 }} // namespace Mdt{ namespace SerialPort{

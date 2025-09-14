@@ -34,6 +34,7 @@ namespace Mdt{ namespace SerialPort{ namespace TestLib{
     void setBytesWrittenEvent(qint64 bytes);
     void setDataTerminalReadyChangedEvent(bool set);
     void setRequestToSendChangedEvent(bool set);
+    void setBreakEnabledChangedEvent(bool set);
     void setBytesAvailable(qint64 count);
     void setBytesToWrite(qint64 count);
     void setPortPinoutSignals(QSerialPort::PinoutSignals ps);

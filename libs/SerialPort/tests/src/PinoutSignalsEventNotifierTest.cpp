@@ -183,3 +183,13 @@ TEST_CASE("RTS_changedEvent")
   CHECK( psn.currentSignals().requestToSendIsOn() );
   CHECK( psn.shouldNotifySignalsChanged() );
 }
+
+TEST_CASE("Break_changedEvent")
+{
+  TestPinoutSignalsEventNotifier psn;
+
+  psn.setBreakEnabledChangedEvent(true);
+
+  CHECK( psn.currentSignals().breakIsOn() );
+  CHECK( psn.shouldNotifySignalsChanged() );
+}
