@@ -219,6 +219,9 @@
  * \todo Approximate mode , trace mode (system read/write, bypasses QIODevice buffer), spy mode (special driver, allmost bit level)
  *
  * \sa https://gitlab.com/scandyna/mdtterminal/-/issues/3
+ *
+ * \sa https://gitlab.com/scandyna/mdtterminal/-/issues/4
+ *
  * \sa https://stackoverflow.com/questions/940374/how-can-i-monitor-data-on-a-serial-port-in-linux
  * \sa https://serialtool.com/_en/serial-com-sniffer.php
  *

@@ -74,6 +74,8 @@ MainWindow::MainWindow(QWidget* parent)
   connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::ringIndicatorChanged, mPinoutSignalsWidget, &PinoutSignalsWidget::setRingIndicatorOn);
   connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::breakChanged, mPinoutSignalsWidget, &PinoutSignalsWidget::setBreakOn);
 
+  connect(&mSerialPort, &QSerialPort::errorOccurred, this, &MainWindow::onSerialPortErrorOccured);
+
   showPortClosedStatusMessage();
 }
 
@@ -130,7 +132,6 @@ void MainWindow::openSerialPort()
     displayErrorMessage( tr("Error while open serial port: %1").arg( mSerialPort.errorString() ) );
     return;
   }
-  mPinoutSignalsEventNotifier.setPortOpen();
 
   if(shouldConfigureInterfaceOncePortOpen){
     try{
@@ -142,14 +143,23 @@ void MainWindow::openSerialPort()
     }
   }
 
+  mPinoutSignalsEventNotifier.setPortOpen();
   showPortOpenStatusMessage();
 }
 
 void MainWindow::closeSerialPort()
 {
-  if( mSerialPort.isOpen() ){
-    mSerialPort.close();
+  if( !mSerialPort.isOpen() ){
+    return;
   }
+
+  /*
+   * Some drivers/devices, like Moxa UPort Linux,
+   * do not cancel break.
+   */
+  setBreak(false);
+
+  mSerialPort.close();
 
   showPortClosedStatusMessage();
 }
@@ -228,14 +238,14 @@ void MainWindow::sandboxCommand()
 
   assert( mSerialPort.isOpen() );
 
-  mSerialPort.write( QByteArray(1, 0x11) );
-
-  return;
-
-  qDebug() << "setBreakEnabled..";
-  if( !mSerialPort.setBreakEnabled(false) ){
-    displayErrorMessage( mSerialPort.errorString() );
-  }
+  // mSerialPort.write( QByteArray(1, 0x11) );
+  // 
+  // return;
+  // 
+  // qDebug() << "setBreakEnabled..";
+  // if( !mSerialPort.setBreakEnabled(false) ){
+  //   displayErrorMessage( mSerialPort.errorString() );
+  // }
 }
 
 void MainWindow::sendXON()
@@ -250,6 +260,13 @@ void MainWindow::sendXOFF()
   assert( mSerialPort.isOpen() );
 
   sendAsciiControl(0x13);
+}
+
+void MainWindow::onSerialPortErrorOccured(QSerialPort::SerialPortError error)
+{
+  if(error != QSerialPort::NoError){
+   displayErrorMessage( mSerialPort.errorString() );
+  }
 }
 
 void MainWindow::sendAsciiControl(char c)

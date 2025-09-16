@@ -55,6 +55,8 @@ class MainWindow : public QMainWindow
   void sendXON();
   void sendXOFF();
 
+  void onSerialPortErrorOccured(QSerialPort::SerialPortError error);
+
  private:
 
   void sendAsciiControl(char c);
