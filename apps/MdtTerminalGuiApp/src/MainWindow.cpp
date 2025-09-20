@@ -110,11 +110,34 @@ void MainWindow::setupSerialPort()
   }
 }
 
+bool MainWindow::hasSerialPortSettings() const
+{
+  /** \todo This is somewhat a workaround
+   *
+   * Mdt::SerialPort::Settings should be reworked
+   * and help us here.
+   */
+
+  if( mSerialPortSettings.portName().isEmpty() ){
+    return false;
+  }
+  if( mSerialPortInfo.isNull() ){
+    return false;
+  }
+
+  return true;
+}
+
 void MainWindow::openSerialPort()
 {
-  /// \todo If no port has been selected, open settings dialog ?
-
   assert( !mSerialPort.isOpen() );
+
+  if( !hasSerialPortSettings() ){
+    setupSerialPort();
+  }
+  if( !hasSerialPortSettings() ){
+    return;
+  }
 
   const bool shouldConfigureInterface = mSerialPortSettings.interface().isConfigurable();
 

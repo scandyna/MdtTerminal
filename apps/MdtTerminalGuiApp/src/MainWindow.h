@@ -44,6 +44,8 @@ class MainWindow : public QMainWindow
 
   void setupSerialPort();
 
+  bool hasSerialPortSettings() const;
+
   void openSerialPort();
   void closeSerialPort();
 
