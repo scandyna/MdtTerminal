@@ -1,13 +1,17 @@
 @startuml
 !include Mdt/SerialPort/Settings.puml
-!include SettingsRawData.puml
-!include SettingsValidation.puml
+!include Mdt/SerialPort/SettingsRawData.puml
+!include Mdt/SerialPort/SettingsValidation.puml
 
-class SettingsBuilder {
+namespace Mdt.SerialPort {
+
+  class SettingsBuilder {
+  }
+
+  SettingsBuilder ..> Settings
+  SettingsBuilder ..> SettingsRawData
+  SettingsBuilder ..> SettingsValidation
+
 }
-
-SettingsBuilder ..> Settings
-SettingsBuilder ..> SettingsRawData
-SettingsBuilder ..> SettingsValidation
 
 @enduml

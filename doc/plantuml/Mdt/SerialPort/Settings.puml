@@ -1,6 +1,11 @@
 @startuml
+!include Mdt/SerialPort/SendByteByByteSettings.puml
 
-class Settings {
+namespace Mdt.SerialPort {
+
+  class Settings {
+
+  }
 
 }
 

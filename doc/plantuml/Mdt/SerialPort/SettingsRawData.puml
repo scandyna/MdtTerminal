@@ -1,9 +1,13 @@
 @startuml
 !include Mdt/SerialPort/Settings.puml
 
-class SettingsRawData {
-}
+namespace Mdt.SerialPort {
 
-SettingsRawData ..> Settings
+  class SettingsRawData {
+  }
+
+  SettingsRawData ..> Settings
+
+}
 
 @enduml
