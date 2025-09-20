@@ -54,8 +54,6 @@ MainWindow::MainWindow(QWidget* parent)
   connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::breakChanged, mUi.actionSetBreak, &QAction::setChecked);
   connect(mUi.actionSetBreak, &QAction::triggered, this, &MainWindow::setBreak);
 
-  connect(mUi.actionsandbox, &QAction::triggered, this, &MainWindow::sandboxCommand);
-
   connect(mUi.actionSendXON, &QAction::triggered, this, &MainWindow::sendXON);
   connect(mUi.actionSendXOFF, &QAction::triggered, this, &MainWindow::sendXOFF);
 
@@ -116,7 +114,6 @@ void MainWindow::openSerialPort()
 {
   /// \todo If no port has been selected, open settings dialog ?
 
-  /// \todo What if port is open ? - Precondition: GUI must be coherent
   assert( !mSerialPort.isOpen() );
 
   const bool shouldConfigureInterface = mSerialPortSettings.interface().isConfigurable();
@@ -249,32 +246,6 @@ void MainWindow::setBreak(bool on)
   if( !mSerialPort.setBreakEnabled(on) ){
     displayErrorMessage( mSerialPort.errorString() );
   }
-}
-
-void MainWindow::sandboxCommand()
-{
-  qDebug() << "sanboxCommand() ..";
-
-  // const QChar data[2] = {0x0011, 0x0013};
-  // 
-  // mCentralWidget->addTextToConsole( QString(data, 2) );
-  // 
-  // // mCentralWidget->addTextToConsole( QChar(0x2411) );
-  // // mCentralWidget->addTextToConsole( QChar::fromLatin1(0x13) );
-  // // mCentralWidget->addTextToConsole( QChar::fromLatin1(0x21) );
-  // 
-  // return;
-
-  assert( mSerialPort.isOpen() );
-
-  // mSerialPort.write( QByteArray(1, 0x11) );
-  // 
-  // return;
-  // 
-  // qDebug() << "setBreakEnabled..";
-  // if( !mSerialPort.setBreakEnabled(false) ){
-  //   displayErrorMessage( mSerialPort.errorString() );
-  // }
 }
 
 void MainWindow::sendXON()

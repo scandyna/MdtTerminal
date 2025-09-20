@@ -37,7 +37,6 @@
     <addaction name="actionSetDTR"/>
     <addaction name="actionSetRTS"/>
     <addaction name="actionSetBreak"/>
-    <addaction name="actionsandbox"/>
     <addaction name="actionSendXON"/>
     <addaction name="actionSendXOFF"/>
    </widget>
@@ -67,7 +66,6 @@
    <addaction name="actionSetDTR"/>
    <addaction name="actionSetRTS"/>
    <addaction name="actionSetBreak"/>
-   <addaction name="actionsandbox"/>
    <addaction name="actionSendXON"/>
    <addaction name="actionSendXOFF"/>
   </widget>
@@ -103,11 +101,6 @@
    </property>
    <property name="text">
     <string>&amp;RTS</string>
-   </property>
-  </action>
-  <action name="actionsandbox">
-   <property name="text">
-    <string>sandbox</string>
    </property>
   </action>
   <action name="actionSendXON">

@@ -54,8 +54,6 @@ class MainWindow : public QMainWindow
   void setRTS(bool on);
   void setBreak(bool on);
 
-  void sandboxCommand();
-
   void sendXON();
   void sendXOFF();
 
