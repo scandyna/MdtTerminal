@@ -1,0 +1,9 @@
+@startuml
+
+[*] --> PortClosed
+
+PortClosed --> PortOpen : portOpen
+
+PortOpen --> PortClosed : portClosed
+
+@enduml

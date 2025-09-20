@@ -15,6 +15,8 @@
 #include "Mdt/SerialPort/PinoutSignalsUiController.h"
 #include "Mdt/SerialPort/PinoutSignalsWidget.h"
 #include "ui_MainWindow.h"
+#include "MainWindowState.h"
+#include "MainWindowStateMachine.h"
 #include "CentralWidget.h"
 #include <QMainWindow>
 #include <QWidget>
@@ -37,6 +39,8 @@ class MainWindow : public QMainWindow
   MainWindow(QWidget *parent = nullptr);
 
  private slots:
+
+  void setCurrentState(const MainWindowState & state);
 
   void setupSerialPort();
 
@@ -76,6 +80,7 @@ class MainWindow : public QMainWindow
   QSerialPortInfo mSerialPortInfo;
   Mdt::SerialPort::PinoutSignalsEventNotifier mPinoutSignalsEventNotifier;
   Mdt::SerialPort::PinoutSignalsUiController mPinoutSignalsUiController;
+  MainWindowStateMachine mStateMachine;
 };
 
 #endif // #ifndef MAIN_WINDOW_H

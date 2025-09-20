@@ -29,6 +29,11 @@ void CentralWidget::setFocusToCommandEdit()
   mUi.commandEdit->setFocus();
 }
 
+void CentralWidget::setCurrentState(const MainWindowState & state)
+{
+  mUi.sendCommandButton->setEnabled( state.canSubmitCommand() );
+}
+
 void CentralWidget::addTextToConsole(const QString & text)
 {
   mUi.console->appendPlainText(text);

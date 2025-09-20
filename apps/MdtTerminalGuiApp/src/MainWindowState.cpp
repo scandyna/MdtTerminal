@@ -4,19 +4,7 @@
  ** MdtTerminal
  ** Terminal to experiment with some devices using some ports, like serial port.
  **
- ** Copyright (C) 2024-2025 Philippe Steinmann.
+ ** Copyright (C) 2025-2025 Philippe Steinmann.
  **
  *****************************************************************************************/
-
-/*! \mainpage %Mdt Terminal C++ API Documentation
- *
- * \ref SerialPort_dox
- *
- * \ref Usb_dox
- *
- * \ref Usb_NumericLimits
- *
- * \section MdtTerminalGuiApp Mdt Terminal GUI app
- *
- * \sa MainWindowStateMachine
- */
+#include "MainWindowState.h"

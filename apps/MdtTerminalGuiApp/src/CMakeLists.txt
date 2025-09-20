@@ -1,4 +1,33 @@
 
+add_library(mdtterminalguiapplib STATIC
+  MainWindowState.cpp
+  MainWindowStateMachine.cpp
+)
+add_library(Mdt::TerminalGuiAppLib ALIAS mdtterminalguiapplib)
+
+target_compile_definitions(mdtterminalguiapplib
+  PRIVATE
+    QT_NO_CAST_DEFINITIONS QT_NO_CAST_FROM_ASCII QT_NO_CAST_TO_ASCII QT_NO_CAST_FROM_BYTEARRAY
+)
+
+target_link_libraries(mdtterminalguiapplib
+  PRIVATE
+    Mdt::SerialPort
+)
+
+if(BUILD_USE_IPO_LTO)
+  set_target_properties(mdtterminalguiapplib
+    PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE
+  )
+endif()
+
+target_include_directories(mdtterminalguiapplib
+  PUBLIC
+   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+)
+
+
 add_executable(mdtterminalguiapp
   ConsoleWidget.cpp
   CentralWidget.cpp
@@ -13,8 +42,8 @@ target_compile_definitions(mdtterminalguiapp
 
 target_link_libraries(mdtterminalguiapp
   PRIVATE
+    Mdt::TerminalGuiAppLib
     Qt5::Widgets
-    Mdt::SerialPort
     Mdt::SerialPort_Widgets
 )
 

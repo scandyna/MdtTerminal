@@ -39,6 +39,8 @@ MainWindow::MainWindow(QWidget* parent)
   statusBar()->addWidget(mStatusLabel);
   statusBar()->addPermanentWidget(mPinoutSignalsWidget);
 
+  connect(&mStateMachine, &MainWindowStateMachine::currentStateChanged, this, &MainWindow::setCurrentState);
+
   connect(mUi.actionConfigurePort, &QAction::triggered, this, &MainWindow::setupSerialPort);
   connect(mUi.actionOpenPort, &QAction::triggered, this, &MainWindow::openSerialPort);
   connect(mUi.actionClosePort, &QAction::triggered, this, &MainWindow::closeSerialPort);
@@ -77,11 +79,25 @@ MainWindow::MainWindow(QWidget* parent)
   connect(&mSerialPort, &QSerialPort::errorOccurred, this, &MainWindow::onSerialPortErrorOccured);
 
   showPortClosedStatusMessage();
+  mStateMachine.start();
+}
+
+void MainWindow::setCurrentState(const MainWindowState & state)
+{
+  mCentralWidget->setCurrentState(state);
+  mUi.actionConfigurePort->setEnabled( state.canConfigurePort() );
+  mUi.actionOpenPort->setEnabled( state.canOpenPort() );
+  mUi.actionClosePort->setEnabled( state.canClosePort() );
+  mUi.actionSetDTR->setEnabled( state.canSetDTR() );
+  mUi.actionSetRTS->setEnabled( state.canSetRTS() && (mSerialPortSettings.flowControl() != QSerialPort::HardwareControl) );
+  mUi.actionSetBreak->setEnabled( state.canSetBreak() );
+  mUi.actionSendXON->setEnabled( state.canSendXON() );
+  mUi.actionSendXOFF->setEnabled( state.canSendXOFF() );
 }
 
 void MainWindow::setupSerialPort()
 {
-  /// \todo What if port is open ?
+  assert( !mSerialPort.isOpen() );
 
   Mdt::SerialPort::SettingsDialog dialog(this);
 
@@ -101,6 +117,7 @@ void MainWindow::openSerialPort()
   /// \todo If no port has been selected, open settings dialog ?
 
   /// \todo What if port is open ? - Precondition: GUI must be coherent
+  assert( !mSerialPort.isOpen() );
 
   const bool shouldConfigureInterface = mSerialPortSettings.interface().isConfigurable();
 
@@ -145,6 +162,7 @@ void MainWindow::openSerialPort()
 
   mPinoutSignalsEventNotifier.setPortOpen();
   showPortOpenStatusMessage();
+  mStateMachine.setPortOpenEvent();
 }
 
 void MainWindow::closeSerialPort()
@@ -162,6 +180,7 @@ void MainWindow::closeSerialPort()
   mSerialPort.close();
 
   showPortClosedStatusMessage();
+  mStateMachine.setPortClosedEvent();
 }
 
 void MainWindow::submitCommand(const QString & command)
@@ -193,6 +212,16 @@ void MainWindow::readFromPort()
   mCentralWidget->addTextToConsole( QString::fromLocal8Bit(data) );
 
   /// mCentralWidget->addTextToConsole( QString::fromLocal8Bit( mSerialPort.readAll() ) );
+
+  /**
+   * ASCII with ctl symbols
+   * HEX
+   *
+   * Note: should use MdtPlainText
+   *
+   * Future:
+   * Write and read original buffers
+   */
 }
 
 void MainWindow::setDTR(bool on)

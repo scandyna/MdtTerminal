@@ -10,6 +10,7 @@
 #ifndef CENTRAL_WIDGET_H
 #define CENTRAL_WIDGET_H
 
+#include "MainWindowState.h"
 #include "ui_CentralWidget.h"
 #include <QWidget>
 #include <QString>
@@ -32,6 +33,8 @@ class CentralWidget : public QWidget
   void setFocusToCommandEdit();
 
  public slots:
+
+  void setCurrentState(const MainWindowState & state);
 
   /*! \brief Add text to the console
    */
