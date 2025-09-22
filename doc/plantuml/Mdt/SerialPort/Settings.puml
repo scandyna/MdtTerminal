@@ -7,6 +7,8 @@ namespace Mdt.SerialPort {
 
   }
 
+  Settings *--> SendByteByByteSettings
+
 }
 
 @enduml

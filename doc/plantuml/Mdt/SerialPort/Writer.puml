@@ -1,0 +1,16 @@
+@startuml
+!include Mdt/SerialPort/AbstractWriter.puml
+!include Mdt/SerialPort/SendByteByByteSettings.puml
+
+
+namespace Mdt.SerialPort {
+
+  class Writer {
+  }
+
+  Writer *--> AbstractWriter
+  Writer ..> SendByteByByteSettings
+
+}
+
+@enduml

@@ -258,6 +258,30 @@ mdt_add_test(
     src/PinoutSignalUiStateTest.cpp
 )
 
+mdt_add_test(
+  NAME SerialPortDirectWriterTest
+  TARGET serialPortDirectWriterTest
+  DEPENDENCIES Mdt::SerialPort Mdt::SerialPortTestLib Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/DirectWriterTest.cpp
+)
+
+mdt_add_test(
+  NAME SerialPortByteByByteWriterTest
+  TARGET serialPortByteByByteWriterTest
+  DEPENDENCIES Mdt::SerialPort Mdt::SerialPortTestLib Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/ByteByByteWriterTest.cpp
+)
+
+mdt_add_test(
+  NAME SerialPortWriterTest
+  TARGET werialPortWriterTest
+  DEPENDENCIES Mdt::SerialPort Mdt::SerialPortTestLib Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/WriterTest.cpp
+)
+
 
 if(UNIX)
 

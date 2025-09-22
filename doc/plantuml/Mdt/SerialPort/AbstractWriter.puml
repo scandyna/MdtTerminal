@@ -1,0 +1,15 @@
+@startuml
+!include Qt/Core/QObject.puml
+!include Qt/Core/QIODevice.puml
+
+namespace Mdt.SerialPort {
+
+  class AbstractWriter {
+  }
+
+}
+
+QObject <|-- Mdt.SerialPort.AbstractWriter
+Mdt.SerialPort.AbstractWriter --> QIODevice
+
+@enduml

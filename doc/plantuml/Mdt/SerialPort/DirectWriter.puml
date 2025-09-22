@@ -1,0 +1,14 @@
+@startuml
+!include Mdt/SerialPort/AbstractWriter.puml
+
+
+namespace Mdt.SerialPort {
+
+  class DirectWriter {
+  }
+
+  AbstractWriter <|-- DirectWriter
+
+}
+
+@enduml

@@ -1,0 +1,14 @@
+@startuml
+!include Mdt/SerialPort/AbstractWriter.puml
+!include Mdt/SerialPort/DirectWriter.puml
+!include Mdt/SerialPort/ByteByByteWriter.puml
+!include Mdt/SerialPort/Writer.puml
+!include Mdt/SerialPort/TestLib/TestByteByByteWriter.puml
+!include Mdt/SerialPort/TestLib/TestIODevice.puml
+
+
+hide QObject methods
+hide QIODevice methods
+hide QIODeviceBase
+
+@enduml

@@ -1,0 +1,23 @@
+@startuml
+!include Mdt/SerialPort/AbstractWriter.puml
+!include Qt/Core/QTimer.puml
+
+
+namespace Mdt.SerialPort {
+
+  class AbstractByteByByteWriter {
+  }
+
+  AbstractWriter <|-- AbstractByteByByteWriter
+
+
+  class ByteByByteWriter {
+  }
+
+  AbstractByteByByteWriter <|-- ByteByByteWriter
+
+}
+
+Mdt.SerialPort.ByteByByteWriter *--> QTimer
+
+@enduml

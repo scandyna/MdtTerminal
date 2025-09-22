@@ -226,6 +226,18 @@
  * \sa https://serialtool.com/_en/serial-com-sniffer.php
  *
  *
+ * \section SerialPort_Writer Serial port writer
+ *
+ *
+ * \startuml "Serial port writer"
+ * !include ClassDiagrams/SerialPortWriter.puml
+ * \enduml
+ *
+ * \sa Mdt::SerialPort::Writer
+ * \sa Mdt::SerialPort::DirectWriter
+ * \sa Mdt::SerialPort::ByteByByteWriter
+ *
+ *
  * \section SerialPort_Errors Serial port errors
  *
  * \startuml "Exceptions"
@@ -335,6 +347,7 @@
  *
  * \sa Mdt::SerialPort::TestLib::TestPortInfoListTableModel
  * \sa Mdt::SerialPort::TestLib::PinoutSignalUiStateChangedSignalSpy
+ * \sa Mdt::SerialPort::TestLib::TestIODevice
  * \sa Mdt::SerialPort::TestLib
  *
  * \subsection SerialPort_Testing_WithHW Serial port testing with HW
