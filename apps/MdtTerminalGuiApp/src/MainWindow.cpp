@@ -195,7 +195,9 @@ void MainWindow::closeSerialPort()
    * Some drivers/devices, like Moxa UPort Linux,
    * do not cancel break.
    */
-  setBreak(false);
+  if(mSerialPort.error() == QSerialPort::NoError){
+    setBreak(false);
+  }
 
   mSerialPort.close();
 
@@ -288,7 +290,22 @@ void MainWindow::sendXOFF()
 void MainWindow::onSerialPortErrorOccured(QSerialPort::SerialPortError error)
 {
   if(error != QSerialPort::NoError){
-   displayErrorMessage( mSerialPort.errorString() );
+    qDebug() << "serial port error: " << error;
+    if(error == QSerialPort::ResourceError){
+      /*
+       * If, f.ex. and USB adapter has been plugged out,
+       * this error will come again and again.
+       * The best we can do is to close the port and display the error.
+       * Also, when the user plugs the adapter again, it may have another port name.
+       */
+      closeSerialPort();
+    }
+    /** \todo
+     * If unplug an USB device, several QSerialPort::ReadError will be emitted.
+     * This is a bug in PinoutSignalsEventNotifier.
+     * https://gitlab.com/scandyna/mdtterminal/-/issues/5
+     */
+    displayErrorMessage( mSerialPort.errorString() );
   }
 }
 
