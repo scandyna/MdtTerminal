@@ -8,8 +8,7 @@
  **
  *****************************************************************************************/
 #include "AbstractByteByByteWriter.h"
-
-#include <QDebug>
+#include <cassert>
 
 namespace Mdt{ namespace SerialPort{
 
@@ -51,15 +50,11 @@ void AbstractByteByByteWriter::clear()
 
 void AbstractByteByByteWriter::setTimerTimeoutEvent()
 {
-  qDebug() << "AbstractByteByByteWriter::setTimerTimeoutEvent()";
-
   writeNextByte();
 }
 
-void AbstractByteByByteWriter::onBytesWritten(qint64 bytes)
+void AbstractByteByByteWriter::onBytesWritten(qint64 /*bytes*/)
 {
-  qDebug() << "AbstractByteByByteWriter::onBytesWritten() - bytes: " << bytes;
-
   ++mSendBufferCurrentIndex;
   if( hasMoreToSend() ){
     startTimer();
@@ -68,8 +63,6 @@ void AbstractByteByByteWriter::onBytesWritten(qint64 bytes)
 
 void AbstractByteByByteWriter::writeNextByte()
 {
-  qDebug() << "AbstractByteByByteWriter::writeNextByte() - current index " << mSendBufferCurrentIndex;
-
   /*
    * After a call of clear(),
    * it can happen that a timer event was already placed in the event loop,

@@ -92,8 +92,6 @@ void ByteByByteWriterTest::write_once()
 
   processSomeEvents();
   QVERIFY( !writer.hasMoreToSend() );
-
-  /// \todo also check the special case when timer event still in the event loop
 }
 
 void ByteByByteWriterTest::write_multipleData()
