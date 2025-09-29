@@ -12,9 +12,6 @@
 #include <QBuffer>
 #include <chrono>
 
-#include "Mdt/SerialPort/ByteByByteWriter.h"
-using Mdt::SerialPort::TestLib::TestByteByByteWriter;
-
 using namespace Mdt::SerialPort;
 using namespace std::chrono_literals;
 

@@ -8,6 +8,7 @@
  **
  *****************************************************************************************/
 #include "Mdt/SerialPort/ByteByByteWriter.h"
+#include "Mdt/SerialPort/TestLib/TestByteByByteWriter.h"
 #include <QtTest/QtTest>
 #include <QBuffer>
 
@@ -102,15 +103,24 @@ void ByteByByteWriterTest::write_multipleData()
   QVERIFY( buffer.open(QBuffer::ReadWrite) );
 
   QCOMPARE( writer.write("AB") , 2 );
+  processSomeEvents();
   QCOMPARE( buffer.data() , "A" );
 
-  /// \todo wrong to write directly
   QCOMPARE( writer.write("C") , 1 );
+  QCOMPARE( buffer.data() , "A" );
+
+  processSomeEvents();
+  QVERIFY( writer.hasMoreToSend() );
+  writer.setTimerTimeoutEvent();
   QCOMPARE( buffer.data() , "AB" );
 
   processSomeEvents();
+  QVERIFY( writer.hasMoreToSend() );
   writer.setTimerTimeoutEvent();
   QCOMPARE( buffer.data() , "ABC" );
+
+  processSomeEvents();
+  QVERIFY( !writer.hasMoreToSend() );
 }
 
 void ByteByByteWriterTest::clear()

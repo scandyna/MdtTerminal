@@ -48,6 +48,7 @@ add_library(Mdt_SerialPort
   Mdt/SerialPort/PinoutSignalsUiController.cpp
   Mdt/SerialPort/AbstractWriter.cpp
   Mdt/SerialPort/DirectWriter.cpp
+  Mdt/SerialPort/AbstractByteByByteWriter.cpp
   Mdt/SerialPort/ByteByByteWriter.cpp
   Mdt/SerialPort/Writer.cpp
 )
