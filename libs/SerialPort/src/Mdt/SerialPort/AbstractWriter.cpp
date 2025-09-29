@@ -8,7 +8,17 @@
  **
  *****************************************************************************************/
 #include "AbstractWriter.h"
+#include <cassert>
 
 namespace Mdt{ namespace SerialPort{
+
+AbstractWriter::AbstractWriter(QIODevice *device, QObject *parent)
+ : QObject(parent),
+   mDevice(device)
+{
+  assert( !mDevice.isNull() );
+
+  connect(mDevice, &QIODevice::aboutToClose, this, &AbstractWriter::clear);
+}
 
 }} // namespace Mdt{ namespace SerialPort{

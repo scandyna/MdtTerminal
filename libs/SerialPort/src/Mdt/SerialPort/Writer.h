@@ -10,10 +10,13 @@
 #ifndef MDT_SERIAL_PORT_WRITER_H
 #define MDT_SERIAL_PORT_WRITER_H
 
+#include "Mdt/SerialPort/AbstractWriter.h"
 #include "Mdt/SerialPort/SendByteByByteSettings.h"
 #include "mdt_serialport_export.h"
 #include <QIODevice>
 #include <QByteArray>
+#include <QPointer>
+#include <memory>
 
 namespace Mdt{ namespace SerialPort{
 
@@ -56,19 +59,6 @@ namespace Mdt{ namespace SerialPort{
    *
    * void MySerialPort::submitCommand(const QByteArray & command)
    * {
-   *   const qint64 r = mWriter.write(command);
-   *   if(r < 0){
-   *     // error handling
-   *   }
-   *
-   *   OR, because we assume QSerialPort, that is an async device:
-   *
-   *   if( !mWriter.submitData(command) ){
-   *     // error handling
-   *   }
-   *
-   *   OR
-   *
    *   mWriter.write(command);
    * }
    *
@@ -90,9 +80,6 @@ namespace Mdt{ namespace SerialPort{
    * }
    * \endcode
    *
-   * \todo error handling with the specific IO device.
-   *
-   * \todo Clarify the write API in QIODevice
    *
    * \note QIODevice is not very clear about how much the %write() methods will write.
    * The %write() documentations says:
@@ -107,30 +94,39 @@ namespace Mdt{ namespace SerialPort{
   {
    public:
 
+    /*! \brief Construct a null writer
+     *
+     * \pre \a device must be a valid pointer
+     */
+    explicit
+    Writer(QIODevice *device);
 
-    /*! \brief
+    /*! \brief set settings
+     *
+     * Depending on \a settings, this writer will become
+     * a direct writer or a byte by byte writer.
+     */
+    void setSettings(const SendByteByByteSettings & settings);
+
+    /*! \brief Writes the content of data to the device
      *
      * If this is a direct writer, QIODevice::write() will be called.
      *
      * \note If using QSerialPort, and all preconditions are ok
      * (f.ex. port is writable), write should only copy the data
-     * into an internal buffer and return max size.
+     * into an internal buffer and return data's size.
      *
      * If this is a byte by byte writer, data will be copied
      * into an internal buffer of this writer,
      * and QIODevice::putChar() will be called at the defined intervall.
-     * Max size is returned.
+     * data's size is returned.
      *
-     * \note It is assumed that the QIODevice is an asynchronous device,
-     * like QSerialPort, that copies data to an internal buffer and returns the max size.
-     *
-     * \todo return qint64 and document that, with QSerialPort, this should always return max size.
-     *
-     * \todo hmm... and byte by byte writer ?
-     *
-     * \todo use write() name
+     * \pre this must be a valid writer,
+     * meaning setSettings() must have been called at least once.
+     * \sa setSettings()
+     * \pre The device must be open in a mode that allows writing
      */
-    qint64 write();
+    qint64 write(const QByteArray & data);
 
     /*! \brief Clear this writer
      *
@@ -144,6 +140,23 @@ namespace Mdt{ namespace SerialPort{
      * If you use QSerialPort, you should also call QSerialPort::clear(QSerialPort::Output).
      */
     void clear();
+
+  protected:
+
+    /*! \internal
+     */
+    AbstractWriter *impl() const noexcept
+    {
+      return mImpl.get();
+    }
+
+  private:
+
+    void instanciateDirectWriterIf();
+    void instanciateByteByByteWriterIf();
+
+    std::unique_ptr<AbstractWriter> mImpl;
+    QPointer<QIODevice> mDevice;
   };
 
 }} // namespace Mdt{ namespace SerialPort{

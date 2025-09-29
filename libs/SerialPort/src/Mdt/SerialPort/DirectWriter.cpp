@@ -8,7 +8,13 @@
  **
  *****************************************************************************************/
 #include "DirectWriter.h"
+#include <cassert>
 
 namespace Mdt{ namespace SerialPort{
+
+DirectWriter::DirectWriter(QIODevice *device, QObject *parent)
+ : AbstractWriter(device, parent)
+{
+}
 
 }} // namespace Mdt{ namespace SerialPort{

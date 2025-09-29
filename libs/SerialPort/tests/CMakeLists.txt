@@ -269,17 +269,25 @@ mdt_add_test(
 mdt_add_test(
   NAME SerialPortByteByByteWriterTest
   TARGET serialPortByteByByteWriterTest
-  DEPENDENCIES Mdt::SerialPort Mdt::SerialPortTestLib Mdt::Catch2Main Mdt::Catch2Qt
+  DEPENDENCIES Mdt::SerialPort Mdt::SerialPortTestLib Qt5::Test
   SOURCE_FILES
     src/ByteByByteWriterTest.cpp
 )
 
 mdt_add_test(
   NAME SerialPortWriterTest
-  TARGET werialPortWriterTest
+  TARGET serialPortWriterTest
   DEPENDENCIES Mdt::SerialPort Mdt::SerialPortTestLib Mdt::Catch2Main Mdt::Catch2Qt
   SOURCE_FILES
     src/WriterTest.cpp
+)
+
+mdt_add_test(
+  NAME SerialPortWriterTest_WithEventLoop
+  TARGET serialPortWriterTest_WithEventLoop
+  DEPENDENCIES Mdt::SerialPort Mdt::SerialPortTestLib Qt5::Test
+  SOURCE_FILES
+    src/WriterTest_WithEventLoop.cpp
 )
 
 
