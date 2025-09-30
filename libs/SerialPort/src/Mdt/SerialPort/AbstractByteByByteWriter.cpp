@@ -31,10 +31,10 @@ qint64 AbstractByteByByteWriter::write(const QByteArray & data)
     return 0;
   }
 
-  const bool notCurrentlySendingData = !hasMoreToSend();
-
-  mSendBuffer.append(data);
-  if(notCurrentlySendingData){
+  if( hasMoreToSend() ){
+    mSendBuffer.append(data);
+  }else{
+    mSendBuffer = data;
     mSendBufferCurrentIndex = 0;
     writeNextByte();
   }

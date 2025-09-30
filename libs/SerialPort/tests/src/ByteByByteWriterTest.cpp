@@ -25,6 +25,7 @@ class ByteByByteWriterTest : public QObject
 
   void write_empty();
   void write_once();
+  void write_once_2x();
   void write_multipleData();
   void clear();
   void close_calls_clear();
@@ -91,6 +92,35 @@ void ByteByByteWriterTest::write_once()
   QCOMPARE( buffer.data() , "ABC" );
 
   processSomeEvents();
+  QVERIFY( !writer.hasMoreToSend() );
+}
+
+void ByteByByteWriterTest::write_once_2x()
+{
+  QBuffer buffer;
+  TestByteByByteWriter writer(&buffer);
+  QVERIFY( buffer.open(QBuffer::ReadWrite) );
+
+  QCOMPARE( writer.write("AB") , 2 );
+  processSomeEvents();
+  QCOMPARE( buffer.data() , "A" );
+
+  QVERIFY( writer.hasMoreToSend() );
+  writer.setTimerTimeoutEvent();
+  processSomeEvents();
+  QCOMPARE( buffer.data() , "AB" );
+
+  QVERIFY( !writer.hasMoreToSend() );
+
+  QCOMPARE( writer.write("CD") , 2 );
+  processSomeEvents();
+  QCOMPARE( buffer.data() , "ABC" );
+
+  QVERIFY( writer.hasMoreToSend() );
+  writer.setTimerTimeoutEvent();
+  processSomeEvents();
+  QCOMPARE( buffer.data() , "ABCD" );
+
   QVERIFY( !writer.hasMoreToSend() );
 }
 
