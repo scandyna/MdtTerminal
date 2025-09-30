@@ -49,13 +49,21 @@ namespace Mdt{ namespace SerialPort{
    * \endcode
    *
    *
+   * \todo When a port error occurs, f.ex. an USB adapter is unplugged,
+   * readPinoutSignals() will blindly continue to call mSerialPort->pinoutSignals();
+   * This will produce QSerialPort to emit errorOccured() each time.
+   * We should check the QSerialPort::error() before read.
+   * Also, wehen a read fails, we should tell that the pinout signals is not reliable.
+   * This means, we no longer directly emit PinoutSignals,
+   * but some container class that also indicates if we have signals or an error.
+   * Notice that this would also require PinoutSignalUiState to handle some
+   * error / uncertainty state.
+   * \sa https://gitlab.com/scandyna/mdtterminal/-/issues/5
+   *
    * \todo How can we make TX and RX a bit reliable ?
    * bytesWritten() TX ON. TX OFF: when ?
    * readyRead() RX ON. RX OFF: when ?
    * maybe QSerialPort::bytesAvailable() and QSerialPort::bytesToWrite()
-   *
-   * \todo Because not all signals are monitored,
-   * we also have to poll at regular intervals.
    *
    *
    * \sa PinoutSignals
