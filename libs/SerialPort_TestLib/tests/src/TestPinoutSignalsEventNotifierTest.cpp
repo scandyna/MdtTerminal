@@ -12,9 +12,3 @@
 #include "Catch2QString.h"
 
 using namespace Mdt::SerialPort::TestLib;
-
-
-TEST_CASE("timerHasBeenReset")
-{
-  REQUIRE(false);
-}

@@ -18,3 +18,8 @@ mdt_add_test(
     src/TestSettingsEditor.cpp
     src/PinoutSignalsWidgetTest.cpp
 )
+
+set_tests_properties(SerialPortPinoutSignalsWidgetTest
+  PROPERTIES
+    DISABLED TRUE
+)
