@@ -62,6 +62,11 @@ namespace Mdt{ namespace SerialPort{
     explicit
     PortSetup(const QSerialPortInfo & portInfo, QObject *parent = nullptr);
 
+    PortSetup(const PortSetup &) = delete;
+    const PortSetup & operator=(const PortSetup &) = delete;
+    PortSetup(PortSetup &&) = delete;
+    PortSetup & operator=(PortSetup &&) = delete;
+
     /*! \brief Destructor
      */
     ~PortSetup() noexcept;
