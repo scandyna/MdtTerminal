@@ -22,10 +22,9 @@ AbstractByteByByteWriter::AbstractByteByByteWriter(QIODevice *device, QObject *p
 
 qint64 AbstractByteByByteWriter::write(const QByteArray & data)
 {
-  QIODevice *d = device();
-  assert(d != nullptr);
-  assert( d->isOpen() );
-  assert( d->isWritable() );
+  assert(device() != nullptr);
+  assert( device()->isOpen() );
+  assert( device()->isWritable() );
 
   if( data.isEmpty() ){
     return 0;
