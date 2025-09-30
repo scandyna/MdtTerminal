@@ -30,6 +30,7 @@ MainWindow::MainWindow(QWidget* parent)
    mStatusLabel(new QLabel),
    mPinoutSignalsWidget(new Mdt::SerialPort::PinoutSignalsWidget),
    mSerialPortSettings( Mdt::SerialPort::Settings::defaultSettings() ),
+   mWriter(&mSerialPort),
    mPinoutSignalsEventNotifier(&mSerialPort)
 {
   mUi.setupUi(this);
@@ -107,6 +108,7 @@ void MainWindow::setupSerialPort()
   if(result == QDialog::Accepted){
     mSerialPortSettings = dialog.buildSettings();
     mSerialPortInfo = dialog.currentPortInfo();
+    mWriter.setSettings( mSerialPortSettings.sendByteByByteSettings() );
   }
 }
 
@@ -213,10 +215,13 @@ void MainWindow::submitCommand(const QString & command)
 
   // mCentralWidget->addTextToConsole(command);
 
+  mWriter.write( command.toLocal8Bit() );
+
   /// \todo return value ?
-  mSerialPort.write( command.toLocal8Bit() );
+  // mSerialPort.write( command.toLocal8Bit() );
 }
 
+/// \todo should use a text decoder
 void MainWindow::readFromPort()
 {
   assert( mSerialPort.isOpen() );

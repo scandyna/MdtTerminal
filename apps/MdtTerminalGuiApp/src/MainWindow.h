@@ -14,6 +14,7 @@
 #include "Mdt/SerialPort/PinoutSignalsEventNotifier.h"
 #include "Mdt/SerialPort/PinoutSignalsUiController.h"
 #include "Mdt/SerialPort/PinoutSignalsWidget.h"
+#include "Mdt/SerialPort/Writer.h"
 #include "ui_MainWindow.h"
 #include "MainWindowState.h"
 #include "MainWindowStateMachine.h"
@@ -77,6 +78,7 @@ class MainWindow : public QMainWindow
   Mdt::SerialPort::PinoutSignalsWidget *mPinoutSignalsWidget;
   Mdt::SerialPort::Settings mSerialPortSettings;
   QSerialPort mSerialPort;
+  Mdt::SerialPort::Writer mWriter;
   QSerialPortInfo mSerialPortInfo;
   Mdt::SerialPort::PinoutSignalsEventNotifier mPinoutSignalsEventNotifier;
   Mdt::SerialPort::PinoutSignalsUiController mPinoutSignalsUiController;
