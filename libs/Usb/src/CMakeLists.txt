@@ -44,19 +44,20 @@ target_include_directories(Mdt_Usb
 target_link_libraries(Mdt_Usb
   PUBLIC
     Qt5::Core
+    libusb::libusb
 )
 
 # TODO This is just for the USB sandbox
 # It has to be replaced with a proper target based  target_link_libraries()
 # once we have access to conancenter again
-target_link_libraries(Mdt_Usb
-  PUBLIC
-    usb-1.0
-)
-target_include_directories(Mdt_Usb
-  PUBLIC
-    "/usr/include/libusb-1.0"
-)
+# target_link_libraries(Mdt_Usb
+#   PUBLIC
+#     usb-1.0
+# )
+# target_include_directories(Mdt_Usb
+#   PUBLIC
+#     "/usr/include/libusb-1.0"
+# )
 
 # target_link_libraries(Mdt_Usb
 #   PUBLIC

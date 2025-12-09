@@ -133,6 +133,10 @@ find_package(Mdt0 REQUIRED COMPONENTS ItemModel)
   find_package(Qt5 REQUIRED COMPONENTS Widgets)
 # endif()
 
+if(BUILD_USB_SANDBOX)
+  find_package(libusb REQUIRED)
+endif()
+
 # For header only library,no component is defined.
 # https://cmake.org/pipermail/cmake/2013-September/055941.html
 # find_package(Boost REQUIRED)
