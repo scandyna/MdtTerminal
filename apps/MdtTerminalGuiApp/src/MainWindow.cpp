@@ -4,7 +4,7 @@
  ** MdtTerminal
  ** Terminal to experiment with some devices using some ports, like serial port.
  **
- ** Copyright (C) 2024-2025 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "MainWindow.h"
@@ -74,8 +74,6 @@ MainWindow::MainWindow(QWidget* parent)
   connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::dataTerminalReadyChanged, mPinoutSignalsWidget, &PinoutSignalsWidget::setDataTerminalReadyOn);
   connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::ringIndicatorChanged, mPinoutSignalsWidget, &PinoutSignalsWidget::setRingIndicatorOn);
   connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::breakChanged, mPinoutSignalsWidget, &PinoutSignalsWidget::setBreakOn);
-
-  connect(&mSerialPort, &QSerialPort::errorOccurred, this, &MainWindow::onSerialPortErrorOccured);
 
   showPortClosedStatusMessage();
   mStateMachine.start();
@@ -147,7 +145,10 @@ void MainWindow::openSerialPort()
   try{
     ps.emplace(mSerialPortInfo);
   }catch(const Mdt::SerialPort::QRuntimeError & error){
-    displayErrorMessage( error.text() );
+    displayErrorMessage(
+      tr("Error while initialization of port setup: %1")
+      .arg( error.text() )
+    );
     return;
   }
   assert( ps.has_value() );
@@ -160,7 +161,10 @@ void MainWindow::openSerialPort()
     try{
       ps->configureInterfaceBeforeOpenPort( mSerialPortSettings.interface() );
     }catch(const Mdt::SerialPort::QRuntimeError & error){
-      displayErrorMessage( error.text() );
+      displayErrorMessage(
+        tr("Error while configuring interface (before open): %1")
+        .arg( error.text() )
+      );
       return;
     }
   }
@@ -168,7 +172,10 @@ void MainWindow::openSerialPort()
   Mdt::SerialPort::PortSetup::setSettingsToPort(mSerialPortSettings, mSerialPort);
   /// mSerialPort.setReadBufferSize(10);
   if( !mSerialPort.open(QIODevice::ReadWrite) ){
-    displayErrorMessage( tr("Error while open serial port: %1").arg( mSerialPort.errorString() ) );
+    displayErrorMessage(
+      tr("Error while open serial port %1: %2")
+      .arg( mSerialPort.portName(), mSerialPort.errorString() )
+    );
     return;
   }
 
@@ -181,6 +188,8 @@ void MainWindow::openSerialPort()
       return;
     }
   }
+
+  connectOnSerialPortErrorOccured();
 
   mPinoutSignalsEventNotifier.setPortOpen();
   showPortOpenStatusMessage();
@@ -202,6 +211,8 @@ void MainWindow::closeSerialPort()
   }
 
   mSerialPort.close();
+
+  disconnectOnSerialPortErrorOccured();
 
   showPortClosedStatusMessage();
   mStateMachine.setPortClosedEvent();
@@ -292,6 +303,16 @@ void MainWindow::sendXOFF()
   sendAsciiControl(0x13);
 }
 
+void MainWindow::connectOnSerialPortErrorOccured()
+{
+  mOnSerialPortErrorOccuredConnection = connect(&mSerialPort, &QSerialPort::errorOccurred, this, &MainWindow::onSerialPortErrorOccured);
+}
+
+void MainWindow::disconnectOnSerialPortErrorOccured()
+{
+  disconnect(mOnSerialPortErrorOccuredConnection);
+}
+
 void MainWindow::onSerialPortErrorOccured(QSerialPort::SerialPortError error)
 {
   if(error != QSerialPort::NoError){
@@ -310,7 +331,10 @@ void MainWindow::onSerialPortErrorOccured(QSerialPort::SerialPortError error)
      * This is a bug in PinoutSignalsEventNotifier.
      * https://gitlab.com/scandyna/mdtterminal/-/issues/5
      */
-    displayErrorMessage( mSerialPort.errorString() );
+    displayErrorMessage(
+      tr("Unexpected serial port error occured: %1")
+      .arg( mSerialPort.errorString() )
+    );
   }
 }
 

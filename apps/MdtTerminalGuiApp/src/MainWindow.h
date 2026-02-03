@@ -4,7 +4,7 @@
  ** MdtTerminal
  ** Terminal to experiment with some devices using some ports, like serial port.
  **
- ** Copyright (C) 2024-2025 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #ifndef MAIN_WINDOW_H
@@ -60,6 +60,8 @@ class MainWindow : public QMainWindow
   void sendXON();
   void sendXOFF();
 
+  void connectOnSerialPortErrorOccured();
+  void disconnectOnSerialPortErrorOccured();
   void onSerialPortErrorOccured(QSerialPort::SerialPortError error);
 
  private:
@@ -83,6 +85,7 @@ class MainWindow : public QMainWindow
   Mdt::SerialPort::PinoutSignalsEventNotifier mPinoutSignalsEventNotifier;
   Mdt::SerialPort::PinoutSignalsUiController mPinoutSignalsUiController;
   MainWindowStateMachine mStateMachine;
+  QMetaObject::Connection mOnSerialPortErrorOccuredConnection;
 };
 
 #endif // #ifndef MAIN_WINDOW_H
