@@ -269,7 +269,7 @@ mdt_add_test(
 mdt_add_test(
   NAME SerialPortByteByByteWriterTest
   TARGET serialPortByteByByteWriterTest
-  DEPENDENCIES Mdt::SerialPort Mdt::SerialPortTestLib Qt5::Test
+  DEPENDENCIES Mdt::SerialPort Mdt::SerialPortTestLib Qt6::Test
   SOURCE_FILES
     src/ByteByByteWriterTest.cpp
 )
@@ -285,11 +285,15 @@ mdt_add_test(
 mdt_add_test(
   NAME SerialPortWriterTest_WithEventLoop
   TARGET serialPortWriterTest_WithEventLoop
-  DEPENDENCIES Mdt::SerialPort Mdt::SerialPortTestLib Qt5::Test
+  DEPENDENCIES Mdt::SerialPort Mdt::SerialPortTestLib Qt6::Test
   SOURCE_FILES
     src/WriterTest_WithEventLoop.cpp
 )
-
+# TODO: remove once possible
+# https://qt-project.atlassian.net/browse/QTBUG-143840
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    target_compile_options(serialPortWriterTest_WithEventLoop PRIVATE -Wno-conversion)
+endif()
 
 if(UNIX)
 

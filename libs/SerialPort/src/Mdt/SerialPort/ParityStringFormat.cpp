@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2025 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "ParityStringFormat.h"
@@ -25,8 +25,6 @@ QString ParityStringFormat::parityToString(QSerialPort::Parity parity) noexcept
       return tr("Space");
     case QSerialPort::MarkParity:
       return tr("Mark");
-    case QSerialPort::UnknownParity:
-      return tr("Unknown");
   }
 
   return QString();
@@ -45,8 +43,6 @@ QChar ParityStringFormat::firstUpperCaseCharOfParity(QSerialPort::Parity parity)
       return QLatin1Char('S');
     case QSerialPort::MarkParity:
       return QLatin1Char('M');
-    case QSerialPort::UnknownParity:
-      return QLatin1Char('?');
   }
 
   return QChar();

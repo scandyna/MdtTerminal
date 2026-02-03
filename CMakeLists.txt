@@ -125,12 +125,12 @@ endif()
 #######################
 
 find_package(Threads REQUIRED)
-find_package(Qt5 REQUIRED COMPONENTS Core SerialPort)
+find_package(Qt6 REQUIRED COMPONENTS Core SerialPort)
 find_package(Mdt0 REQUIRED COMPONENTS ItemModel)
 
 # TODO: adapt once decided if Widgets dependend libs are optional
 # if(BUILD_APPS)
-  find_package(Qt5 REQUIRED COMPONENTS Widgets)
+  find_package(Qt6 REQUIRED COMPONENTS Widgets)
 # endif()
 
 if(BUILD_USB_SANDBOX)
@@ -143,12 +143,12 @@ endif()
 
 if(BUILD_TESTS)
   find_package(Catch2 REQUIRED)
-  find_package(Qt5 REQUIRED COMPONENTS Test)
+  find_package(Qt6 REQUIRED COMPONENTS Test)
 endif()
 
 if(BUILD_BENCHMARKS)
 #   find_package(Catch2 REQUIRED)
-  find_package(Qt5 REQUIRED COMPONENTS Test)
+  find_package(Qt6 REQUIRED COMPONENTS Test)
 endif()
 
 if(BUILD_DOCS)
@@ -185,13 +185,6 @@ include(MdtPackageConfigHelpers)
 #######################
 # Qt
 #######################
-
-# TODO: remove once migration to Qt6 done
-# See https://doc.qt.io/qt-6/portingguide.html
-add_compile_definitions(QT_DISABLE_DEPRECATED_BEFORE=0x050F00)
-
-# TODO: remove before migrate to Qt6
-# add_compile_definitions(QT_NO_DEPRECATED_WARNINGS=1)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)

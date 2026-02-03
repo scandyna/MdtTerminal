@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2024 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "DataBitsListTableModel.h"
@@ -19,13 +19,6 @@ DataBitsListTableModel::DataBitsListTableModel(QObject *parent)
 
 int DataBitsListTableModel::findRowOfDataBits(QSerialPort::DataBits dataBits) const noexcept
 {
-  /*
-   * UnknownDataBits is not documented, so consider it does no exist
-   * Qt doc: https://doc.qt.io/qt-6/qserialport.html#DataBits-enum
-   * NOTE: it was deprecated in Qt5
-   */
-  assert(dataBits != QSerialPort::UnknownDataBits);
-
   switch(dataBits){
     case QSerialPort::Data5:
       return 0;
@@ -35,8 +28,6 @@ int DataBitsListTableModel::findRowOfDataBits(QSerialPort::DataBits dataBits) co
       return 2;
     case QSerialPort::Data8:
       return 3;
-    case QSerialPort::UnknownDataBits:
-      break;
   }
 
   // Should never happen
@@ -59,7 +50,7 @@ QSerialPort::DataBits DataBitsListTableModel::dataBitsAtRow(int row) const noexc
   }
 
   // Should never happen
-  return QSerialPort::UnknownDataBits;
+  return QSerialPort::Data8;
 }
 
 QVariant DataBitsListTableModel::displayRoleData(const QModelIndex & index) const noexcept

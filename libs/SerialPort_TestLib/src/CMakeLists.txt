@@ -31,8 +31,8 @@ target_include_directories(Mdt_SerialPort_TestLib
 
 target_link_libraries(Mdt_SerialPort_TestLib
   PUBLIC
-    Qt5::Core
-    Qt5::SerialPort
+    Qt6::Core
+    Qt6::SerialPort
     Mdt::SerialPort
 )
 

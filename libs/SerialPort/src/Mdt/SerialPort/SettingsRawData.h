@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2025 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #ifndef MDT_SERIAL_PORT_SETTINGS_RAW_DATA_H
@@ -31,10 +31,10 @@ namespace Mdt{ namespace SerialPort{
   {
     QString portName;
     qint32 baudRate = 0;
-    QSerialPort::DataBits dataBits = QSerialPort::UnknownDataBits;
-    QSerialPort::Parity parity = QSerialPort::UnknownParity;
-    QSerialPort::FlowControl flowControl = QSerialPort::UnknownFlowControl;
-    QSerialPort::StopBits stopBits = QSerialPort::UnknownStopBits;
+    QSerialPort::DataBits dataBits = QSerialPort::Data8;
+    QSerialPort::Parity parity = QSerialPort::NoParity;
+    QSerialPort::FlowControl flowControl = QSerialPort::NoFlowControl;
+    QSerialPort::StopBits stopBits = QSerialPort::OneStop;
     Interface interface;
     bool sendByteByByteIsEnabled = false;
     int sendByteByByteIntervalInMilliseconds = 0;

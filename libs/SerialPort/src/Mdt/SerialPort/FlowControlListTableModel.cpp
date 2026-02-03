@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2024 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "FlowControlListTableModel.h"
@@ -20,13 +20,6 @@ FlowControlListTableModel::FlowControlListTableModel(QObject *parent)
 
 int FlowControlListTableModel::findRowOfFlowControl(QSerialPort::FlowControl control) const noexcept
 {
-  /*
-   * UnknownFlowControl is not documented, so consider it does no exist
-   * Qt doc: https://doc.qt.io/qt-6/qserialport.html#FlowControl-enum
-   * NOTE: it was deprecated in Qt5
-   */
-  assert(control != QSerialPort::UnknownFlowControl);
-
   switch(control){
     case QSerialPort::NoFlowControl:
       return 0;
@@ -34,8 +27,6 @@ int FlowControlListTableModel::findRowOfFlowControl(QSerialPort::FlowControl con
       return 1;
     case QSerialPort::SoftwareControl:
       return 2;
-    case QSerialPort::UnknownFlowControl:
-      break;
   }
 
   // Should never happen
@@ -56,7 +47,7 @@ QSerialPort::FlowControl FlowControlListTableModel::flowControlAtRow(int row) co
   }
 
   // Should never happen
-  return QSerialPort::UnknownFlowControl;
+  return QSerialPort::NoFlowControl;
 }
 
 QVariant FlowControlListTableModel::displayRoleData(const QModelIndex & index) const noexcept

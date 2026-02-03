@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2024 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "StopBitsStringFormat.h"
@@ -21,8 +21,6 @@ QString StopBitsStringFormat::stopBitsToString(QSerialPort::StopBits bits) noexc
       return QLatin1String("1.5");
     case QSerialPort::TwoStop:
       return QLatin1String("2");
-    case QSerialPort::UnknownStopBits:
-      return tr("Unknown");
   }
 
   return QString();

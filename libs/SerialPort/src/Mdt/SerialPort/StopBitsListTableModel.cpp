@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2024 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "StopBitsListTableModel.h"
@@ -21,13 +21,6 @@ StopBitsListTableModel::StopBitsListTableModel(QObject *parent)
 
 int StopBitsListTableModel::findRowOfStopBits(QSerialPort::StopBits bits) const noexcept
 {
-  /*
-   * UnknownStopBits is not documented, so consider it does no exist
-   * Qt doc: https://doc.qt.io/qt-6/qserialport.html#StopBits-enum
-   * NOTE: it was deprecated in Qt5
-   */
-  assert(bits != QSerialPort::UnknownStopBits);
-
   if(bits == QSerialPort::OneStop){
     return 0;
   }

@@ -4,7 +4,7 @@
  ** MdtTerminal
  ** Terminal to experiment with some devices using some ports, like serial port.
  **
- ** Copyright (C) 2024-2025 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "Mdt/SerialPort/Settings.h"
@@ -31,25 +31,21 @@ TEST_CASE("baudRateHasMinimalValidity")
 
 TEST_CASE("dataBitsHasMinimalValidity")
 {
-  CHECK( !Settings::dataBitsHasMinimalValidity(QSerialPort::UnknownDataBits) );
   CHECK( Settings::dataBitsHasMinimalValidity(QSerialPort::Data5) );
 }
 
 TEST_CASE("parityHasMinimalValidity")
 {
-  CHECK( !Settings::parityHasMinimalValidity(QSerialPort::UnknownParity) );
   CHECK( Settings::parityHasMinimalValidity(QSerialPort::OddParity) );
 }
 
 TEST_CASE("flowControlHasMinimalValidity")
 {
-  CHECK( !Settings::flowControlHasMinimalValidity(QSerialPort::UnknownFlowControl) );
   CHECK( Settings::flowControlHasMinimalValidity(QSerialPort::SoftwareControl) );
 }
 
 TEST_CASE("stopBitsHasMinimalValidity")
 {
-  CHECK( !Settings::stopBitsHasMinimalValidity(QSerialPort::UnknownStopBits) );
   CHECK( Settings::stopBitsHasMinimalValidity(QSerialPort::TwoStop) );
   if constexpr( oneAndHalfStopBitsIsSupported() ){
     CHECK( Settings::stopBitsHasMinimalValidity(QSerialPort::OneAndHalfStop) );

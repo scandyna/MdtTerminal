@@ -13,7 +13,7 @@ mdt_add_test(
 mdt_add_test(
   NAME SerialPortPinoutSignalsWidgetTest
   TARGET serialPortPinoutSignalsWidgetTest
-  DEPENDENCIES Mdt::SerialPort_Widgets Mdt::SerialPortTestLib Qt5::Test
+  DEPENDENCIES Mdt::SerialPort_Widgets Mdt::SerialPortTestLib Qt6::Test
   SOURCE_FILES
     src/TestSettingsEditor.cpp
     src/PinoutSignalsWidgetTest.cpp

@@ -43,7 +43,7 @@ target_include_directories(Mdt_Usb
 
 target_link_libraries(Mdt_Usb
   PUBLIC
-    Qt5::Core
+    Qt6::Core
     libusb::libusb
 )
 

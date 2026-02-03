@@ -108,8 +108,8 @@ target_include_directories(Mdt_SerialPort
 
 target_link_libraries(Mdt_SerialPort
   PUBLIC
-    Qt5::Core
-    Qt5::SerialPort
+    Qt6::Core
+    Qt6::SerialPort
     Mdt0::ItemModel
 )
 

@@ -4,7 +4,7 @@
  ** MdtTerminal
  ** Terminal to experiment with some devices using some ports, like serial port.
  **
- ** Copyright (C) 2024-2025 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "Settings.h"
@@ -22,19 +22,19 @@ bool Settings::baudRateHasMinimalValidity(qint32 rate) noexcept
   return rate > 0;
 }
 
-bool Settings::dataBitsHasMinimalValidity(QSerialPort::DataBits bits) noexcept
+bool Settings::dataBitsHasMinimalValidity(QSerialPort::DataBits /*bits*/) noexcept
 {
-  return bits != QSerialPort::UnknownDataBits;
+  return true;
 }
 
-bool Settings::parityHasMinimalValidity(QSerialPort::Parity parity) noexcept
+bool Settings::parityHasMinimalValidity(QSerialPort::Parity /*parity*/) noexcept
 {
-  return parity != QSerialPort::UnknownParity;
+  return true;
 }
 
-bool Settings::flowControlHasMinimalValidity(QSerialPort::FlowControl control) noexcept
+bool Settings::flowControlHasMinimalValidity(QSerialPort::FlowControl /*control*/) noexcept
 {
-  return control != QSerialPort::UnknownFlowControl;
+  return true;
 }
 
 bool Settings::stopBitsHasMinimalValidity(QSerialPort::StopBits bits) noexcept
@@ -42,20 +42,12 @@ bool Settings::stopBitsHasMinimalValidity(QSerialPort::StopBits bits) noexcept
   if(bits == QSerialPort::OneAndHalfStop){
     return oneAndHalfStopBitsIsSupported();
   }
-  return bits != QSerialPort::UnknownStopBits;
+  return true;
 }
 
 Settings Settings::defaultSettings() noexcept
 {
-  Settings settings;
-
-  settings.setBaudRate(9600);
-  settings.setDataBits(QSerialPort::Data8);
-  settings.setParity(QSerialPort::NoParity);
-  settings.setFlowControl(QSerialPort::NoFlowControl);
-  settings.setStopBits(QSerialPort::OneStop);
-
-  return settings;
+  return Settings{};
 }
 
 Settings Settings::defaultSettingsWithPortName(const QString & name) noexcept

@@ -20,7 +20,7 @@ mdt_add_test(
 mdt_add_test(
   NAME SerialPortPinoutSignalsEventNotifier_With_HW_Test
   TARGET serialPortPinoutSignalsEventNotifier_With_HW_Test
-  DEPENDENCIES Mdt::SerialPort Qt5::Test
+  DEPENDENCIES Mdt::SerialPort Qt6::Test
   SOURCE_FILES
     src/PinoutSignalsEventNotifierTest.cpp
 )

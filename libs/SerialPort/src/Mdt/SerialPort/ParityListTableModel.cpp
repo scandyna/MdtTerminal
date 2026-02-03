@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2024 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "ParityListTableModel.h"
@@ -20,13 +20,6 @@ ParityListTableModel::ParityListTableModel(QObject *parent)
 
 int ParityListTableModel::findRowOfParity(QSerialPort::Parity parity) const noexcept
 {
-  /*
-   * UnknownParity is not documented, so consider it does no exist
-   * Qt doc: https://doc.qt.io/qt-6/qserialport.html#DataBits-enum
-   * NOTE: it was deprecated in Qt5
-   */
-  assert(parity != QSerialPort::UnknownParity);
-
   switch(parity){
     case QSerialPort::NoParity:
       return 0;
@@ -38,8 +31,6 @@ int ParityListTableModel::findRowOfParity(QSerialPort::Parity parity) const noex
       return 3;
     case QSerialPort::MarkParity:
       return 4;
-    case QSerialPort::UnknownParity:
-      break;
   }
 
   // Should never happen
@@ -64,7 +55,7 @@ QSerialPort::Parity ParityListTableModel::parityAtRow(int row) const noexcept
   }
 
   // Should never happen
-  return QSerialPort::UnknownParity;
+  return QSerialPort::NoParity;
 }
 
 QVariant ParityListTableModel::displayRoleData(const QModelIndex & index) const noexcept

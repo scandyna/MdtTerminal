@@ -31,7 +31,7 @@ target_include_directories(Mdt_SerialPort_Widgets
 target_link_libraries(Mdt_SerialPort_Widgets
   PUBLIC
     Mdt::SerialPort
-    Qt5::Widgets
+    Qt6::Widgets
 )
 
 generate_export_header(Mdt_SerialPort_Widgets)

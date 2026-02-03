@@ -43,7 +43,7 @@ target_compile_definitions(mdtterminalguiapp
 target_link_libraries(mdtterminalguiapp
   PRIVATE
     Mdt::TerminalGuiAppLib
-    Qt5::Widgets
+    Qt6::Widgets
     Mdt::SerialPort_Widgets
 )
 

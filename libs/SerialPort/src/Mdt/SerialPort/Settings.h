@@ -4,7 +4,7 @@
  ** MdtTerminal
  ** Terminal to experiment with some devices using some ports, like serial port.
  **
- ** Copyright (C) 2024-2025 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #ifndef MDT_SERIAL_PORT_SETTINGS_H
@@ -37,8 +37,6 @@ namespace Mdt{ namespace SerialPort{
   /*! \brief Serial port settings
    *
    * Settings is a set of attributes required to open a serial port.
-   *
-   * \todo I think the default constructor should provide default settings ?
    *
    * \todo Document the choice of port name:
    * QSerialPort accepts QSerialPort::setPortName() and QSerialPort::setPort()
@@ -258,11 +256,11 @@ namespace Mdt{ namespace SerialPort{
     void setSendByteByByteSettings(const SendByteByByteSettings & s) noexcept;
 
     QString mPortName;
-    qint32 mBaudRate = 0;
-    QSerialPort::DataBits mDataBits = QSerialPort::UnknownDataBits;
-    QSerialPort::Parity mParity = QSerialPort::UnknownParity;
-    QSerialPort::FlowControl mFlowControl = QSerialPort::UnknownFlowControl;
-    QSerialPort::StopBits mStopBits = QSerialPort::UnknownStopBits;
+    qint32 mBaudRate = 9600;
+    QSerialPort::DataBits mDataBits = QSerialPort::Data8;
+    QSerialPort::Parity mParity = QSerialPort::NoParity;
+    QSerialPort::FlowControl mFlowControl = QSerialPort::NoFlowControl;
+    QSerialPort::StopBits mStopBits = QSerialPort::OneStop;
     Interface mInterface;
     SendByteByByteSettings mSendByteByByteSettings = SendByteByByteSettings::disabled();
   };
