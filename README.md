@@ -20,6 +20,24 @@ Also, some old devices are very slow,
 and don't work if we send bytes at the normal predefined rate
 (they must be sent one by one with some ms interval).
 
+# Getting started
+
+There are currently no prebuilt packages available.
+
+To build the project from source, see the [BUILD](BUILD.md) documentation.
+
+On some systems, like Linux Ubuntu, accessing serial ports is probably not allowed by default.
+To access serial ports, you probably have to be in the `dialout` group.
+To check what groups are currently affected to your login user:
+```shell
+groups
+```
+
+To add you to the `dialout` group:
+```shell
+sudo adduser <user> dialout
+```
+
 # Status
 
 Currently, I only work on RS-232 serial port.
