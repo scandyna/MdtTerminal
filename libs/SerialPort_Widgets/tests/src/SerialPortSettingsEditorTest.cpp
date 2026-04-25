@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2025 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "TestSettingsEditor.h"
@@ -57,11 +57,11 @@ TEST_CASE("fetchAvailablePorts")
   editor.fetchAvailablePorts();
 
   Mdt::SerialPort::TestLib::TestPortInfo ttyS0;
-  ttyS0.portName = "ttyS0";
+  ttyS0.setPortName("ttyS0");
   ttyS0.systemLocation = "/dev/ttyS0";
 
   Mdt::SerialPort::TestLib::TestPortInfo ttyUSB0;
-  ttyUSB0.portName = "ttyUSB0";
+  ttyUSB0.setPortName("ttyUSB0");
   ttyUSB0.systemLocation = "/dev/ttyUSB0";
 
   SECTION("Initial state then system has 1 port")
@@ -74,7 +74,7 @@ TEST_CASE("fetchAvailablePorts")
     // Emulate QComboBox setting its current index to the first element
     editor.setPortInfoListCurrentRowFromUi(0);
     CHECK( editor.portInfoListCurrentRow() == 0 );
-    CHECK( editor.currentPortInfo().portName == "ttyS0" );
+    CHECK( editor.currentPortInfo().portName() == "ttyS0" );
   }
 
   SECTION("We remove an USB serial port adapter then only 1 port remains")
@@ -86,7 +86,7 @@ TEST_CASE("fetchAvailablePorts")
     // Emulate QComboBox setting its current index to the first element
     editor.setPortInfoListCurrentRowFromUi(0);
     REQUIRE( editor.portInfoListCurrentRow() == 0 );
-    REQUIRE( editor.currentPortInfo().portName == "ttyUSB0" );
+    REQUIRE( editor.currentPortInfo().portName() == "ttyUSB0" );
 
     editor.removeAvailablePort(ttyUSB0);
 
@@ -95,7 +95,7 @@ TEST_CASE("fetchAvailablePorts")
     // Emulate QComboBox setting its current index to the first element
     editor.setPortInfoListCurrentRowFromUi(0);
     CHECK( editor.portInfoListCurrentRow() == 0 );
-    CHECK( editor.currentPortInfo().portName == "ttyS0" );
+    CHECK( editor.currentPortInfo().portName() == "ttyS0" );
   }
 
   SECTION("We remove an USB serial port adapter then no port remains")
@@ -106,7 +106,7 @@ TEST_CASE("fetchAvailablePorts")
     // Emulate QComboBox setting its current index to the first element
     editor.setPortInfoListCurrentRowFromUi(0);
     REQUIRE( editor.portInfoListCurrentRow() == 0 );
-    REQUIRE( editor.currentPortInfo().portName == "ttyUSB0" );
+    REQUIRE( editor.currentPortInfo().portName() == "ttyUSB0" );
 
     editor.removeAvailablePort(ttyUSB0);
 
@@ -115,7 +115,7 @@ TEST_CASE("fetchAvailablePorts")
     // Emulate QComboBox setting its current index to -1
     editor.setPortInfoListCurrentRowFromUi(-1);
     CHECK( editor.portInfoListCurrentRow() == -1 );
-    REQUIRE( editor.currentPortInfo().portName.isEmpty() );
+    REQUIRE( editor.currentPortInfo().portName().isEmpty() );
   }
 }
 
@@ -139,7 +139,7 @@ TEST_CASE("PortSpecificAttributes")
    * The port name is not important for this test
    */
   Mdt::SerialPort::TestLib::TestPortInfo ttyS0;
-  ttyS0.portName = "ttyS0";
+  ttyS0.setPortName("ttyS0");
   ttyS0.systemLocation = "/dev/ttyS0";
 
   SECTION("no serial port")
@@ -189,17 +189,17 @@ TEST_CASE("CurrentInterface")
    */
 
   Mdt::SerialPort::TestLib::TestPortInfo commonPort;
-  commonPort.portName = "ttyS0";
+  commonPort.setPortName("ttyS0");
   commonPort.systemLocation = "/dev/ttyS0";
 
   Mdt::SerialPort::TestLib::TestPortInfo uport1250_1;
-  uport1250_1.portName = "ttyS1";
+  uport1250_1.setPortName("ttyS1");
   uport1250_1.systemLocation = "/dev/ttyS1";
   uport1250_1.vid = 0x110A;
   uport1250_1.pid = 0x1250;
 
   Mdt::SerialPort::TestLib::TestPortInfo uport1250_2;
-  uport1250_2.portName = "ttyS2";
+  uport1250_2.setPortName("ttyS2");
   uport1250_2.systemLocation = "/dev/ttyS2";
   uport1250_2.vid = 0x110A;
   uport1250_2.pid = 0x1250;
@@ -301,7 +301,7 @@ TEST_CASE("setPortInfoListCurrentRowFromUi")
   TestSettingsEditor editor;
 
   Mdt::SerialPort::TestLib::TestPortInfo ttyS0;
-  ttyS0.portName = "ttyS0";
+  ttyS0.setPortName("ttyS0");
   ttyS0.systemLocation = "/dev/ttyS0";
 
   SECTION("No port available")
@@ -316,7 +316,7 @@ TEST_CASE("setPortInfoListCurrentRowFromUi")
 
     editor.setPortInfoListCurrentRowFromUi(0);
 
-    CHECK( editor.currentPortInfo().portName == "ttyS0" );
+    CHECK( editor.currentPortInfo().portName() == "ttyS0" );
   }
 
   // This will happen when we refresh port list and no more port is available
@@ -326,11 +326,11 @@ TEST_CASE("setPortInfoListCurrentRowFromUi")
     editor.fetchAvailablePorts();
 
     editor.setPortInfoListCurrentRowFromUi(0);
-    CHECK( editor.currentPortInfo().portName == "ttyS0" );
+    CHECK( editor.currentPortInfo().portName() == "ttyS0" );
 
     editor.setPortInfoListCurrentRowFromUi(-1);
 
-    CHECK( editor.currentPortInfo().portName.isEmpty() );
+    CHECK( editor.currentPortInfo().portName().isEmpty() );
   }
 }
 
@@ -339,11 +339,11 @@ TEST_CASE("setSettings")
   TestSettingsEditor editor;
 
   Mdt::SerialPort::TestLib::TestPortInfo ttyS0;
-  ttyS0.portName = "ttyS0";
+  ttyS0.setPortName("ttyS0");
   ttyS0.systemLocation = "/dev/ttyS0";
 
   Mdt::SerialPort::TestLib::TestPortInfo ttyS1;
-  ttyS1.portName = "ttyS1";
+  ttyS1.setPortName("ttyS1");
   ttyS1.systemLocation = "/dev/ttyS1";
 
   editor.addAvailablePort(ttyS0);
@@ -386,11 +386,11 @@ TEST_CASE("setSettings_PortName")
   TestSettingsEditor editor;
 
   Mdt::SerialPort::TestLib::TestPortInfo ttyS0;
-  ttyS0.portName = "ttyS0";
+  ttyS0.setPortName("ttyS0");
   ttyS0.systemLocation = "/dev/ttyS0";
 
   Mdt::SerialPort::TestLib::TestPortInfo ttyS1;
-  ttyS1.portName = "ttyS1";
+  ttyS1.setPortName("ttyS1");
   ttyS1.systemLocation = "/dev/ttyS1";
 
   editor.fetchAvailablePortSettings();
@@ -474,11 +474,11 @@ TEST_CASE("setSettings_PortSpecificSettings")
   settingsData.stopBits = QSerialPort::TwoStop;
 
   Mdt::SerialPort::TestLib::TestPortInfo commonPort;
-  commonPort.portName = "ttyS0";
+  commonPort.setPortName("ttyS0");
   commonPort.systemLocation = "/dev/ttyS0";
 
   Mdt::SerialPort::TestLib::TestPortInfo uport1250_1;
-  uport1250_1.portName = "ttyS1";
+  uport1250_1.setPortName("ttyS1");
   uport1250_1.systemLocation = "/dev/ttyS1";
   uport1250_1.vid = 0x110A;
   uport1250_1.pid = 0x1250;
@@ -592,11 +592,11 @@ TEST_CASE("buildSettings")
   TestSettingsEditor editor;
 
   Mdt::SerialPort::TestLib::TestPortInfo commonPort;
-  commonPort.portName = "ttyS0";
+  commonPort.setPortName("ttyS0");
   commonPort.systemLocation = "/dev/ttyS0";
 
   Mdt::SerialPort::TestLib::TestPortInfo uport1250_1;
-  uport1250_1.portName = "ttyS1";
+  uport1250_1.setPortName("ttyS1");
   uport1250_1.systemLocation = "/dev/ttyS1";
   uport1250_1.vid = 0x110A;
   uport1250_1.pid = 0x1250;

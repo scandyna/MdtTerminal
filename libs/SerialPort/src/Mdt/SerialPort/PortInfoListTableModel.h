@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2025 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #ifndef MDT_SERIAL_PORT_PORT_INFO_LIST_TABLE_MODEL_H
@@ -74,7 +74,7 @@ namespace Mdt{ namespace SerialPort{
 
    private:
 
-    void doFetchAvailablePorts() override;
+    void doFetchAvailablePorts(PortListSorting sorting) override;
 
     QString doGetPortNameAtRow(int row) const noexcept override
     {

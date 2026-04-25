@@ -256,7 +256,7 @@
  *
  * To list the available serial ports, for example in a QComboBox
  * (or maybe in a QTableView),
- * the Mdt::SerialPort::PortInfoListTableModel can be used.
+ * Mdt::SerialPort::PortInfoListTableModel can be used.
  *
  * While QSerialPortInfo can only be constructed for an existing port on the system,
  * we have to be able to test the access model without any port available (f.ex. CI):

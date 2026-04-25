@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2025 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #ifndef TEST_SETTINGS_EDITOR_H
@@ -50,7 +50,7 @@ class TestSettingsEditor : public Mdt::SerialPort::AbstractSettingsEditor
 
   void doFetchAvailablePorts() override
   {
-    mPortInfoListTableModel.fetchAvailablePorts();
+    mPortInfoListTableModel.fetchAvailablePorts(Mdt::SerialPort::PortListSorting::None);
   }
 
   void doNotifyPortInfoChanged(int row) const override;

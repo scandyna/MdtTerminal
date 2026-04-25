@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2025 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "AbstractPortInfoListTableModel.h"
@@ -18,10 +18,10 @@ AbstractPortInfoListTableModel::AbstractPortInfoListTableModel(QObject *parent)
 {
 }
 
-void AbstractPortInfoListTableModel::fetchAvailablePorts()
+void AbstractPortInfoListTableModel::fetchAvailablePorts(PortListSorting sorting)
 {
   beginResetModel();
-  doFetchAvailablePorts();
+  doFetchAvailablePorts(sorting);
   endResetModel();
 }
 

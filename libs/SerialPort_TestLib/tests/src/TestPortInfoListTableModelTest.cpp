@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2025 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "Mdt/SerialPort/TestLib/TestPortInfoListTableModel.h"
@@ -40,7 +40,7 @@ TEST_CASE("GetAttributes")
   TestPortInfoListTableModel model;
 
   TestPortInfo ttyUSB0;
-  ttyUSB0.portName = "ttyUSB0";
+  ttyUSB0.setPortName("ttyUSB0");
   ttyUSB0.systemLocation = "/dev/ttyUSB0";
   ttyUSB0.description = "Some description";
   ttyUSB0.manufacturer = "Some manufacturer";
@@ -50,7 +50,7 @@ TEST_CASE("GetAttributes")
 
   model.addAvailablePort(ttyUSB0);
 
-  model.fetchAvailablePorts();
+  model.fetchAvailablePorts(PortListSorting::None);
   REQUIRE( model.rowCount() == 1 );
 
   CHECK( getModelData(model, 0, portNameColumn).toString() == "ttyUSB0" );
@@ -69,17 +69,17 @@ TEST_CASE("removeAvailablePort")
   TestPortInfoListTableModel model;
 
   TestPortInfo ttyUSB0;
-  ttyUSB0.portName = "ttyUSB0";
+  ttyUSB0.setPortName("ttyUSB0");
   ttyUSB0.systemLocation = "/dev/ttyUSB0";
 
   TestPortInfo ttyS0;
-  ttyS0.portName = "ttyS0";
+  ttyS0.setPortName("ttyS0");
   ttyS0.systemLocation = "/dev/ttyS0";
 
   model.addAvailablePort(ttyUSB0);
   model.addAvailablePort(ttyS0);
 
-  model.fetchAvailablePorts();
+  model.fetchAvailablePorts(PortListSorting::None);
   REQUIRE( model.rowCount() == 2 );
   REQUIRE( getModelData(model, 0, portNameColumn).toString() == "ttyUSB0" );
   REQUIRE( getModelData(model, 1, portNameColumn).toString() == "ttyS0" );
@@ -87,7 +87,7 @@ TEST_CASE("removeAvailablePort")
   SECTION("remove ttyUSB0")
   {
     model.removeAvailablePort(ttyUSB0);
-    model.fetchAvailablePorts();
+    model.fetchAvailablePorts(PortListSorting::None);
 
     CHECK( model.rowCount() == 1 );
     CHECK( getModelData(model, 0, portNameColumn).toString() == "ttyS0" );
@@ -96,7 +96,7 @@ TEST_CASE("removeAvailablePort")
   SECTION("remove ttyS0")
   {
     model.removeAvailablePort(ttyS0);
-    model.fetchAvailablePorts();
+    model.fetchAvailablePorts(PortListSorting::None);
 
     CHECK( model.rowCount() == 1 );
     CHECK( getModelData(model, 0, portNameColumn).toString() == "ttyUSB0" );
@@ -106,7 +106,7 @@ TEST_CASE("removeAvailablePort")
   {
     model.removeAvailablePort(ttyS0);
     model.removeAvailablePort(ttyUSB0);
-    model.fetchAvailablePorts();
+    model.fetchAvailablePorts(PortListSorting::None);
 
     CHECK( model.rowCount() == 0 );
   }

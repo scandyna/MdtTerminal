@@ -3,6 +3,7 @@ include(GenerateExportHeader)
 include(MdtInstallLibrary)
 
 add_library(Mdt_SerialPort
+  Mdt/SerialPort/Algorithm.cpp
   Mdt/SerialPort/StringHelpers.cpp
   Mdt/SerialPort/Platform.cpp
   Mdt/SerialPort/QRuntimeError.cpp

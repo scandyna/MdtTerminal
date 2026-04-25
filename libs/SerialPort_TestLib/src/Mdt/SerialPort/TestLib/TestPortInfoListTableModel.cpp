@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2025 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "TestPortInfoListTableModel.h"
@@ -22,7 +22,7 @@ TestPortInfoListTableModel::TestPortInfoListTableModel(QObject *parent)
 void TestPortInfoListTableModel::removeAvailablePort(const TestPortInfo & port)
 {
   const auto pred = [&port](const TestPortInfo & currentPort) -> bool {
-    return currentPort.portName == port.portName;
+    return currentPort.portName() == port.portName();
   };
 
   const auto it = std::find_if(mAvailablePortList.cbegin(), mAvailablePortList.cend(), pred);

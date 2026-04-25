@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2025 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #ifndef MDT_SERIAL_PORT_ABSTRACT_PORT_INFO_LIST_TABLE_MODEL_H
@@ -18,6 +18,14 @@
 #include <optional>
 
 namespace Mdt{ namespace SerialPort{
+
+  /*! \brief Serialport port list sorting
+   */
+  enum class PortListSorting
+  {
+    None,       /*!< Keep the list of ports as returned by the system */
+    ByPortName  /*!< Sort the list of ports by their names  */
+  };
 
   /*! \brief Base to implement the access model to a list of port info
    */
@@ -110,7 +118,7 @@ namespace Mdt{ namespace SerialPort{
 
     /*! \brief Fetch available ports
      */
-    void fetchAvailablePorts();
+    void fetchAvailablePorts(PortListSorting sorting);
 
     /*! \brief Get the port name at given row
      *
@@ -140,7 +148,7 @@ namespace Mdt{ namespace SerialPort{
    private:
 
     virtual
-    void doFetchAvailablePorts() = 0;
+    void doFetchAvailablePorts(PortListSorting sorting) = 0;
 
     virtual
     QString doGetPortNameAtRow(int row) const noexcept = 0;

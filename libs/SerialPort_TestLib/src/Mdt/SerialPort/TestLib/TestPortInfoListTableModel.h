@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2025 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #ifndef MDT_SERIAL_PORT_TEST_LIB_TEST_PORT_INFO_LIST_TABLE_MODEL_H
@@ -12,11 +12,12 @@
 
 #include "Mdt/SerialPort/AbstractPortInfoListTableModel.h"
 #include "Mdt/SerialPort/PortInfoStringFormat.h"
+#include "Mdt/SerialPort/Algorithm.h"
 #include "mdt_serialport_testlib_export.h"
 #include <Mdt/ItemModel/StlContiguousContainerAdapter.h>
 #include <QString>
 #include <QtGlobal>
-#include <vector>
+#include <QList>
 #include <cassert>
 
 namespace Mdt{ namespace SerialPort{ namespace TestLib{
@@ -25,7 +26,20 @@ namespace Mdt{ namespace SerialPort{ namespace TestLib{
    */
   struct MDT_SERIALPORT_TESTLIB_EXPORT TestPortInfo
   {
-    QString portName;
+    /*
+     * We need a portName() method to sort the list.
+     * Do things simple, just also add setPortName().
+     */
+    QString mPortName;
+    void setPortName(const QString & name)
+    {
+      mPortName = name;
+    }
+    QString portName() const
+    {
+      return mPortName;
+    }
+
     QString systemLocation;
     QString description;
     QString manufacturer;
@@ -38,7 +52,7 @@ namespace Mdt{ namespace SerialPort{ namespace TestLib{
    */
   struct MDT_SERIALPORT_TESTLIB_EXPORT TestPortInfoListTableModelAdapterFunctionMap
   {
-    using PortInfoList = std::vector<TestPortInfo>;
+    using PortInfoList = QList<TestPortInfo>;
 
     using size_type = PortInfoList::size_type;
     using const_reference = const TestPortInfo &;
@@ -78,16 +92,19 @@ namespace Mdt{ namespace SerialPort{ namespace TestLib{
 
    private:
 
-    void doFetchAvailablePorts() override
+    void doFetchAvailablePorts(PortListSorting sorting) override
     {
       mList.containerMutable() = mAvailablePortList;
+      if(sorting == PortListSorting::ByPortName){
+        sortPortInfoListByPortName( mList.containerMutable() );
+      }
     }
 
     QString doGetPortNameAtRow(int row) const noexcept override
     {
       assert( rowIndexIsInRange(row) );
 
-      return mList.atRow(row).portName;
+      return mList.atRow(row).portName();
     }
 
     QString doGetSystemLocationAtRow(int row) const noexcept override
@@ -137,7 +154,7 @@ namespace Mdt{ namespace SerialPort{ namespace TestLib{
       return mList.rowCount();
     }
 
-    using PortInfoList = std::vector<TestPortInfo>;
+    using PortInfoList = QList<TestPortInfo>;
 
     Mdt::ItemModel::StlContiguousContainerAdapter<PortInfoList, TestPortInfoListTableModelAdapterFunctionMap> mList;
     PortInfoList mAvailablePortList;

@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2025 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "Mdt/SerialPort/PortInfoListTableModel.h"
@@ -40,15 +40,37 @@ TEST_CASE("portName")
   TestPortInfoListTableModel model;
 
   TestPortInfo port;
-  port.portName = "ttyS0";
+  port.setPortName("ttyS0");
   port.systemLocation = "/dev/ttyS0";
 
   model.addAvailablePort(port);
 
-  model.fetchAvailablePorts();
+  model.fetchAvailablePorts(PortListSorting::None);
   REQUIRE( model.rowCount() == 1 );
 
   CHECK( model.portNameAtRow(0) == "ttyS0" );
+}
+
+TEST_CASE("list should be sorted by port names")
+{
+  TestPortInfoListTableModel model;
+
+  TestPortInfo port0;
+  port0.setPortName("ttyS0");
+  port0.systemLocation = "/dev/ttyS0";
+
+  TestPortInfo port1;
+  port1.setPortName("ttyS1");
+  port1.systemLocation = "/dev/ttyS1";
+
+  model.addAvailablePort(port1);
+  model.addAvailablePort(port0);
+
+  model.fetchAvailablePorts(PortListSorting::ByPortName);
+  REQUIRE( model.rowCount() == 2 );
+
+  CHECK( model.portNameAtRow(0) == "ttyS0" );
+  CHECK( model.portNameAtRow(1) == "ttyS1" );
 }
 
 TEST_CASE("findRowOfPortName")
@@ -56,16 +78,16 @@ TEST_CASE("findRowOfPortName")
   TestPortInfoListTableModel model;
 
   TestPortInfo ttyS0;
-  ttyS0.portName = "ttyS0";
+  ttyS0.setPortName("ttyS0");
   ttyS0.systemLocation = "/dev/ttyS0";
 
   TestPortInfo ttyS1;
-  ttyS1.portName = "ttyS1";
+  ttyS1.setPortName("ttyS1");
   ttyS1.systemLocation = "/dev/ttyS1";
 
   SECTION("empty list")
   {
-    model.fetchAvailablePorts();
+    model.fetchAvailablePorts(PortListSorting::None);
     REQUIRE( model.rowCount() == 0 );
 
     CHECK( model.findRowOfPortName("ttyS0") == -1 );
@@ -74,7 +96,7 @@ TEST_CASE("findRowOfPortName")
   SECTION("list with ttyS0")
   {
     model.addAvailablePort(ttyS0);
-    model.fetchAvailablePorts();
+    model.fetchAvailablePorts(PortListSorting::None);
     REQUIRE( model.rowCount() == 1 );
 
     SECTION("ttyS0 is at row 0")
@@ -92,7 +114,7 @@ TEST_CASE("findRowOfPortName")
   {
     model.addAvailablePort(ttyS0);
     model.addAvailablePort(ttyS1);
-    model.fetchAvailablePorts();
+    model.fetchAvailablePorts(PortListSorting::None);
     REQUIRE( model.rowCount() == 2 );
 
     SECTION("ttyS0 is at row 0")
@@ -117,7 +139,7 @@ TEST_CASE("getData")
   TestPortInfoListTableModel model;
 
   TestPortInfo port;
-  port.portName = "ttyS0";
+  port.setPortName("ttyS0");
   port.systemLocation = "/dev/ttyS0";
   port.description = "Some description";
   port.manufacturer = "Some manufacturer";
@@ -126,7 +148,7 @@ TEST_CASE("getData")
   port.pid = 0x5678;
   model.addAvailablePort(port);
 
-  model.fetchAvailablePorts();
+  model.fetchAvailablePorts(PortListSorting::None);
   REQUIRE( model.rowCount() == 1 );
 
   CHECK( getModelData(model, 0, portNameColumn).toString() == "ttyS0" );

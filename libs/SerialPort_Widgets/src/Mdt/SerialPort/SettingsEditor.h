@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2025 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #ifndef MDT_SERIAL_PORT_SETTINGS_EDITOR_H
@@ -68,7 +68,7 @@ namespace Mdt{ namespace SerialPort{
 
     void doFetchAvailablePorts() override
     {
-      mPortInfoListTableModel.fetchAvailablePorts();
+      mPortInfoListTableModel.fetchAvailablePorts(PortListSorting::ByPortName);
     }
 
     void doNotifyPortInfoChanged(int row) const override;
