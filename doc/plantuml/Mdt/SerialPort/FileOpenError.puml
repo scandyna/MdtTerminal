@@ -1,4 +1,3 @@
-@startuml
 !include Mdt/SerialPort/QRuntimeError.puml
 
 namespace Mdt.SerialPort {
@@ -8,6 +7,3 @@ namespace Mdt.SerialPort {
 
   QRuntimeError <|-- FileOpenError
 }
-
-
-@enduml

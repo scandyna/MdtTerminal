@@ -1,4 +1,3 @@
-@startuml
 
 namespace std {
 
@@ -6,5 +5,3 @@ namespace std {
   }
 
 }
-
-@enduml

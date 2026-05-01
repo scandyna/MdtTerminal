@@ -8,7 +8,7 @@
 
 # set(DOT_FILES_CMAKE_DIR "${CMAKE_CURRENT_BINARY_DIR}/dotfiles/cmake")
 
-find_file(PLANTUML_JAR_PATH "plantuml.jar" PATHS "/usr/share/plantuml")
+find_file(PLANTUML_JAR_PATH "plantuml.jar" PATHS "~/opt/plantuml" "/usr/share/plantuml")
 if(NOT EXISTS "${PLANTUML_JAR_PATH}")
   message(WARNING "plantuml.jar not found, UML diagrams will not be generated")
   set(PLANTUML_JAR_PATH "")

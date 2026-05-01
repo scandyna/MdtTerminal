@@ -1,4 +1,3 @@
-@startuml
 !include std/runtime_error.puml
 
 namespace Mdt.SerialPort {
@@ -9,5 +8,3 @@ namespace Mdt.SerialPort {
 }
 
 std.runtime_error <|-- Mdt.SerialPort.QRuntimeError
-
-@enduml
