@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2025 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "SettingsValidation.h"
@@ -19,22 +19,17 @@ namespace Mdt{ namespace SerialPort{
 
 void SettingsValidation::validateSettings(const SettingsRawData & data)
 {
-  validatePortName(data.portName);
+  if( data.portInfo.isNull() ){
+    const QString msg = tr("Port info is missing");
+    throw SettingsValidationError(msg);
+  }
+
   validateBaudRate(data.baudRate);
   validateDataBits(data.dataBits);
   validateParity(data.parity);
   validateFlowControl(data.flowControl);
   validateStopBits(data.stopBits);
   validateSendByteByByteSettings(data.sendByteByByteIsEnabled, data.sendByteByByteIntervalInMilliseconds);
-}
-
-void SettingsValidation::validatePortName(const QString & name)
-{
-  if( !Settings::portNameHasMinimalValidity(name) ){
-    const QString msg = tr("Port name '%1' is not valid")
-                        .arg(name);
-    throw SettingsValidationError(msg);
-  }
 }
 
 void SettingsValidation::validateBaudRate(qint32 rate)

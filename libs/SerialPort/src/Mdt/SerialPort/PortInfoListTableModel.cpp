@@ -9,7 +9,8 @@
  *****************************************************************************************/
 #include "PortInfoListTableModel.h"
 #include "PortInfoStringFormat.h"
-#include "Algorithm.h"
+#include <QSerialPortInfo>
+#include <cassert>
 
 namespace Mdt{ namespace SerialPort{
 
@@ -18,34 +19,12 @@ PortInfoListTableModel::PortInfoListTableModel(QObject *parent)
 {
 }
 
-void PortInfoListTableModel::doFetchAvailablePorts(PortListSorting sorting)
+void PortInfoListTableModel::doFetchAvailablePorts()
 {
-  mList.containerMutable() = QSerialPortInfo::availablePorts();
-  if(sorting == PortListSorting::ByPortName){
-    sortPortInfoListByPortName( mList.containerMutable() );
+  const auto availablePorts = QSerialPortInfo::availablePorts();
+  for(const auto & portInfo : availablePorts){
+    addPortInfo( PortInfo::fromQSerialPortInfo(portInfo) );
   }
-}
-
-std::optional<quint16> PortInfoListTableModel::doGetVendorIdentifierAtRow(int row) const noexcept
-{
-  assert( rowIndexIsInRange(row) );
-
-  if( mList.atRow(row).hasVendorIdentifier() ){
-    return mList.atRow(row).vendorIdentifier();
-  }
-
-  return {};
-}
-
-std::optional<quint16> PortInfoListTableModel::doGetProductIdentifierAtRow(int row) const noexcept
-{
-  assert( rowIndexIsInRange(row) );
-
-  if( mList.atRow(row).hasProductIdentifier() ){
-    return mList.atRow(row).productIdentifier();
-  }
-
-  return {};
 }
 
 }} // namespace Mdt{ namespace SerialPort{

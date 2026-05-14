@@ -1,10 +1,11 @@
-@startuml
+!include Mdt/SerialPort/PortInfo.puml
 
 namespace Mdt.SerialPort {
 
   class AbstractPortInfoListTableModel {
+     {abstract} -doFetchAvailablePorts()
   }
 
-}
+  AbstractPortInfoListTableModel *--> "*" PortInfo
 
-@enduml
+}

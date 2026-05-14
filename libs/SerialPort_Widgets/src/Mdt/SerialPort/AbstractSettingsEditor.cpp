@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2025 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "AbstractSettingsEditor.h"
@@ -32,7 +32,15 @@ QString AbstractSettingsEditor::currentPortName() const noexcept
   assert( hasPortInfoListCurrentRow() );
   assert( constPortInfoListTableModel()->rowIndexIsInRange(mPortInfoListCurrentRow) );
 
-  return constPortInfoListTableModel()->portNameAtRow(mPortInfoListCurrentRow);
+  return currentPortInfo().portName();
+}
+
+const PortInfo & AbstractSettingsEditor::currentPortInfo() const noexcept
+{
+  assert( hasPortInfoListCurrentRow() );
+  assert( constPortInfoListTableModel()->rowIndexIsInRange(mPortInfoListCurrentRow) );
+
+  return constPortInfoListTableModel()->portInfoAtRow(mPortInfoListCurrentRow);
 }
 
 void AbstractSettingsEditor::fetchAvailablePorts()
@@ -65,7 +73,7 @@ Settings AbstractSettingsEditor::buildSettings() const
   assert( hasPortInfoListCurrentRow() );
 
   SettingsRawData settingsData;
-  settingsData.portName = currentPortName();
+  settingsData.portInfo = currentPortInfo();
   settingsData.baudRate = currentBaudRate();
   settingsData.dataBits = currentDataBits();
   settingsData.parity = currentParity();
@@ -91,7 +99,7 @@ void AbstractSettingsEditor::setPortInfoListCurrentRowFromUi(int row) noexcept
    */
   mPortInfoListCurrentRow = row;
   fetchPortSpecificAttributes();
-  doNotifyPortInfoChanged(row);
+  notifyPortInfoChanged(row);
 }
 
 void AbstractSettingsEditor::setBaudRateListCurrentRowFromUi(int row) noexcept
@@ -159,12 +167,9 @@ void AbstractSettingsEditor::fetchPortSpecificAttributes()
     return;
   }
 
-  const auto *model = portInfoListTableModel();
-  assert(model != nullptr);
-  assert( model->rowIndexIsInRange(row) );
-
-  const auto vid = model->vendorIdentifierAtRow(row);
-  const auto pid = model->productIdentifierAtRow(row);
+  const PortInfo & portInfo = currentPortInfo();
+  const auto vid = portInfo.vendorIdentifierIfAvailable();
+  const auto pid = portInfo.productIdentifierIfAvailable();
 
   mInterfaceListTableModel.setVendorIdentifierAndProductIdentifier(vid, pid);
 }
@@ -349,6 +354,17 @@ bool AbstractSettingsEditor::rowIsMinusOneOrInRangeOfInterfaceList(int row) cons
   }
 
   return mInterfaceListTableModel.rowIndexIsInRange(row);
+}
+
+void AbstractSettingsEditor::notifyPortInfoChanged(int row) const
+{
+  if(row < 0){
+    emit portInfoChanged( PortInfo() );
+    return;
+  }
+  assert( constPortInfoListTableModel()->rowIndexIsInRange(row) );
+
+  emit portInfoChanged( constPortInfoListTableModel()->portInfoAtRow(row) );
 }
 
 }} // namespace Mdt{ namespace SerialPort{

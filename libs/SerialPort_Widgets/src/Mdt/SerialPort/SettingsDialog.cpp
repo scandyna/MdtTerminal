@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2025 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "SettingsDialog.h"
@@ -101,7 +101,7 @@ Settings SettingsDialog::buildSettings() const
   return mEditor.buildSettings();
 }
 
-void SettingsDialog::showPortInfo(const QSerialPortInfo & portInfo) noexcept
+void SettingsDialog::showPortInfo(const PortInfo & portInfo) noexcept
 {
   mUi->description->setText( portInfo.description() );
   mUi->manufacturer->setText( portInfo.manufacturer() );

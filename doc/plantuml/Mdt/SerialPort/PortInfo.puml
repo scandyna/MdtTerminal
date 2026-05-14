@@ -1,0 +1,12 @@
+!include Qt/SerialPort/QSerialPortInfo.puml
+
+namespace Mdt.SerialPort {
+
+  class PortInfo {
+    -PortName
+    {static} fromQSerialPortInfo(QSerialPortInfo pi)
+  }
+
+  PortInfo ..> QSerialPortInfo
+
+}

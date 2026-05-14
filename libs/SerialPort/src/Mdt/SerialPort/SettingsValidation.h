@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2025 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #ifndef MDT_SERIAL_PORT_SETTINGS_VALIDATION_H
@@ -32,14 +32,6 @@ namespace Mdt{ namespace SerialPort{
      */
     static
     void validateSettings(const SettingsRawData & data);
-
-    /*! \brief Validate given port name
-     *
-     * \exception SettingsValidationError
-     * \sa Settings::portNameHasMinimalValidity()
-     */
-    static
-    void validatePortName(const QString & name);
 
     /*! \brief Validate given baud rate
      *

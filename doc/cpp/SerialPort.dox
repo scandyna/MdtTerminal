@@ -259,13 +259,16 @@
  * Mdt::SerialPort::PortInfoListTableModel can be used.
  *
  * While QSerialPortInfo can only be constructed for an existing port on the system,
- * we have to be able to test the access model without any port available (f.ex. CI):
+ * we have to be able to test the access model without any port available (f.ex. CI).
+ * Because this is the case for other parts (than the table model),
+ * Mdt::SerialPort::PortInfo has been introduced.
  *
  * \startuml "Serial port info list table model"
  * !include ClassDiagrams/SerialPortInfoListTableModel.puml
  * \enduml
  *
  * \sa https://doc.qt.io/qt-6/qserialportinfo.html
+ * \sa Mdt::SerialPort::PortInfo
  * \sa Mdt::SerialPort::PortInfoListTableModel
  *
  * \section SerialPort_Interface Serial port interface
@@ -340,6 +343,16 @@
  * \subsection SerialPort_WindowsSpecifics Windows specifics
  *
  * \sa https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ntddser/ns-ntddser-_serial_commprop
+ *
+ *
+ * \section SerialPort_SerialPortClass Serial port class
+ *
+ * \startuml "Serial port class"
+ * !include ClassDiagrams/SerialPort.puml
+ * \enduml
+ *
+ * \sa Mdt::SerialPort::SerialPort
+ *
  *
  * \section SerialPort_Testing Serial port testing
  *

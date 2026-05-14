@@ -1,8 +1,9 @@
-@startuml
+!include Mdt/SerialPort/AbstractSettingsEditor.puml
+!include Mdt/SerialPort/TestLib/TestPortInfoListTableModel.puml
 
 class TestSettingsEditor {
+  -doFetchAvailablePorts()
 }
 
 Mdt.SerialPort.AbstractSettingsEditor <|-- TestSettingsEditor
-
-@enduml
+TestSettingsEditor *--> Mdt.SerialPort.TestLib.TestPortInfoListTableModel

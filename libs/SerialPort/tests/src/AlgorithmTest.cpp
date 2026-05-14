@@ -8,41 +8,14 @@
  **
  *****************************************************************************************/
 #include "Mdt/SerialPort/Algorithm.h"
+#include "Mdt/SerialPort/TestLib/TestPortInfo.h"
 #include "catch2/catch.hpp"
 #include "Catch2QString.h"
 #include <QString>
+#include <vector>
 
 using namespace Mdt::SerialPort;
-
-/*
- * This is a simple version of TestPortInfo
- * Avoid to depend on the one in TestPortInfoListTableModel
- * (in TestLib), that has other fields.
- */
-class TestPortInfo
-{
- public:
-
-  QString portName() const
-  {
-    return mPortName;
-  }
-
-  static
-  TestPortInfo fromPortName(const QString & name)
-  {
-    return TestPortInfo(name);
-  }
-
- private:
-
-  TestPortInfo(const QString & name) noexcept
-   : mPortName(name)
-  {
-  }
-
-  QString mPortName;
-};
+using Mdt::SerialPort::TestLib::TestPortInfo;
 
 
 TEST_CASE("isLessThanByPortName")
@@ -52,29 +25,29 @@ TEST_CASE("isLessThanByPortName")
 
   SECTION("ttyS0 < ttyS1")
   {
-    const auto a = TestPortInfo::fromPortName("ttyS0");
-    const auto b = TestPortInfo::fromPortName("ttyS1");
+    const auto a = TestPortInfo::fromPortNameAndSystemLocation("ttyS0", "/dev/ttyS0");
+    const auto b = TestPortInfo::fromPortNameAndSystemLocation("ttyS1", "/dev/ttyS1");
     CHECK( isLessThanByPortName(a, b, collator) );
   }
 
   SECTION("ttyS2 < ttyS10")
   {
-    const auto a = TestPortInfo::fromPortName("ttyS2");
-    const auto b = TestPortInfo::fromPortName("ttyS10");
+    const auto a = TestPortInfo::fromPortNameAndSystemLocation("ttyS2", "/dev/ttyS2");
+    const auto b = TestPortInfo::fromPortNameAndSystemLocation("ttyS10", "/dev/ttyS10");
     CHECK( isLessThanByPortName(a, b, collator) );
   }
 
   SECTION("COM2 < COM10")
   {
-    const auto a = TestPortInfo::fromPortName("COM2");
-    const auto b = TestPortInfo::fromPortName("COM10");
+    const auto a = TestPortInfo::fromPortNameAndSystemLocation("COM2", "//./COM2");
+    const auto b = TestPortInfo::fromPortNameAndSystemLocation("COM10", "//./COM10");
     CHECK( isLessThanByPortName(a, b, collator) );
   }
 }
 
 TEST_CASE("sortPortInfoListByPortName")
 {
-  using List = QList<TestPortInfo>;
+  using List = std::vector<PortInfo>;
 
   List list;
 
@@ -82,13 +55,13 @@ TEST_CASE("sortPortInfoListByPortName")
   {
     sortPortInfoListByPortName(list);
 
-    CHECK( list.isEmpty() );
+    CHECK( list.empty() );
   }
 
   SECTION("ttyS1,ttyS0 -> ttyS0,ttyS1")
   {
-    list.append( TestPortInfo::fromPortName("ttyS1") );
-    list.append( TestPortInfo::fromPortName("ttyS0") );
+    list.push_back( TestPortInfo::fromPortNameAndSystemLocation("ttyS1", "/dev/ttyS1") );
+    list.push_back( TestPortInfo::fromPortNameAndSystemLocation("ttyS0", "/dev/ttyS0") );
 
     sortPortInfoListByPortName(list);
 
@@ -99,8 +72,8 @@ TEST_CASE("sortPortInfoListByPortName")
 
   SECTION("ttyS10,ttyS2 -> ttyS2,ttyS10")
   {
-    list.append( TestPortInfo::fromPortName("ttyS10") );
-    list.append( TestPortInfo::fromPortName("ttyS2") );
+    list.push_back( TestPortInfo::fromPortNameAndSystemLocation("ttyS10", "/dev/ttyS10") );
+    list.push_back( TestPortInfo::fromPortNameAndSystemLocation("ttyS2", "/dev/ttyS2") );
 
     sortPortInfoListByPortName(list);
 

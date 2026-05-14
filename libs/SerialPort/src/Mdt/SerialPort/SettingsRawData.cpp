@@ -4,11 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2025 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "SettingsRawData.h"
-
-namespace Mdt{ namespace SerialPort{
-
-}} // namespace Mdt{ namespace SerialPort{

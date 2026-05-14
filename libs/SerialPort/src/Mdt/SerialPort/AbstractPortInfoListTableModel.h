@@ -10,12 +10,15 @@
 #ifndef MDT_SERIAL_PORT_ABSTRACT_PORT_INFO_LIST_TABLE_MODEL_H
 #define MDT_SERIAL_PORT_ABSTRACT_PORT_INFO_LIST_TABLE_MODEL_H
 
+#include "Mdt/SerialPort/PortInfo.h"
 #include "mdt_serialport_export.h"
+#include <Mdt/ItemModel/StlContiguousContainerAdapter.h>
 #include <Mdt/ItemModel/AbstractTableModel.h>
 #include <QVariant>
 #include <QString>
 #include <QtGlobal>
 #include <optional>
+#include <vector>
 
 namespace Mdt{ namespace SerialPort{
 
@@ -25,6 +28,28 @@ namespace Mdt{ namespace SerialPort{
   {
     None,       /*!< Keep the list of ports as returned by the system */
     ByPortName  /*!< Sort the list of ports by their names  */
+  };
+
+  /*! \internal
+   */
+  struct MDT_SERIALPORT_EXPORT PortInfoListTableModelAdapterFunctionMap
+  {
+    using PortInfoList = std::vector<PortInfo>;
+
+    using size_type = PortInfoList::size_type;
+    using const_reference = const PortInfo &;
+
+    static
+    size_type size(const PortInfoList & list) noexcept
+    {
+      return list.size();
+    }
+
+    static
+    const_reference atIndex(const PortInfoList & list, size_type index) noexcept
+    {
+      return list[index];
+    }
   };
 
   /*! \brief Base to implement the access model to a list of port info
@@ -120,23 +145,22 @@ namespace Mdt{ namespace SerialPort{
      */
     void fetchAvailablePorts(PortListSorting sorting);
 
+    /*! \brief Get the port info at given row
+     *
+     * \pre \a row must be in range of this model
+     */
+    const PortInfo & portInfoAtRow(int row) const noexcept
+    {
+      assert( rowIndexIsInRange(row) );
+
+      return mList.atRow(row);
+    }
+
     /*! \brief Get the port name at given row
      *
      * \pre \a row must be in range of this model
      */
     QString portNameAtRow(int row) const noexcept;
-
-    /*! \brief Get the vendor identifier at given row
-     *
-     * \pre \a row must be in range of this model
-     */
-    std::optional<quint16> vendorIdentifierAtRow(int row) const noexcept;
-
-    /*! \brief Get the product identifier at given row
-     *
-     * \pre \a row must be in range of this model
-     */
-    std::optional<quint16> productIdentifierAtRow(int row) const noexcept;
 
     /*! \brief Find the row of given port name
      *
@@ -145,38 +169,39 @@ namespace Mdt{ namespace SerialPort{
      */
     int findRowOfPortName(const QString & name) const noexcept;
 
+   protected:
+
+    /*! \brief Add a port info
+     *
+     * \pre \a portInfo must not be null
+     * \sa doFetchAvailablePorts()
+     */
+    void addPortInfo(const PortInfo & portInfo) noexcept;
+
    private:
 
+    /*! \brief Fetch available ports
+     *
+     * The implementation should call addPortInfo()
+     * for every fetched port.
+     */
     virtual
-    void doFetchAvailablePorts(PortListSorting sorting) = 0;
-
-    virtual
-    QString doGetPortNameAtRow(int row) const noexcept = 0;
-
-    virtual
-    QString doGetSystemLocationAtRow(int row) const noexcept = 0;
-
-    virtual
-    QString doGetDescriptionAtRow(int row) const noexcept = 0;
-
-    virtual
-    QString doGetManufacturerAtRow(int row) const noexcept = 0;
-
-    virtual
-    QString doGetSerialNumberAtRow(int row) const noexcept = 0;
-
-    virtual
-    std::optional<quint16> doGetVendorIdentifierAtRow(int row) const noexcept = 0;
-
-    virtual
-    std::optional<quint16> doGetProductIdentifierAtRow(int row) const noexcept = 0;
+    void doFetchAvailablePorts() = 0;
 
     int columnCountWithoutParentIndex() const noexcept override
     {
       return 7;
     }
 
+    int rowCountWithoutParentIndex() const noexcept override
+    {
+      return mList.rowCount();
+    }
+
     QVariant displayRoleData(const QModelIndex & index) const noexcept override;
+
+    using PortInfoList = std::vector<PortInfo>;
+    Mdt::ItemModel::StlContiguousContainerAdapter<PortInfoList, PortInfoListTableModelAdapterFunctionMap> mList;
   };
 
 }} // namespace Mdt{ namespace SerialPort{

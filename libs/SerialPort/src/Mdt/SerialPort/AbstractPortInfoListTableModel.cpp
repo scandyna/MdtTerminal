@@ -9,6 +9,7 @@
  *****************************************************************************************/
 #include "AbstractPortInfoListTableModel.h"
 #include "PortInfoStringFormat.h"
+#include "Algorithm.h"
 #include <cassert>
 
 namespace Mdt{ namespace SerialPort{
@@ -21,7 +22,11 @@ AbstractPortInfoListTableModel::AbstractPortInfoListTableModel(QObject *parent)
 void AbstractPortInfoListTableModel::fetchAvailablePorts(PortListSorting sorting)
 {
   beginResetModel();
-  doFetchAvailablePorts(sorting);
+  mList.containerMutable().clear();
+  doFetchAvailablePorts();
+  if(sorting == PortListSorting::ByPortName){
+    sortPortInfoListByPortName( mList.containerMutable() );
+  }
   endResetModel();
 }
 
@@ -29,21 +34,7 @@ QString AbstractPortInfoListTableModel::portNameAtRow(int row) const noexcept
 {
   assert( rowIndexIsInRange(row) );
 
-  return doGetPortNameAtRow(row);
-}
-
-std::optional<quint16> AbstractPortInfoListTableModel::vendorIdentifierAtRow(int row) const noexcept
-{
-  assert( rowIndexIsInRange(row) );
-
-  return doGetVendorIdentifierAtRow(row);
-}
-
-std::optional<quint16> AbstractPortInfoListTableModel::productIdentifierAtRow(int row) const noexcept
-{
-  assert( rowIndexIsInRange(row) );
-
-  return doGetProductIdentifierAtRow(row);
+  return portInfoAtRow(row).portName();
 }
 
 int AbstractPortInfoListTableModel::findRowOfPortName(const QString & name) const noexcept
@@ -59,26 +50,34 @@ int AbstractPortInfoListTableModel::findRowOfPortName(const QString & name) cons
   return -1;
 }
 
+void AbstractPortInfoListTableModel::addPortInfo(const PortInfo & portInfo) noexcept
+{
+  assert( !portInfo.isNull() );
+
+  mList.containerMutable().push_back(portInfo);
+}
+
 QVariant AbstractPortInfoListTableModel::displayRoleData(const QModelIndex & index) const noexcept
 {
   assert( indexIsValidAndInRange(index) );
 
+  const PortInfo & portInfo = portInfoAtRow( index.row() );
   const auto column = static_cast<Column>( index.column() );
   switch(column){
     case Column::PortName:
-      return doGetPortNameAtRow( index.row() );
+      return portInfo.portName();
     case Column::SystemLocation:
-      return doGetSystemLocationAtRow( index.row() );
+      return portInfo.systemLocation();
     case Column::Description:
-      return doGetDescriptionAtRow( index.row() );
+      return portInfo.description();
     case Column::Manufacturer:
-      return doGetManufacturerAtRow( index.row() );
+      return portInfo.manufacturer();
     case Column::SerialNumber:
-      return doGetSerialNumberAtRow( index.row() );
+      return portInfo.serialNumber();
     case Column::VendorIdentifier:
-      return PortInfoStringFormat::vendorIdentifierToString( vendorIdentifierAtRow( index.row() ) );
+      return PortInfoStringFormat::vendorIdentifierToString(portInfo);
     case Column::ProductIdentifier:
-      return PortInfoStringFormat::productIdentifierToString( productIdentifierAtRow( index.row() ) );
+      return PortInfoStringFormat::productIdentifierToString(portInfo);
   }
 
   return QVariant();

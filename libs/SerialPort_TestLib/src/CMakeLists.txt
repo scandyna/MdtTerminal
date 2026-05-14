@@ -3,6 +3,7 @@ include(GenerateExportHeader)
 include(MdtInstallLibrary)
 
 add_library(Mdt_SerialPort_TestLib
+  Mdt/SerialPort/TestLib/TestPortInfo.cpp
   Mdt/SerialPort/TestLib/TestPortInfoListTableModel.cpp
   Mdt/SerialPort/TestLib/TestPinoutSignalsEventNotifier.cpp
   Mdt/SerialPort/TestLib/TestPinoutSignalsUiController.cpp

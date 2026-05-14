@@ -4,7 +4,7 @@ include(MdtAddTest)
 mdt_add_test(
   NAME SerialPortAlgorithmTest
   TARGET serialPortAlgorithmTest
-  DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+  DEPENDENCIES Mdt::SerialPort Mdt::SerialPortTestLib Mdt::Catch2Main Mdt::Catch2Qt
   SOURCE_FILES
     src/AlgorithmTest.cpp
 )
@@ -82,8 +82,8 @@ mdt_add_test(
 )
 
 mdt_add_test(
-  NAME TestPortInfoListTableModelTest
-  TARGET testPortInfoListTableModelTest
+  NAME PortInfoListTableModelTest
+  TARGET portInfoListTableModelTest
   DEPENDENCIES Mdt::SerialPort Mdt::SerialPortTestLib Mdt::Catch2Main Mdt::Catch2Qt
   SOURCE_FILES
     src/PortInfoListTableModelTest.cpp
@@ -132,7 +132,7 @@ mdt_add_test(
 mdt_add_test(
   NAME SerialPortSettingsTest
   TARGET serialPortSettingsTest
-  DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+  DEPENDENCIES Mdt::SerialPort Mdt::SerialPortTestLib Mdt::Catch2Main Mdt::Catch2Qt
   SOURCE_FILES
     src/SerialPortSettingsTest.cpp
 )
@@ -148,7 +148,7 @@ mdt_add_test(
 mdt_add_test(
   NAME SerialPortSettingsValidationTest
   TARGET serialPortSettingsValidationTest
-  DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+  DEPENDENCIES Mdt::SerialPort Mdt::SerialPortTestLib Mdt::Catch2Main Mdt::Catch2Qt
   SOURCE_FILES
     src/SerialPortSettingsValidationTest.cpp
 )
@@ -156,7 +156,7 @@ mdt_add_test(
 mdt_add_test(
   NAME SerialPortSettingsBuilderTest
   TARGET serialPortSettingsBuilderTest
-  DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+  DEPENDENCIES Mdt::SerialPort Mdt::SerialPortTestLib Mdt::Catch2Main Mdt::Catch2Qt
   SOURCE_FILES
     src/SerialPortSettingsBuilderTest.cpp
 )
@@ -172,7 +172,7 @@ mdt_add_test(
 mdt_add_test(
   NAME SerialPortSettingsStringFormatTest
   TARGET serialPortSettingsStringFormatTest
-  DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+  DEPENDENCIES Mdt::SerialPort Mdt::SerialPortTestLib Mdt::Catch2Main Mdt::Catch2Qt
   SOURCE_FILES
     src/SettingsStringFormatTest.cpp
 )
@@ -188,7 +188,7 @@ mdt_add_test(
 mdt_add_test(
   NAME SerialPortSetupTest
   TARGET serialPortSetupTest
-  DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+  DEPENDENCIES Mdt::SerialPort Mdt::SerialPortTestLib Mdt::Catch2Main Mdt::Catch2Qt
   SOURCE_FILES
     src/PortSetupTest.cpp
 )

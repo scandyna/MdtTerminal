@@ -1,16 +1,14 @@
-@startuml
 !include Mdt/SerialPort/AbstractPortInfoListTableModel.puml
 !include Qt/SerialPort/QSerialPortInfo.puml
 
 namespace Mdt.SerialPort {
 
   class PortInfoListTableModel {
+    -doFetchAvailablePorts()
   }
 
   AbstractPortInfoListTableModel <|-- PortInfoListTableModel
 
 }
 
-Mdt.SerialPort.PortInfoListTableModel *--> "*" QSerialPortInfo
-
-@enduml
+Mdt.SerialPort.PortInfoListTableModel ..> QSerialPortInfo

@@ -1,0 +1,10 @@
+
+namespace Mdt.SerialPort.TestLib {
+
+  class TestPortInfo {
+    {static} +fromPortNameAndSystemLocation()
+  }
+
+}
+
+Mdt.SerialPort.PortInfo <|-- Mdt.SerialPort.TestLib.TestPortInfo

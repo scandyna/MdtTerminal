@@ -4,15 +4,17 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2025 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "Mdt/SerialPort/SettingsBuilder.h"
+#include "Mdt/SerialPort/TestLib/TestPortInfo.h"
 #include "catch2/catch.hpp"
 #include "Catch2QString.h"
 #include <chrono>
 
 using namespace Mdt::SerialPort;
+using Mdt::SerialPort::TestLib::TestPortInfo;
 using namespace std::chrono_literals;
 
 
@@ -20,7 +22,7 @@ TEST_CASE("settingsFromRawData")
 {
   SettingsRawData data;
 
-  data.portName = "ttyS0";
+  data.portInfo = TestPortInfo::fromPortNameAndSystemLocation("ttyS1", "/dev/ttyS1");
   data.baudRate = 4800;
   data.dataBits = QSerialPort::Data6;
   data.parity = QSerialPort::SpaceParity;
@@ -32,7 +34,7 @@ TEST_CASE("settingsFromRawData")
 
   const Settings settings = SettingsBuilder::settingsFromRawData(data);
 
-  CHECK( settings.portName() == "ttyS0" );
+  CHECK( settings.portName() == "ttyS1" );
   CHECK( settings.baudRate() == 4800 );
   CHECK( settings.dataBits() == QSerialPort::Data6 );
   CHECK( settings.parity() == QSerialPort::SpaceParity );

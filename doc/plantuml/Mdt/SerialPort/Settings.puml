@@ -1,5 +1,5 @@
-@startuml
 !include Mdt/SerialPort/SendByteByByteSettings.puml
+!include Mdt/SerialPort/PortInfo.puml
 
 namespace Mdt.SerialPort {
 
@@ -8,7 +8,6 @@ namespace Mdt.SerialPort {
   }
 
   Settings *--> SendByteByByteSettings
+  Settings *--> PortInfo
 
 }
-
-@enduml

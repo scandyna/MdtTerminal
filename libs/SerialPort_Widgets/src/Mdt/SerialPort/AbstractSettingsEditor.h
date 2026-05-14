@@ -4,13 +4,14 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2025 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #ifndef MDT_SERIAL_PORT_ABSTRACT_SETTINGS_EDITOR_H
 #define MDT_SERIAL_PORT_ABSTRACT_SETTINGS_EDITOR_H
 
 #include "Mdt/SerialPort/Settings.h"
+#include "Mdt/SerialPort/PortInfo.h"
 #include "Mdt/SerialPort/Interface.h"
 #include "Mdt/SerialPort/InterfaceStandard.h"
 #include "Mdt/SerialPort/AbstractPortInfoListTableModel.h"
@@ -136,6 +137,13 @@ namespace Mdt{ namespace SerialPort{
      * \sa hasPortInfoListCurrentRow()
      */
     QString currentPortName() const noexcept;
+
+    /*! \brief Get current port info
+     *
+     * \pre A current port must have been set
+     * \sa hasPortInfoListCurrentRow()
+     */
+    const PortInfo & currentPortInfo() const noexcept;
 
     /*! \brief Get the current row in the baud rate list model
      */
@@ -263,6 +271,10 @@ namespace Mdt{ namespace SerialPort{
      */
     void portInfoListCurrentRowChanged(int row) const;
 
+    /*! \brief Emitted when the current port info changed
+     */
+    void portInfoChanged(const PortInfo & portInfo) const;
+
     /*! \brief Emitted when the current row in the baud rate list model changed
      *
      * \note This signal is not emitted by setBaudRateListCurrentRowFromUi()
@@ -342,6 +354,12 @@ namespace Mdt{ namespace SerialPort{
     bool rowIsMinusOneOrInRangeOfPortInfoList(int row) const noexcept;
     bool rowIsMinusOneOrInRangeOfInterfaceList(int row) const noexcept;
 
+    /*! \brief Notify that the port info changed
+     *
+     * \a row can be < 0 , meaning there is no port info selected
+     */
+    void notifyPortInfoChanged(int row) const;
+
     virtual
     AbstractPortInfoListTableModel *portInfoListTableModel() noexcept = 0;
 
@@ -350,16 +368,6 @@ namespace Mdt{ namespace SerialPort{
 
     virtual
     void doFetchAvailablePorts() = 0;
-
-    /*! \brief Notify that the port info changed
-     *
-     * The concrete implementation should emit a signal
-     * with its concrete port info (like QSerialPortInfo).
-     *
-     * \a row can be < 0 , meaning there is no port info selected
-     */
-    virtual
-    void doNotifyPortInfoChanged(int row) const = 0;
 
     int mPortInfoListCurrentRow = -1;
     int mBaudRateListCurrentRow = -1;

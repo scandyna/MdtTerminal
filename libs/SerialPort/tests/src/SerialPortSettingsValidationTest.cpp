@@ -8,10 +8,12 @@
  **
  *****************************************************************************************/
 #include "Mdt/SerialPort/SettingsValidation.h"
+#include "Mdt/SerialPort/TestLib/TestPortInfo.h"
 #include "catch2/catch.hpp"
 #include "Catch2QString.h"
 
 using namespace Mdt::SerialPort;
+using Mdt::SerialPort::TestLib::TestPortInfo;
 
 
 TEST_CASE("validateSettings")
@@ -25,7 +27,7 @@ TEST_CASE("validateSettings")
 
   SECTION("Valid settings")
   {
-    data.portName = "ttyS0";
+    data.portInfo = TestPortInfo::fromPortNameAndSystemLocation("ttyS0", "/dev/ttyS0");
     data.baudRate = 4800;
     data.dataBits = QSerialPort::Data7;
     data.parity = QSerialPort::MarkParity;
@@ -33,19 +35,6 @@ TEST_CASE("validateSettings")
     data.stopBits = QSerialPort::TwoStop;
 
     SettingsValidation::validateSettings(data);
-  }
-}
-
-TEST_CASE("validatePortName")
-{
-  SECTION("invalid name")
-  {
-    REQUIRE_THROWS_AS( SettingsValidation::validatePortName(""), SettingsValidationError );
-  }
-
-  SECTION("valid name")
-  {
-    SettingsValidation::validatePortName("ttyS0");
   }
 }
 

@@ -39,9 +39,7 @@ TEST_CASE("portName")
 {
   TestPortInfoListTableModel model;
 
-  TestPortInfo port;
-  port.setPortName("ttyS0");
-  port.systemLocation = "/dev/ttyS0";
+  const auto port = TestPortInfo::fromPortNameAndSystemLocation("ttyS0", "/dev/ttyS0");
 
   model.addAvailablePort(port);
 
@@ -55,13 +53,8 @@ TEST_CASE("list should be sorted by port names")
 {
   TestPortInfoListTableModel model;
 
-  TestPortInfo port0;
-  port0.setPortName("ttyS0");
-  port0.systemLocation = "/dev/ttyS0";
-
-  TestPortInfo port1;
-  port1.setPortName("ttyS1");
-  port1.systemLocation = "/dev/ttyS1";
+  const auto port0 = TestPortInfo::fromPortNameAndSystemLocation("ttyS0", "/dev/ttyS0");
+  const auto port1 = TestPortInfo::fromPortNameAndSystemLocation("ttyS1", "/dev/ttyS1");
 
   model.addAvailablePort(port1);
   model.addAvailablePort(port0);
@@ -77,13 +70,8 @@ TEST_CASE("findRowOfPortName")
 {
   TestPortInfoListTableModel model;
 
-  TestPortInfo ttyS0;
-  ttyS0.setPortName("ttyS0");
-  ttyS0.systemLocation = "/dev/ttyS0";
-
-  TestPortInfo ttyS1;
-  ttyS1.setPortName("ttyS1");
-  ttyS1.systemLocation = "/dev/ttyS1";
+  const auto ttyS0 = TestPortInfo::fromPortNameAndSystemLocation("ttyS0", "/dev/ttyS0");
+  const auto ttyS1 = TestPortInfo::fromPortNameAndSystemLocation("ttyS1", "/dev/ttyS1");
 
   SECTION("empty list")
   {
@@ -138,14 +126,12 @@ TEST_CASE("getData")
 {
   TestPortInfoListTableModel model;
 
-  TestPortInfo port;
-  port.setPortName("ttyS0");
-  port.systemLocation = "/dev/ttyS0";
-  port.description = "Some description";
-  port.manufacturer = "Some manufacturer";
-  port.serialNumber = "ABCDE";
-  port.vid = 0x1234;
-  port.pid = 0x5678;
+  auto port = TestPortInfo::fromPortNameAndSystemLocation("ttyS0", "/dev/ttyS0");
+  port.setDescription("Some description");
+  port.setManufacturer("Some manufacturer");
+  port.setSerialNumber("ABCDE");
+  port.setVendorIdentifier(0x1234);
+  port.setProductIdentifier(0x5678);
   model.addAvailablePort(port);
 
   model.fetchAvailablePorts(PortListSorting::None);
@@ -158,6 +144,4 @@ TEST_CASE("getData")
   CHECK( getModelData(model, 0, serialNumberColumn).toString() == "ABCDE" );
   CHECK( getModelData(model, 0, vendorIdentifierColumn).toString() == PortInfoStringFormat::vendorIdentifierToString(0x1234) );
   CHECK( getModelData(model, 0, productIdentifierColumn).toString() == PortInfoStringFormat::productIdentifierToString(0x5678) );
-  CHECK( model.vendorIdentifierAtRow(0) == 0x1234 );
-  CHECK( model.productIdentifierAtRow(0) == 0x5678 );
 }

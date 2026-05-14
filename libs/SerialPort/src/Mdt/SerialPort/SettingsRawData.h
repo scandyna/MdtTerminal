@@ -10,6 +10,7 @@
 #ifndef MDT_SERIAL_PORT_SETTINGS_RAW_DATA_H
 #define MDT_SERIAL_PORT_SETTINGS_RAW_DATA_H
 
+#include "Mdt/SerialPort/PortInfo.h"
 #include "Mdt/SerialPort/Interface.h"
 #include "mdt_serialport_export.h"
 #include <QSerialPort>
@@ -29,7 +30,7 @@ namespace Mdt{ namespace SerialPort{
    */
   struct MDT_SERIALPORT_EXPORT SettingsRawData
   {
-    QString portName;
+    PortInfo portInfo;
     qint32 baudRate = 0;
     QSerialPort::DataBits dataBits = QSerialPort::Data8;
     QSerialPort::Parity parity = QSerialPort::NoParity;

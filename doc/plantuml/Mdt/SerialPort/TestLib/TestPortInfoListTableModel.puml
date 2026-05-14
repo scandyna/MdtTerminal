@@ -1,16 +1,13 @@
-@startuml
 !include Mdt/SerialPort/AbstractPortInfoListTableModel.puml
+!include Mdt/SerialPort/TestLib/TestPortInfo.puml
 
 namespace Mdt.SerialPort.TestLib {
 
-  class TestPortInfo {
-  }
-
   class TestPortInfoListTableModel {
+    -doFetchAvailablePorts()
   }
 
-  TestPortInfoListTableModel *--> "*" TestPortInfo
+  TestPortInfoListTableModel ..> TestPortInfo
+
   Mdt.SerialPort.AbstractPortInfoListTableModel <|-- TestPortInfoListTableModel
 }
-
-@enduml

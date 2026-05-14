@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2025 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "PortInfoStringFormat.h"
@@ -13,7 +13,7 @@
 
 namespace Mdt{ namespace SerialPort{
 
-QString PortInfoStringFormat::vendorIdentifierToString(std::optional<quint16> vid) noexcept
+QString PortInfoStringFormat::vendorIdentifierToString(std::optional<uint16_t> vid) noexcept
 {
   if( vid.has_value() ){
     return QLatin1String("0x") % QString::number(*vid, 16);
@@ -22,16 +22,12 @@ QString PortInfoStringFormat::vendorIdentifierToString(std::optional<quint16> vi
   return QString();
 }
 
-QString PortInfoStringFormat::vendorIdentifierToString(const QSerialPortInfo & portInfo) noexcept
+QString PortInfoStringFormat::vendorIdentifierToString(const PortInfo & portInfo) noexcept
 {
-  if( portInfo.hasVendorIdentifier() ){
-    return vendorIdentifierToString( portInfo.vendorIdentifier() );
-  }
-
-  return QString();
+  return vendorIdentifierToString( portInfo.vendorIdentifierIfAvailable() );
 }
 
-QString PortInfoStringFormat::productIdentifierToString(std::optional<quint16> pid) noexcept
+QString PortInfoStringFormat::productIdentifierToString(std::optional<uint16_t> pid) noexcept
 {
   if( pid.has_value() ){
     return QLatin1String("0x") % QString::number(*pid, 16);
@@ -40,13 +36,9 @@ QString PortInfoStringFormat::productIdentifierToString(std::optional<quint16> p
   return QString();
 }
 
-QString PortInfoStringFormat::productIdentifierToString(const QSerialPortInfo & portInfo) noexcept
+QString PortInfoStringFormat::productIdentifierToString(const PortInfo & portInfo) noexcept
 {
-  if( portInfo.hasProductIdentifier() ){
-    return productIdentifierToString( portInfo.productIdentifier() );
-  }
-
-  return QString();
+  return productIdentifierToString( portInfo.productIdentifierIfAvailable() );
 }
 
 }} // namespace Mdt{ namespace SerialPort{

@@ -31,11 +31,6 @@ class TestSettingsEditor : public Mdt::SerialPort::AbstractSettingsEditor
 
   void removeAvailablePort(const Mdt::SerialPort::TestLib::TestPortInfo & port);
 
-  Mdt::SerialPort::TestLib::TestPortInfo currentPortInfo() const
-  {
-    return mCurrentPortInfo;
-  }
-
  private:
 
   Mdt::SerialPort::AbstractPortInfoListTableModel *portInfoListTableModel() noexcept override
@@ -53,10 +48,7 @@ class TestSettingsEditor : public Mdt::SerialPort::AbstractSettingsEditor
     mPortInfoListTableModel.fetchAvailablePorts(Mdt::SerialPort::PortListSorting::None);
   }
 
-  void doNotifyPortInfoChanged(int row) const override;
-
   Mdt::SerialPort::TestLib::TestPortInfoListTableModel mPortInfoListTableModel;
-  mutable Mdt::SerialPort::TestLib::TestPortInfo mCurrentPortInfo;
 };
 
 #endif // TEST_SETTINGS_EDITOR_H

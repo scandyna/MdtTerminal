@@ -10,6 +10,7 @@
 #ifndef MDT_SERIAL_PORT_SETTINGS_H
 #define MDT_SERIAL_PORT_SETTINGS_H
 
+#include "Mdt/SerialPort/PortInfo.h"
 #include "Mdt/SerialPort/Platform.h"
 #include "Mdt/SerialPort/Interface.h"
 #include "Mdt/SerialPort/SendByteByByteSettings.h"
@@ -17,7 +18,6 @@
 #include <QSerialPort>
 #include <QString>
 #include <QtGlobal>
-#include <optional>
 #include <chrono>
 #include <cassert>
 
@@ -37,12 +37,6 @@ namespace Mdt{ namespace SerialPort{
   /*! \brief Serial port settings
    *
    * Settings is a set of attributes required to open a serial port.
-   *
-   * \todo Document the choice of port name:
-   * QSerialPort accepts QSerialPort::setPortName() and QSerialPort::setPort()
-   * QSerialPort::setPortName() is fine, it knows how to define system location.
-   * QSerialPort::setPort() requires a QSerialPortInfo.
-   * QSerialPortInfo can only be constructed for an existing port on the system.
    */
   class MDT_SERIALPORT_EXPORT Settings
   {
@@ -50,11 +44,29 @@ namespace Mdt{ namespace SerialPort{
 
    public:
 
-    /*! \brief Get the port name
+    /*! \brief Check if port info is available
      */
-    const QString & portName() const noexcept
+    bool hasPortInfo() const noexcept
     {
-      return mPortName;
+      return !mPortInfo.isNull();
+    }
+
+    /*! \brief Get the port info
+     */
+    const PortInfo & portInfo() const noexcept
+    {
+      return mPortInfo;
+    }
+
+    /*! \brief Get the port name
+     *
+     * Returns an empty string if not portinfo is available
+     * \sa hasPortInfo()
+     * \sa portInfo()
+     */
+    QString portName() const noexcept
+    {
+      return portInfo().portName();
     }
 
     /*! \brief Get the baud rate
@@ -134,11 +146,6 @@ namespace Mdt{ namespace SerialPort{
       return mSendByteByByteSettings.interval();
     }
 
-    /*! \brief Check if given port name has minimal validity
-     */
-    static
-    bool portNameHasMinimalValidity(const QString & name) noexcept;
-
     /*! \brief Check if given baud rate has minimal validity
      *
      * Returns true if given \a rate is > 0
@@ -188,29 +195,24 @@ namespace Mdt{ namespace SerialPort{
 
     /*! \brief Get default settings
      *
-     * \note Default settings has no port name
+     * \note Default settings has no port info
      */
     static
     Settings defaultSettings() noexcept;
 
-    /*! \brief Get default settings with a port name
-     *
-     * \pre \a name must have a minimal validity
-     * \sa portNameHasMinimalValidity()
+    /*! \brief Get default settings with given port info
      */
     static
-    Settings defaultSettingsWithPortName(const QString & name) noexcept;
+    Settings defaultSettingsWithPortInfo(const PortInfo & portInfo) noexcept;
 
    private:
 
     Settings() noexcept = default;
+    Settings(const PortInfo & portInfo) noexcept;
 
-    /*! \brief Set the port name
-     *
-     * \pre \a name must have a minimal validity
-     * \sa portNameHasMinimalValidity()
+    /*! \brief Set the port info
      */
-    void setPortName(const QString & name) noexcept;
+    void setPortInfo(const PortInfo & portInfo) noexcept;
 
     /*! \brief Set the baud rate
      *
@@ -255,7 +257,7 @@ namespace Mdt{ namespace SerialPort{
      */
     void setSendByteByByteSettings(const SendByteByByteSettings & s) noexcept;
 
-    QString mPortName;
+    PortInfo mPortInfo;
     qint32 mBaudRate = 9600;
     QSerialPort::DataBits mDataBits = QSerialPort::Data8;
     QSerialPort::Parity mParity = QSerialPort::NoParity;

@@ -13,10 +13,7 @@
 #include "Mdt/SerialPort/AbstractSettingsEditor.h"
 #include "Mdt/SerialPort/PortInfoListTableModel.h"
 #include "mdt_serialport_widgets_export.h"
-#include <QAbstractTableModel>
-#include <QSerialPortInfo>
 #include <QObject>
-#include <cassert>
 
 namespace Mdt{ namespace SerialPort{
 
@@ -35,25 +32,6 @@ namespace Mdt{ namespace SerialPort{
     explicit
     SettingsEditor(QObject *parent = nullptr);
 
-    /*! \brief Get the current port info
-     *
-     * \pre A current port must have been set
-     * \sa hasPortInfoListCurrentRow()
-     */
-    const QSerialPortInfo & currentPortInfo() const noexcept
-    {
-      assert( hasPortInfoListCurrentRow() );
-      assert( mPortInfoListTableModel.rowIndexIsInRange( portInfoListCurrentRow() ) );
-
-      return mPortInfoListTableModel.portInfoAtRow( portInfoListCurrentRow() );
-    }
-
-   Q_SIGNALS:
-
-    /*! \brief Emitted when the current port info changed
-     */
-    void portInfoChanged(const QSerialPortInfo & portInfo) const;
-
    private:
 
     AbstractPortInfoListTableModel *portInfoListTableModel() noexcept override
@@ -70,8 +48,6 @@ namespace Mdt{ namespace SerialPort{
     {
       mPortInfoListTableModel.fetchAvailablePorts(PortListSorting::ByPortName);
     }
-
-    void doNotifyPortInfoChanged(int row) const override;
 
     PortInfoListTableModel mPortInfoListTableModel;
   };

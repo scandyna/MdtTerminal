@@ -4,17 +4,18 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2025 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #ifndef MDT_SERIAL_PORT_PORT_INFO_STRING_FORMAT_H
 #define MDT_SERIAL_PORT_PORT_INFO_STRING_FORMAT_H
 
+#include "Mdt/SerialPort/PortInfo.h"
 #include "mdt_serialport_export.h"
-#include <QSerialPortInfo>
 #include <QObject>
 #include <QString>
 #include <optional>
+#include <cstdint>
 
 namespace Mdt{ namespace SerialPort{
 
@@ -33,28 +34,28 @@ namespace Mdt{ namespace SerialPort{
      * Returns an empty string if \a vid has no value
      */
     static
-    QString vendorIdentifierToString(std::optional<quint16> vid) noexcept;
+    QString vendorIdentifierToString(std::optional<uint16_t> vid) noexcept;
 
     /*! \brief Returns the string representation of the vendor identifier
      *
      * Returns an empty string if \a portInfo has no vendor identifier
      */
     static
-    QString vendorIdentifierToString(const QSerialPortInfo & portInfo) noexcept;
+    QString vendorIdentifierToString(const PortInfo & portInfo) noexcept;
 
     /*! \brief Returns the string representation of given product identifier
      *
      * Returns an empty string if \a pid has no value
      */
     static
-    QString productIdentifierToString(std::optional<quint16> pid) noexcept;
+    QString productIdentifierToString(std::optional<uint16_t> pid) noexcept;
 
     /*! \brief Returns the string representation of the product identifier
      *
      * Returns an empty string if \a portInfo has no product identifier
      */
     static
-    QString productIdentifierToString(const QSerialPortInfo & portInfo) noexcept;
+    QString productIdentifierToString(const PortInfo & portInfo) noexcept;
   };
 
 }} // namespace Mdt{ namespace SerialPort{

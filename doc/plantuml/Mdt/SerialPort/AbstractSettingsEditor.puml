@@ -1,10 +1,12 @@
-@startuml
+!include Mdt/SerialPort/Settings.puml
 
 namespace Mdt.SerialPort {
 
   class AbstractSettingsEditor {
+    +Settings buildSettings()
+    {abstract} -doFetchAvailablePorts()
   }
 
-}
+  AbstractSettingsEditor ..> Settings
 
-@enduml
+}

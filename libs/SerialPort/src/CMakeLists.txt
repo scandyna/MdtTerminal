@@ -19,6 +19,7 @@ add_library(Mdt_SerialPort
   Mdt/SerialPort/StopBitsStringFormat.cpp
   Mdt/SerialPort/StopBitsListTableModel.cpp
   Mdt/SerialPort/PortInfoStringFormat.cpp
+  Mdt/SerialPort/PortInfo.cpp
   Mdt/SerialPort/AbstractPortInfoListTableModel.cpp
   Mdt/SerialPort/PortInfoListTableModel.cpp
   Mdt/SerialPort/InterfaceStringFormat.cpp

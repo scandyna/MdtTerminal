@@ -25,17 +25,10 @@ void TestPortInfoListTableModel::removeAvailablePort(const TestPortInfo & port)
     return currentPort.portName() == port.portName();
   };
 
-  const auto it = std::find_if(mAvailablePortList.cbegin(), mAvailablePortList.cend(), pred);
-  assert( it != mAvailablePortList.cend() );
+  const auto it = std::remove_if(mAvailablePortList.begin(), mAvailablePortList.end(), pred);
+  assert( it != mAvailablePortList.end() );
 
-  mAvailablePortList.erase(it);
-}
-
-const TestPortInfo & TestPortInfoListTableModel::portInfoAtRow(int row) const noexcept
-{
-  assert( rowIndexIsInRange(row) );
-
-  return mList.atRow(row);
+  mAvailablePortList.erase( it, mAvailablePortList.end() );
 }
 
 }}} // namespace Mdt{ namespace SerialPort{ namespace TestLib{

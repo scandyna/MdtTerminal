@@ -11,7 +11,7 @@
 #define MDT_SERIAL_PORT_ALGORITHM_H
 
 #include <QCollator>
-#include <QList>
+#include <vector>
 #include <algorithm>
 
 namespace Mdt{ namespace SerialPort{
@@ -44,7 +44,7 @@ namespace Mdt{ namespace SerialPort{
    * \endcode
    */
   template <typename PortInfo>
-  void sortPortInfoListByPortName(QList<PortInfo> & list)
+  void sortPortInfoListByPortName(std::vector<PortInfo> & list)
   {
     QCollator collator;
     collator.setNumericMode(true);

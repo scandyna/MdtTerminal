@@ -8,19 +8,13 @@
  **
  *****************************************************************************************/
 #include "Mdt/SerialPort/Settings.h"
+#include "Mdt/SerialPort/TestLib/TestPortInfo.h"
 #include "catch2/catch.hpp"
 #include "Catch2QString.h"
 
 using namespace Mdt::SerialPort;
+using Mdt::SerialPort::TestLib::TestPortInfo;
 
-
-TEST_CASE("portNameHasMinimalValidity")
-{
-  CHECK( !Settings::portNameHasMinimalValidity("") );
-  CHECK( !Settings::portNameHasMinimalValidity(" ") );
-  CHECK( !Settings::portNameHasMinimalValidity("  ") );
-  CHECK( Settings::portNameHasMinimalValidity("ttyS0") );
-}
 
 TEST_CASE("baudRateHasMinimalValidity")
 {
@@ -58,6 +52,8 @@ TEST_CASE("defaultSettings")
 {
   auto settings = Settings::defaultSettings();
 
+  CHECK( !settings.hasPortInfo() );
+  CHECK( settings.portName().isEmpty() );
   CHECK( settings.baudRate() == 9600 );
   CHECK( settings.dataBits() == QSerialPort::Data8 );
   CHECK( settings.parity() == QSerialPort::NoParity );
@@ -66,11 +62,14 @@ TEST_CASE("defaultSettings")
   CHECK( settings.interfaceStandard() == InterfaceStandard::RS_232 );
 }
 
-TEST_CASE("defaultSettingsWithPortName")
+TEST_CASE("defaultSettingsWithPortInfo")
 {
-  auto settings = Settings::defaultSettingsWithPortName("ttyS0");
+  auto settings = Settings::defaultSettingsWithPortInfo( TestPortInfo::fromPortNameAndSystemLocation("ttyS0", "/dev/ttyS0") );
 
+  CHECK( settings.hasPortInfo() );
+  CHECK( settings.portInfo().portName() == "ttyS0" );
   CHECK( settings.portName() == "ttyS0" );
+  CHECK( settings.portInfo().systemLocation() == "/dev/ttyS0" );
   CHECK( settings.baudRate() == 9600 );
   CHECK( settings.dataBits() == QSerialPort::Data8 );
   CHECK( settings.parity() == QSerialPort::NoParity );

@@ -4,23 +4,25 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2025-2025 Philippe Steinmann.
+ ** Copyright (C) 2025-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "Mdt/SerialPort/SettingsStringFormat.h"
 #include "Mdt/SerialPort/SettingsRawData.h"
 #include "Mdt/SerialPort/SettingsBuilder.h"
+#include "Mdt/SerialPort/TestLib/TestPortInfo.h"
 #include <QSerialPort>
 #include "catch2/catch.hpp"
 #include "Catch2QString.h"
 
 using namespace Mdt::SerialPort;
+using Mdt::SerialPort::TestLib::TestPortInfo;
 
 
 TEST_CASE("dpsStringFromSettings")
 {
   SettingsRawData data;
-  data.portName = "ttyS0";
+  data.portInfo = TestPortInfo::fromPortNameAndSystemLocation("ttyS0", "/dev/ttyS0");
   data.baudRate = 9600;
   data.flowControl = QSerialPort::NoFlowControl;
 
@@ -63,7 +65,7 @@ TEST_CASE("dpsStringFromPort")
 TEST_CASE("baudeRateAndDpsStringFromSettings")
 {
   SettingsRawData data;
-  data.portName = "ttyS0";
+  data.portInfo = TestPortInfo::fromPortNameAndSystemLocation("ttyS0", "/dev/ttyS0");
   data.flowControl = QSerialPort::NoFlowControl;
 
   SECTION("9600-8-N-1")

@@ -2,8 +2,16 @@
 include(MdtAddTest)
 
 mdt_add_test(
-  NAME PortInfoListTableModelTest
-  TARGET portInfoListTableModelTest
+  NAME PortInfo_With_HW_Test
+  TARGET portInfo_With_HW_Test
+  DEPENDENCIES Mdt::SerialPort Mdt::SerialPortTestLib Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/PortInfoTest.cpp
+)
+
+mdt_add_test(
+  NAME PortInfoListTableModel_With_HW_Test
+  TARGET portInfoListTableModel_With_HW_Test
   DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
   SOURCE_FILES
     src/PortInfoListTableModelTest.cpp

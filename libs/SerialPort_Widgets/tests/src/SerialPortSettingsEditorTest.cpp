@@ -13,11 +13,13 @@
 #include "Mdt/SerialPort/FlowControlStringFormat.h"
 #include "Mdt/SerialPort/StopBitsStringFormat.h"
 #include "Mdt/SerialPort/BaudRateStringFormat.h"
+#include "Mdt/SerialPort/TestLib/TestPortInfo.h"
 #include <Mdt/ItemModel/Helpers.h>
 #include "catch2/catch.hpp"
 #include "Catch2QString.h"
 
 using namespace Mdt::SerialPort;
+using Mdt::SerialPort::TestLib::TestPortInfo;
 using Mdt::ItemModel::getModelData;
 
 /*
@@ -56,13 +58,8 @@ TEST_CASE("fetchAvailablePorts")
 
   editor.fetchAvailablePorts();
 
-  Mdt::SerialPort::TestLib::TestPortInfo ttyS0;
-  ttyS0.setPortName("ttyS0");
-  ttyS0.systemLocation = "/dev/ttyS0";
-
-  Mdt::SerialPort::TestLib::TestPortInfo ttyUSB0;
-  ttyUSB0.setPortName("ttyUSB0");
-  ttyUSB0.systemLocation = "/dev/ttyUSB0";
+  const auto ttyS0 = TestPortInfo::fromPortNameAndSystemLocation("ttyS0", "/dev/ttyS0");
+  const auto ttyUSB0 = TestPortInfo::fromPortNameAndSystemLocation("ttyUSB0", "/dev/ttyUSB0");
 
   SECTION("Initial state then system has 1 port")
   {
@@ -115,7 +112,7 @@ TEST_CASE("fetchAvailablePorts")
     // Emulate QComboBox setting its current index to -1
     editor.setPortInfoListCurrentRowFromUi(-1);
     CHECK( editor.portInfoListCurrentRow() == -1 );
-    REQUIRE( editor.currentPortInfo().portName().isEmpty() );
+    CHECK( !editor.hasPortInfoListCurrentRow() );
   }
 }
 
@@ -138,9 +135,7 @@ TEST_CASE("PortSpecificAttributes")
   /*
    * The port name is not important for this test
    */
-  Mdt::SerialPort::TestLib::TestPortInfo ttyS0;
-  ttyS0.setPortName("ttyS0");
-  ttyS0.systemLocation = "/dev/ttyS0";
+  auto ttyS0 = TestPortInfo::fromPortNameAndSystemLocation("ttyS0", "/dev/ttyS0");
 
   SECTION("no serial port")
   {
@@ -168,8 +163,8 @@ TEST_CASE("PortSpecificAttributes")
     /*
      * Here we use a MOXA Uport 1250
      */
-    ttyS0.vid = 0x110A;
-    ttyS0.pid = 0x1250;
+    ttyS0.setVendorIdentifier(0x110A);
+    ttyS0.setProductIdentifier(0x1250);
     editor.addAvailablePort(ttyS0);
     editor.fetchAvailablePorts();
 
@@ -188,21 +183,15 @@ TEST_CASE("CurrentInterface")
    * The port name is not important for this test
    */
 
-  Mdt::SerialPort::TestLib::TestPortInfo commonPort;
-  commonPort.setPortName("ttyS0");
-  commonPort.systemLocation = "/dev/ttyS0";
+  const auto commonPort = TestPortInfo::fromPortNameAndSystemLocation("ttyS0", "/dev/ttyS0");
 
-  Mdt::SerialPort::TestLib::TestPortInfo uport1250_1;
-  uport1250_1.setPortName("ttyS1");
-  uport1250_1.systemLocation = "/dev/ttyS1";
-  uport1250_1.vid = 0x110A;
-  uport1250_1.pid = 0x1250;
+  auto uport1250_1 = TestPortInfo::fromPortNameAndSystemLocation("ttyS1", "/dev/ttyS1");
+  uport1250_1.setVendorIdentifier(0x110A);
+  uport1250_1.setProductIdentifier(0x1250);
 
-  Mdt::SerialPort::TestLib::TestPortInfo uport1250_2;
-  uport1250_2.setPortName("ttyS2");
-  uport1250_2.systemLocation = "/dev/ttyS2";
-  uport1250_2.vid = 0x110A;
-  uport1250_2.pid = 0x1250;
+  auto uport1250_2 = TestPortInfo::fromPortNameAndSystemLocation("ttyS2", "/dev/ttyS2");
+  uport1250_2.setVendorIdentifier(0x110A);
+  uport1250_2.setProductIdentifier(0x1250);
 
   SECTION("no serial port")
   {
@@ -300,9 +289,7 @@ TEST_CASE("setPortInfoListCurrentRowFromUi")
 {
   TestSettingsEditor editor;
 
-  Mdt::SerialPort::TestLib::TestPortInfo ttyS0;
-  ttyS0.setPortName("ttyS0");
-  ttyS0.systemLocation = "/dev/ttyS0";
+  const auto ttyS0 = TestPortInfo::fromPortNameAndSystemLocation("ttyS0", "/dev/ttyS0");
 
   SECTION("No port available")
   {
@@ -330,7 +317,7 @@ TEST_CASE("setPortInfoListCurrentRowFromUi")
 
     editor.setPortInfoListCurrentRowFromUi(-1);
 
-    CHECK( editor.currentPortInfo().portName().isEmpty() );
+    CHECK( !editor.hasPortInfoListCurrentRow() );
   }
 }
 
@@ -338,13 +325,8 @@ TEST_CASE("setSettings")
 {
   TestSettingsEditor editor;
 
-  Mdt::SerialPort::TestLib::TestPortInfo ttyS0;
-  ttyS0.setPortName("ttyS0");
-  ttyS0.systemLocation = "/dev/ttyS0";
-
-  Mdt::SerialPort::TestLib::TestPortInfo ttyS1;
-  ttyS1.setPortName("ttyS1");
-  ttyS1.systemLocation = "/dev/ttyS1";
+  const auto ttyS0 = TestPortInfo::fromPortNameAndSystemLocation("ttyS0", "/dev/ttyS0");
+  const auto ttyS1 = TestPortInfo::fromPortNameAndSystemLocation("ttyS1", "/dev/ttyS1");
 
   editor.addAvailablePort(ttyS0);
   editor.addAvailablePort(ttyS1);
@@ -356,7 +338,7 @@ TEST_CASE("setSettings")
   editor.fetchAvailablePortSettings();
 
   SettingsRawData data;
-  data.portName = "ttyS1";
+  data.portInfo = TestPortInfo::fromPortNameAndSystemLocation("ttyS1", "/dev/ttyS1");
   data.baudRate = 4800;
   data.dataBits = QSerialPort::Data6;
   data.parity = QSerialPort::MarkParity;
@@ -385,13 +367,8 @@ TEST_CASE("setSettings_PortName")
 {
   TestSettingsEditor editor;
 
-  Mdt::SerialPort::TestLib::TestPortInfo ttyS0;
-  ttyS0.setPortName("ttyS0");
-  ttyS0.systemLocation = "/dev/ttyS0";
-
-  Mdt::SerialPort::TestLib::TestPortInfo ttyS1;
-  ttyS1.setPortName("ttyS1");
-  ttyS1.systemLocation = "/dev/ttyS1";
+  const auto ttyS0 = TestPortInfo::fromPortNameAndSystemLocation("ttyS0", "/dev/ttyS0");
+  const auto ttyS1 = TestPortInfo::fromPortNameAndSystemLocation("ttyS1", "/dev/ttyS1");
 
   editor.fetchAvailablePortSettings();
 
@@ -412,7 +389,7 @@ TEST_CASE("setSettings_PortName")
 
     SECTION("try request ttyS0")
     {
-      const auto settings = Settings::defaultSettingsWithPortName("ttyS0");
+      const auto settings = Settings::defaultSettingsWithPortInfo(ttyS0);
 
       editor.setSettings(settings);
 
@@ -439,7 +416,7 @@ TEST_CASE("setSettings_PortName")
 
     SECTION("request ttyS1")
     {
-      const auto settings = Settings::defaultSettingsWithPortName("ttyS1");
+      const auto settings = Settings::defaultSettingsWithPortInfo(ttyS1);
 
       editor.setSettings(settings);
 
@@ -453,7 +430,8 @@ TEST_CASE("setSettings_PortName")
      */
     SECTION("try request ttyS2")
     {
-      const auto settings = Settings::defaultSettingsWithPortName("ttyS2");
+      const auto ttyS2 = TestPortInfo::fromPortNameAndSystemLocation("ttyS2", "/dev/ttyS2");
+      const auto settings = Settings::defaultSettingsWithPortInfo(ttyS2);
 
       editor.setSettings(settings);
 
@@ -473,15 +451,11 @@ TEST_CASE("setSettings_PortSpecificSettings")
   settingsData.flowControl = QSerialPort::HardwareControl;
   settingsData.stopBits = QSerialPort::TwoStop;
 
-  Mdt::SerialPort::TestLib::TestPortInfo commonPort;
-  commonPort.setPortName("ttyS0");
-  commonPort.systemLocation = "/dev/ttyS0";
+  const auto commonPort = TestPortInfo::fromPortNameAndSystemLocation("ttyS0", "/dev/ttyS0");
 
-  Mdt::SerialPort::TestLib::TestPortInfo uport1250_1;
-  uport1250_1.setPortName("ttyS1");
-  uport1250_1.systemLocation = "/dev/ttyS1";
-  uport1250_1.vid = 0x110A;
-  uport1250_1.pid = 0x1250;
+  auto uport1250_1 = TestPortInfo::fromPortNameAndSystemLocation("ttyS1", "/dev/ttyS1");
+  uport1250_1.setVendorIdentifier(0x110A);
+  uport1250_1.setProductIdentifier(0x1250);
 
   /*
    * TODO What should be the behaviour ?
@@ -502,9 +476,7 @@ TEST_CASE("setSettings_PortSpecificSettings")
     editor.setPortInfoListCurrentRowFromUi(-1);
     editor.setInterfaceListCurrentRowFromUi(-1);
 
-    settingsData.portName = "NoPort";
-    // settingsData.interfaceStandard = InterfaceStandard::RS_232;
-    const Settings settings = SettingsBuilder::settingsFromRawData(settingsData);
+    const auto settings = Settings::defaultSettings();
 
     editor.setSettings(settings);
 
@@ -519,7 +491,7 @@ TEST_CASE("setSettings_PortSpecificSettings")
     editor.setPortInfoListCurrentRowFromUi(0);
     editor.setInterfaceListCurrentRowFromUi(0);
 
-    settingsData.portName = "ttyS0";
+    settingsData.portInfo = commonPort;
 
     SECTION("RS-232")
     {
@@ -563,7 +535,7 @@ TEST_CASE("setSettings_PortSpecificSettings")
     editor.setPortInfoListCurrentRowFromUi(0);
     editor.setInterfaceListCurrentRowFromUi(0);
 
-    settingsData.portName = "ttyS1";
+    settingsData.portInfo = uport1250_1;
 
     SECTION("RS-232")
     {
@@ -591,15 +563,11 @@ TEST_CASE("buildSettings")
 {
   TestSettingsEditor editor;
 
-  Mdt::SerialPort::TestLib::TestPortInfo commonPort;
-  commonPort.setPortName("ttyS0");
-  commonPort.systemLocation = "/dev/ttyS0";
+  const auto commonPort = TestPortInfo::fromPortNameAndSystemLocation("ttyS0", "/dev/ttyS0");
 
-  Mdt::SerialPort::TestLib::TestPortInfo uport1250_1;
-  uport1250_1.setPortName("ttyS1");
-  uport1250_1.systemLocation = "/dev/ttyS1";
-  uport1250_1.vid = 0x110A;
-  uport1250_1.pid = 0x1250;
+  auto uport1250_1 = TestPortInfo::fromPortNameAndSystemLocation("ttyS1", "/dev/ttyS1");
+  uport1250_1.setVendorIdentifier(0x110A);
+  uport1250_1.setProductIdentifier(0x1250);
 
   SettingsRawData settingsData;
   settingsData.dataBits = QSerialPort::Data6;
@@ -616,7 +584,7 @@ TEST_CASE("buildSettings")
   {
     editor.setPortInfoListCurrentRowFromUi(0);
     editor.setInterfaceListCurrentRowFromUi(0);
-    settingsData.portName = "ttyS0";
+    settingsData.portInfo = commonPort;
     settingsData.baudRate = 4800;
     settingsData.sendByteByByteIsEnabled = true;
     settingsData.sendByteByByteIntervalInMilliseconds = 100;
@@ -641,7 +609,7 @@ TEST_CASE("buildSettings")
     editor.setPortInfoListCurrentRowFromUi(1);
     editor.setInterfaceListCurrentRowFromUi(1);
 
-    settingsData.portName = "ttyS1";
+    settingsData.portInfo = uport1250_1;
     settingsData.baudRate = 19'200;
     settingsData.interface = Interface::fromStandardAndParameterValue(InterfaceStandard::RS_485_2W, 2);
     const Settings inSettings = SettingsBuilder::settingsFromRawData(settingsData);
