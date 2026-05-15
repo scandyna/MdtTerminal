@@ -4,13 +4,14 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2025-2025 Philippe Steinmann.
+ ** Copyright (C) 2025-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "PortSetup.h"
 #include "SettingsRawData.h"
 #include "SettingsBuilder.h"
 #include "Device/MoxaUPort.h"
+#include <QSerialPortInfo>
 #include <cassert>
 
 
@@ -32,7 +33,9 @@ Settings PortSetup::getSettingsFromPort(const QSerialPort & port)
 {
   SettingsRawData data;
 
-  data.portName = port.portName();
+  QSerialPortInfo portInfo(port);
+
+  data.portInfo = PortInfo::fromQSerialPortInfo(portInfo);
   data.baudRate = port.baudRate();
   data.dataBits = port.dataBits();
   data.parity = port.parity();
@@ -42,12 +45,12 @@ Settings PortSetup::getSettingsFromPort(const QSerialPort & port)
   return SettingsBuilder::settingsFromRawData(data);
 }
 
-bool PortSetup::hasVidAndPid(const QSerialPortInfo & portInfo) noexcept
+bool PortSetup::hasVidAndPid(const PortInfo & portInfo) noexcept
 {
   return portInfo.hasVendorIdentifier() && portInfo.hasProductIdentifier();
 }
 
-bool PortSetup::isMoxaUPort_1250_1450_1650(const QSerialPortInfo & portInfo) noexcept
+bool PortSetup::isMoxaUPort_1250_1450_1650(const PortInfo & portInfo) noexcept
 {
   if( !hasVidAndPid(portInfo) ){
     return false;
@@ -59,7 +62,7 @@ bool PortSetup::isMoxaUPort_1250_1450_1650(const QSerialPortInfo & portInfo) noe
   return Device::productIdentifierIsMoxaUPort_1250_1450_1650( portInfo.productIdentifier() );
 }
 
-UsbVendorIdProductId PortSetup::usbVendorIdProductIdFromPortInfo(const QSerialPortInfo & portInfo) noexcept
+UsbVendorIdProductId PortSetup::usbVendorIdProductIdFromPortInfo(const PortInfo & portInfo) noexcept
 {
   assert( hasVidAndPid(portInfo) );
 

@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2025-2025 Philippe Steinmann.
+ ** Copyright (C) 2025-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "PortSetup.h"
@@ -51,7 +51,7 @@ class PortSetupImpl
 {
  public:
 
-  void findUdevUsbSerialPort(const QSerialPortInfo & portInfo);
+  void findUdevUsbSerialPort(const PortInfo & portInfo);
   bool hasUdevUsbSerialPort() const noexcept;
   std::string driverName() const noexcept;
 
@@ -69,7 +69,7 @@ class PortSetupImpl
 };
 
 
-void PortSetupImpl::findUdevUsbSerialPort([[maybe_unused]] const QSerialPortInfo & portInfo)
+void PortSetupImpl::findUdevUsbSerialPort([[maybe_unused]] const PortInfo & portInfo)
 {
 #if HAS_UDEV_AND_LIBUSB_SUPPORT
   const std::filesystem::path path = stdFilesystemPathFromQString( portInfo.systemLocation() );
@@ -140,7 +140,7 @@ void PortSetupImpl::configureMoxaUPort_1250_1450_1650_UsingUserspaceUsb([[maybe_
 }
 
 
-PortSetup::PortSetup(const QSerialPortInfo & portInfo, QObject *parent)
+PortSetup::PortSetup(const PortInfo & portInfo, QObject *parent)
  : QObject(parent),
    mImpl( std::make_unique<PortSetupImpl>() )
 {

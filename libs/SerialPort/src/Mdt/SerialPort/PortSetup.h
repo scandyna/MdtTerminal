@@ -4,12 +4,13 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2025-2025 Philippe Steinmann.
+ ** Copyright (C) 2025-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #ifndef MDT_SERIAL_PORT_PORT_SETUP_H
 #define MDT_SERIAL_PORT_PORT_SETUP_H
 
+#include "Mdt/SerialPort/PortInfo.h"
 #include "Mdt/SerialPort/Settings.h"
 #include "Mdt/SerialPort/Interface.h"
 #include "Mdt/SerialPort/UsbVendorIdProductId.h"
@@ -17,7 +18,6 @@
 #include "Mdt/SerialPort/FileOpenError.h"
 #include "mdt_serialport_export.h"
 #include <QSerialPort>
-#include <QSerialPortInfo>
 #include <QObject>
 #include <memory>
 
@@ -28,7 +28,13 @@ namespace Mdt{ namespace SerialPort{
    */
   class PortSetupImpl;
 
-  /*! \brief Helper to set settings to a serial port
+  /*! \brief Helper to set settings to a serial port ?
+   *
+   * \code
+   * 
+   * setSettings() with port info + settings
+   * 
+   * \endcode
    *
    * \section SerialPort_PortSetup_ConfigureMoxaUportInterfaceLinux Configure a Moxa Uport interface on Linux
    *
@@ -60,7 +66,7 @@ namespace Mdt{ namespace SerialPort{
      *  no longer exists (f.ex: USB device has been removed).
      */
     explicit
-    PortSetup(const QSerialPortInfo & portInfo, QObject *parent = nullptr);
+    PortSetup(const PortInfo & portInfo, QObject *parent = nullptr);
 
     PortSetup(const PortSetup &) = delete;
     const PortSetup & operator=(const PortSetup &) = delete;
@@ -111,14 +117,14 @@ namespace Mdt{ namespace SerialPort{
     /*! \brief Check if given port info has a vendor and a product identifier
      */
     static
-    bool hasVidAndPid(const QSerialPortInfo & portInfo) noexcept;
+    bool hasVidAndPid(const PortInfo & portInfo) noexcept;
 
     /*! \brief Check if given port info represents a Moxa UPort 1250, 1450 or 1650 series
      *
      * \sa \ref SerialPort_Device_MoxaUPort_ModuleFunctions
      */
     static
-    bool isMoxaUPort_1250_1450_1650(const QSerialPortInfo & portInfo) noexcept;
+    bool isMoxaUPort_1250_1450_1650(const PortInfo & portInfo) noexcept;
 
     /*! \brief Get an USB vendor and product identifier from given port info
      *
@@ -126,7 +132,7 @@ namespace Mdt{ namespace SerialPort{
      * \sa hasVidAndPid()
      */
     static
-    UsbVendorIdProductId usbVendorIdProductIdFromPortInfo(const QSerialPortInfo & portInfo) noexcept;
+    UsbVendorIdProductId usbVendorIdProductIdFromPortInfo(const PortInfo & portInfo) noexcept;
 
    private:
 

@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2025-2025 Philippe Steinmann.
+ ** Copyright (C) 2025-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "Mdt/SerialPort/PortSetup.h"
@@ -19,7 +19,7 @@ TEST_CASE("BasicTest")
   const auto portList = QSerialPortInfo::availablePorts();
   REQUIRE( !portList.isEmpty() );
 
-  PortSetup ps( portList.at(0) );
+  PortSetup ps( PortInfo::fromQSerialPortInfo( portList.at(0) ) );
 
   if( ps.shouldConfigureInterfaceBeforeOpenPort() ){
     const auto interface = Interface::fromStandardAndParameterValue(InterfaceStandard::RS_232, 0);
