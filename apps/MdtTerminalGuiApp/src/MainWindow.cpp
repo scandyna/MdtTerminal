@@ -98,30 +98,18 @@ void MainWindow::setupSerialPort()
 
   Mdt::SerialPort::SettingsDialog dialog(this);
 
-  /// \todo Should we set current port info ? Think yes
-  
   dialog.setSettings(mSerialPortSettings);
 
   const int result = dialog.exec();
   if(result == QDialog::Accepted){
     mSerialPortSettings = dialog.buildSettings();
-    mSerialPortInfo = dialog.currentPortInfo();
     mWriter.setSettings( mSerialPortSettings.sendByteByByteSettings() );
   }
 }
 
 bool MainWindow::hasSerialPortSettings() const
 {
-  /** \todo This is somewhat a workaround
-   *
-   * Mdt::SerialPort::Settings should be reworked
-   * and help us here.
-   */
-
-  if( mSerialPortSettings.portName().isEmpty() ){
-    return false;
-  }
-  if( mSerialPortInfo.isNull() ){
+  if( !mSerialPortSettings.hasPortInfo() ){
     return false;
   }
 
@@ -143,10 +131,10 @@ void MainWindow::openSerialPort()
 
   std::optional<Mdt::SerialPort::PortSetup> ps;
   try{
-    ps.emplace(mSerialPortInfo);
+    ps.emplace( mSerialPortSettings.portInfo() );
   }catch(const Mdt::SerialPort::QRuntimeError & error){
     displayErrorMessage(
-      tr("Error while initialization of port setup: %1")
+      tr("Error while initializing of port setup: %1")
       .arg( error.text() )
     );
     return;
@@ -172,10 +160,28 @@ void MainWindow::openSerialPort()
   Mdt::SerialPort::PortSetup::setSettingsToPort(mSerialPortSettings, mSerialPort);
   /// mSerialPort.setReadBufferSize(10);
   if( !mSerialPort.open(QIODevice::ReadWrite) ){
-    displayErrorMessage(
-      tr("Error while open serial port %1: %2")
-      .arg( mSerialPort.portName(), mSerialPort.errorString() )
-    );
+    /// \todo TODO: should be cleaner
+    if(mSerialPort.error() == QSerialPort::PermissionError){
+      const QString text = tr(
+        "Open serial port %1 failed due to permission error."
+      ).arg( mSerialPort.portName() );
+      const QString informativeText = tr(
+        "The device may already be locked by another program, or you don't have the permissions to open it.\n"
+        "System reported: %1"
+      ).arg( mSerialPort.errorString() );
+      /// \todo Should only be displayed on Linux
+      const QString linuxDetailedText = tr(
+        "On Linux, like Ubuntu, you may not be in the dialout group. Maybe try:\n"
+        "sudo adduser <user> dialout\n"
+        "Then logoff and login again (your groups can be listed with the groups command)."
+      );
+      displayErrorMessage(text, informativeText, linuxDetailedText);
+    }else{
+      displayErrorMessage(
+        tr("Error while open serial port %1. System reported: %2")
+        .arg( mSerialPort.portName(), mSerialPort.errorString() )
+      );
+    }
     return;
   }
 
@@ -351,9 +357,22 @@ void MainWindow::showStatusMessage(const QString &message)
   mStatusLabel->setText(message);
 }
 
-void MainWindow::displayErrorMessage(const QString & message)
+void MainWindow::displayErrorMessage(const QString & text, const QString & informativeText, const QString & detailedText)
 {
-  QMessageBox::critical(this, tr("Error"), message);
+  QMessageBox msgBox(this);
+  msgBox.setWindowTitle( tr("Error") );
+  msgBox.setIcon(QMessageBox::Critical);
+  msgBox.setStandardButtons(QMessageBox::Ok);
+  msgBox.setText(text);
+  if( !informativeText.isEmpty() ){
+    msgBox.setInformativeText(informativeText);
+  }
+  if( !detailedText.isEmpty() ){
+    msgBox.setDetailedText(detailedText);
+  }
+  msgBox.exec();
+
+  // QMessageBox::critical(this, tr("Error"), text);
 }
 
 void MainWindow::showPortOpenStatusMessage()

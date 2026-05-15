@@ -22,7 +22,6 @@
 #include <QMainWindow>
 #include <QWidget>
 #include <QSerialPort>
-#include <QSerialPortInfo>
 #include <QString>
 #include <QLabel>
 
@@ -69,7 +68,7 @@ class MainWindow : public QMainWindow
   void sendAsciiControl(char c);
 
   void showStatusMessage(const QString &message);
-  void displayErrorMessage(const QString & message);
+  void displayErrorMessage( const QString & text, const QString & informativeText = QString(), const QString & detailedText = QString() );
 
   void showPortOpenStatusMessage();
   void showPortClosedStatusMessage();
@@ -81,7 +80,6 @@ class MainWindow : public QMainWindow
   Mdt::SerialPort::Settings mSerialPortSettings;
   QSerialPort mSerialPort;
   Mdt::SerialPort::Writer mWriter;
-  QSerialPortInfo mSerialPortInfo;
   Mdt::SerialPort::PinoutSignalsEventNotifier mPinoutSignalsEventNotifier;
   Mdt::SerialPort::PinoutSignalsUiController mPinoutSignalsUiController;
   MainWindowStateMachine mStateMachine;
