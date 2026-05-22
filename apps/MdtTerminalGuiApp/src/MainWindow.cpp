@@ -127,37 +127,29 @@ void MainWindow::openSerialPort()
     return;
   }
 
-  const bool shouldConfigureInterface = mSerialPortSettings.interface().isConfigurable();
+  Mdt::SerialPort::PortSetup ps;
 
-  std::optional<Mdt::SerialPort::PortSetup> ps;
   try{
-    ps.emplace( mSerialPortSettings.portInfo() );
+    ps.fetchPortInformations( mSerialPortSettings.portInfo() );
   }catch(const Mdt::SerialPort::QRuntimeError & error){
     displayErrorMessage(
-      tr("Error while initializing of port setup: %1")
+      tr("Error while initializing port setup: %1")
       .arg( error.text() )
     );
     return;
   }
-  assert( ps.has_value() );
-  ps->setSettingsToPort(mSerialPortSettings, mSerialPort);
 
-  const bool shouldConfigureInterfaceBeforeOpenPort = shouldConfigureInterface && ps->shouldConfigureInterfaceBeforeOpenPort();
-  const bool shouldConfigureInterfaceOncePortOpen = shouldConfigureInterface && !shouldConfigureInterfaceBeforeOpenPort;
-
-  if(shouldConfigureInterfaceBeforeOpenPort){
-    try{
-      ps->configureInterfaceBeforeOpenPort( mSerialPortSettings.interface() );
-    }catch(const Mdt::SerialPort::QRuntimeError & error){
+  try{
+    ps.configureInterfaceBeforeOpenPortIfRequired( mSerialPortSettings.interface() );
+  }catch(const Mdt::SerialPort::QRuntimeError & error){
       displayErrorMessage(
-        tr("Error while configuring interface (before open): %1")
-        .arg( error.text() )
-      );
+        tr("Error while configuring interface for port %1 (before open)")
+        .arg( mSerialPortSettings.portName() )
+        , error.informativeText(), error.detailedText() );
       return;
-    }
   }
 
-  Mdt::SerialPort::PortSetup::setSettingsToPort(mSerialPortSettings, mSerialPort);
+  ps.setSettingsToPort(mSerialPortSettings, mSerialPort);
   /// mSerialPort.setReadBufferSize(10);
   if( !mSerialPort.open(QIODevice::ReadWrite) ){
     /// \todo TODO: should be cleaner
@@ -185,14 +177,12 @@ void MainWindow::openSerialPort()
     return;
   }
 
-  if(shouldConfigureInterfaceOncePortOpen){
-    try{
-      ps->configureInterfaceOncePortOpen(mSerialPortSettings.interface(), mSerialPort);
-    }catch(const Mdt::SerialPort::QRuntimeError & error){
-      displayErrorMessage( error.text() );
+  try{
+    ps.configureInterfaceOncePortOpenIfRequired(mSerialPortSettings.interface(), mSerialPort);
+  }catch(const Mdt::SerialPort::QRuntimeError & error){
+      displayErrorMessage( error.text(), error.informativeText(), error.detailedText() );
       mSerialPort.close();
       return;
-    }
   }
 
   connectOnSerialPortErrorOccured();

@@ -28,12 +28,56 @@ namespace Mdt{ namespace SerialPort{
    */
   class PortSetupImpl;
 
-  /*! \brief Helper to set settings to a serial port ?
+  /*! \brief Helper to setup a serial port
    *
+   * For simple cases, PortSetup can be used as a helper,
+   * with the stateless API:
    * \code
-   * 
-   * setSettings() with port info + settings
-   * 
+   * bool openPort(QSerialPort & port, const Settings & settings)
+   * {
+   *   PortSetup::setSettingsToPort(settings, port);
+   *   if( !port.open(QIODevice::ReadWrite) ){
+   *     return false;
+   *   }
+   *
+   *   return true;
+   * }
+   * \endcode
+   *
+   * To handle some more advanced features,
+   * like setting the interface for serial port devices that support it,
+   * PortSetup can also be used:
+   * \code
+   * bool openPort(QSerialPort & port, const Settings & settings)
+   * {
+   *   PortSetup ps;
+   *
+   *   try{
+   *     ps.fetchPortInformations( settings.portInfo() );
+   *   }catch(const FileOpenError & error){
+   *     return false;
+   *   }
+   *
+   *   try{
+   *     ps.configureInterfaceBeforeOpenPortIfRequired( settings.interface() );
+   *   }catch(const PortSetupError & error){
+   *     return false;
+   *   }
+   *
+   *   ps.setSettingsToPort(settings, port);
+   *
+   *   if( !port.open(QIODevice::ReadWrite) ){
+   *     return false;
+   *   }
+   *
+   *   try{
+   *     ps.configureInterfaceOncePortOpenIfRequired(settings.interface(), port);
+   *   }catch(const PortSetupError & error){
+   *     return false;
+   *   }
+   *
+   *   return true;
+   * }
    * \endcode
    *
    * \section SerialPort_PortSetup_ConfigureMoxaUportInterfaceLinux Configure a Moxa Uport interface on Linux
@@ -54,6 +98,20 @@ namespace Mdt{ namespace SerialPort{
    public:
 
     /*! \brief Construct a port setup
+     */
+    explicit
+    PortSetup(QObject *parent = nullptr);
+
+    PortSetup(const PortSetup &) = delete;
+    const PortSetup & operator=(const PortSetup &) = delete;
+    PortSetup(PortSetup &&) = delete;
+    PortSetup & operator=(PortSetup &&) = delete;
+
+    /*! \brief Destructor
+     */
+    ~PortSetup() noexcept;
+
+    /*! \brief Fetch port informations
      *
      * Depending on the platform,
      * some driver features / attributes will be fetched.
@@ -65,23 +123,17 @@ namespace Mdt{ namespace SerialPort{
      * \exception FileOpenError If the port referenced by \a portInfo
      *  no longer exists (f.ex: USB device has been removed).
      */
-    explicit
-    PortSetup(const PortInfo & portInfo, QObject *parent = nullptr);
-
-    PortSetup(const PortSetup &) = delete;
-    const PortSetup & operator=(const PortSetup &) = delete;
-    PortSetup(PortSetup &&) = delete;
-    PortSetup & operator=(PortSetup &&) = delete;
-
-    /*! \brief Destructor
-     */
-    ~PortSetup() noexcept;
+    void fetchPortInformations(const PortInfo & portInfo);
 
     /*! \brief Check if the interface should be configured before open the port
      *
      * Returns true for special cases that require to configure
      * the interface before open the serial port,
      * otherwise false.
+     *
+     * \pre fetchPortInformations() must have been called successfully
+     *
+     * \sa configureInterfaceBeforeOpenPortIfRequired()
      */
     bool shouldConfigureInterfaceBeforeOpenPort() const;
 
@@ -89,18 +141,47 @@ namespace Mdt{ namespace SerialPort{
      *
      * \pre It must be required to configure the interface before port is open
      * \sa shouldConfigureInterfaceBeforeOpenPort()
+     * \sa configureInterfaceBeforeOpenPortIfRequired()
      *
      * \exception PortSetupError
      */
     void configureInterfaceBeforeOpenPort(const Interface & interface);
 
+    /*! \brief Configure the interface before open the port if required
+     *
+     * If given \a interface is not configurable, nothing is done.
+     * Otherwise, if the interface has to be configured before open the port,
+     * it will be done.
+     *
+     * \note fetchPortInformations() should have been called
+     * successfully before, otherwise nothing will be done.
+     *
+     * \exception PortSetupError
+     * \sa shouldConfigureInterfaceBeforeOpenPort()
+     * \sa configureInterfaceBeforeOpenPort()
+     */
+    void configureInterfaceBeforeOpenPortIfRequired(const Interface & interface);
+
     /*! \brief Configure the interface once the port is open
      *
      * \pre \a port must be open
-     *
      * \exception PortSetupError
      */
     void configureInterfaceOncePortOpen(const Interface & interface, QSerialPort & port);
+
+    /*! \brief Configure the interface once the port is open if required
+     *
+     * If given \a interface is not configurable, nothing is done.
+     * If the interface has to be configured before open the port,
+     * nothing is done.
+     *
+     * \pre \a port must be open
+     * \exception PortSetupError
+     *
+     * \sa configureInterfaceOncePortOpen()
+     * \sa shouldConfigureInterfaceBeforeOpenPort()
+     */
+    void configureInterfaceOncePortOpenIfRequired(const Interface & interface, QSerialPort & port);
 
     /*! \brief Set given settings to given port
      *

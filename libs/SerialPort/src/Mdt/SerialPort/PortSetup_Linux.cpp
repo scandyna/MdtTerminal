@@ -26,7 +26,7 @@
  *
  * \todo Remove once we have proper libraries support 
  */
-#define HAS_UDEV_AND_LIBUSB_SUPPORT false
+#define HAS_UDEV_AND_LIBUSB_SUPPORT true
 
 #if HAS_UDEV_AND_LIBUSB_SUPPORT
   #include "Linux/UdevUsbSerialPort.h"
@@ -114,36 +114,62 @@ void PortSetupImpl::configureMoxaUPort_1250_1450_1650_UsingUserspaceUsb([[maybe_
 
   libusb_device *device = deviceList.findLibusbDeviceOnBusWithAddress( mUdevUsbSerialPort->usbBusNumber(), mUdevUsbSerialPort->usbDeviceAddress() );
   if(device == nullptr){
-    QString msg = PortSetup::tr("failed to configure Moxa UPort interface: no USB device found at bus %1 device address %1")
+    QString msg = PortSetup::tr("failed to configure Moxa UPort interface: no USB device found at bus %1 device address %2")
                   .arg( mUdevUsbSerialPort->usbBusNumber() )
                   .arg( mUdevUsbSerialPort->usbDeviceAddress() );
     throw PortSetupError(msg);
   }
 
-  auto usbDeviceHandle = Mdt::Usb::DeviceHandle::open(device);
-  assert(usbDeviceHandle.libusbHandle() != nullptr);
+  try{
+    auto usbDeviceHandle = Mdt::Usb::DeviceHandle::open(device);
+    assert(usbDeviceHandle.libusbHandle() != nullptr);
 
-  using namespace std::chrono_literals;
+    using namespace std::chrono_literals;
 
-  constexpr uint8_t RQ_VENDOR_SET_INTERFACE = 0x10;
+    constexpr uint8_t RQ_VENDOR_SET_INTERFACE = 0x10;
 
-  Mdt::Usb::ControlSetup cs;
+    Mdt::Usb::ControlSetup cs;
 
-  cs.setRequestType(Mdt::Usb::RequestType::Vendor);
-  cs.setRecipient(Mdt::Usb::RequestRecipient::Device);
-  cs.setbRequestValue(RQ_VENDOR_SET_INTERFACE);
-  cs.setwValueValue( interface.parameterValue() );
-  cs.setwIndexValue( mUdevUsbSerialPort->portNumber() );
+    cs.setRequestType(Mdt::Usb::RequestType::Vendor);
+    cs.setRecipient(Mdt::Usb::RequestRecipient::Device);
+    cs.setbRequestValue(RQ_VENDOR_SET_INTERFACE);
+    cs.setwValueValue( interface.parameterValue() );
+    cs.setwIndexValue( mUdevUsbSerialPort->portNumber() );
 
-  Mdt::Usb::controlTransferWithoutData(usbDeviceHandle, cs, 100ms);
+    Mdt::Usb::controlTransferWithoutData(usbDeviceHandle, cs, 100ms);
+  }catch(const Mdt::Usb::LibusbRuntimeError & error){
+    QString msg = PortSetup::tr("failed to configure Moxa UPort interface attached at UBS bus %1 device address %2: %3")
+                  .arg( mUdevUsbSerialPort->usbBusNumber() )
+                  .arg( mUdevUsbSerialPort->usbDeviceAddress() )
+                  .arg( error.text() );
+    PortSetupError psError(msg);
+    if(error.errorCode() == LIBUSB_ERROR_ACCESS){
+      QString informativeText = PortSetup::tr(
+        "USB access to the device is denied"
+      );
+      psError.setInformativeText(informativeText);
+      QString detailedText = PortSetup::tr(
+        "To have direct access to the USB device, some UDev rules are probably required.\n"
+        "Check if a package is avilable for your distribution on https://gitlab.com/scandyna/mdtusb."
+      );
+      psError.setDetailedText(detailedText);
+    }
+    throw psError;
+  }
 #endif // HAS_UDEV_AND_LIBUSB_SUPPORT
 }
 
-
-PortSetup::PortSetup(const PortInfo & portInfo, QObject *parent)
+PortSetup::PortSetup(QObject *parent)
  : QObject(parent),
    mImpl( std::make_unique<PortSetupImpl>() )
 {
+}
+
+PortSetup::~PortSetup() noexcept = default;
+
+void PortSetup::fetchPortInformations(const PortInfo & portInfo)
+{
+  assert(mImpl != nullptr);
   assert( !portInfo.systemLocation().isEmpty() );
 
   if( isMoxaUPort_1250_1450_1650(portInfo) && hasUdevAndLibusbSupport ){
@@ -151,10 +177,10 @@ PortSetup::PortSetup(const PortInfo & portInfo, QObject *parent)
   }
 }
 
-PortSetup::~PortSetup() noexcept = default;
-
 bool PortSetup::shouldConfigureInterfaceBeforeOpenPort() const
 {
+  assert(mImpl != nullptr);
+
   if( !mImpl->hasUdevUsbSerialPort() ){
     return false;
   }
@@ -167,6 +193,18 @@ void PortSetup::configureInterfaceBeforeOpenPort(const Interface & interface)
   assert( mImpl->hasUdevUsbSerialPort() );
 
   mImpl->configureMoxaUPort_1250_1450_1650_UsingUserspaceUsb(interface);
+}
+
+void PortSetup::configureInterfaceBeforeOpenPortIfRequired(const Interface & interface)
+{
+  assert(mImpl != nullptr);
+
+  if( !interface.isConfigurable() ){
+    return;
+  }
+  if( shouldConfigureInterfaceBeforeOpenPort() ){
+    configureInterfaceBeforeOpenPort(interface);
+  }
 }
 
 void PortSetup::configureInterfaceOncePortOpen(const Interface & interface, QSerialPort & port)
@@ -194,6 +232,20 @@ void PortSetup::configureInterfaceOncePortOpen(const Interface & interface, QSer
                         .arg( QString::fromLocal8Bit( ::strerror(errno) ) );
     throw PortSetupError(msg);
   }
+}
+
+void PortSetup::configureInterfaceOncePortOpenIfRequired(const Interface & interface, QSerialPort & port)
+{
+  assert( port.isOpen() );
+  assert(mImpl != nullptr);
+
+  if( !interface.isConfigurable() ){
+    return;
+  }
+  if( shouldConfigureInterfaceBeforeOpenPort() ){
+    return;
+  }
+  configureInterfaceOncePortOpen(interface, port);
 }
 
 }} // namespace Mdt{ namespace SerialPort{
