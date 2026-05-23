@@ -178,11 +178,11 @@ mdt_add_test(
 )
 
 mdt_add_test(
-  NAME SerialPortAbstractEngineTest
-  TARGET serialPortAbstractEngineTest
+  NAME SerialPortEngineTest
+  TARGET serialPortEngineTest
   DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
   SOURCE_FILES
-    src/AbstractEngineTest.cpp
+    src/EngineTest.cpp
 )
 
 mdt_add_test(
@@ -373,11 +373,11 @@ if(UNIX)
 
     # TODO: does it work without HW ?
     mdt_add_test(
-      NAME SerialPortUnixEngineTest
-      TARGET serialPortUnixEngineTest
+      NAME SerialPortEngine_UnixTest
+      TARGET serialPortEngine_UnixTest
       DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
       SOURCE_FILES
-        src/UnixEngineTest.cpp
+        src/Engine_UnixTest.cpp
     )
 
   endif()

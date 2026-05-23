@@ -1,7 +1,7 @@
 @startuml
-!include Mdt/SerialPort/AbstractEngine.puml
-!include Mdt/SerialPort/UnixEngine.puml
-!include Mdt/SerialPort/LinuxEngine.puml
-!include Mdt/SerialPort/WindowsEngine.puml
+!include Mdt/SerialPort/Engine.puml
+
+hide Mdt.SerialPort.PortInfo members
+hide QSerialPortInfo members
 
 @enduml

@@ -4,10 +4,10 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2025-2025 Philippe Steinmann.
+ ** Copyright (C) 2025-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
-#include "UnixEngine.h"
+#include "Engine.h"
 
 #include <QString>
 
@@ -20,11 +20,11 @@
 
 namespace Mdt{ namespace SerialPort{
 
-UnixEngine::UnixEngine(int descriptor)
- : mDescriptor(descriptor)
-{
-  /// \todo pre
-}
+// UnixEngine::UnixEngine(int descriptor)
+//  : mDescriptor(descriptor)
+// {
+//   /// \todo pre
+// }
 
 /**
  * https://docs.kernel.org/driver-api/tty/index.html
@@ -53,48 +53,48 @@ UnixEngine::UnixEngine(int descriptor)
  * (with an USB control call).
  */
 
-void UnixEngine::configureInterface(const Interface & interface)
-{
-  qDebug() << "configureInterface() - mDescriptor: " << mDescriptor;
+// void UnixEngine::configureInterface(const Interface & interface)
+// {
+//   qDebug() << "configureInterface() - mDescriptor: " << mDescriptor;
+// 
+//   sandbox();
+// 
+//   return;
+// 
+//   struct serial_struct serial;
+//   ::memset( &serial, 0, sizeof(serial) );
+// 
+//   int result = ::ioctl(mDescriptor, TIOCGSERIAL, &serial);
+//   if(result == -1){
+//     const QString msg = QString::fromLocal8Bit( ::strerror(errno) );
+//     qDebug() << " error " << errno << " : " << msg;
+//   }
+// 
+//   qDebug() << " port num: " << serial.port;
+//   
+//   serial.port = interface.parameterValue();
+//   
+//   /// \todo if already the same, done here
+//   
+//   result = ::ioctl(mDescriptor, TIOCSSERIAL, &serial);
+//   if(result == -1){
+//     const QString msg = QString::fromLocal8Bit( ::strerror(errno) );
+//     qDebug() << " error " << errno << " : " << msg;
+//   }
+// 
+// }
 
-  sandbox();
-
-  return;
-
-  struct serial_struct serial;
-  ::memset( &serial, 0, sizeof(serial) );
-
-  int result = ::ioctl(mDescriptor, TIOCGSERIAL, &serial);
-  if(result == -1){
-    const QString msg = QString::fromLocal8Bit( ::strerror(errno) );
-    qDebug() << " error " << errno << " : " << msg;
-  }
-
-  qDebug() << " port num: " << serial.port;
-  
-  serial.port = interface.parameterValue();
-  
-  /// \todo if already the same, done here
-  
-  result = ::ioctl(mDescriptor, TIOCSSERIAL, &serial);
-  if(result == -1){
-    const QString msg = QString::fromLocal8Bit( ::strerror(errno) );
-    qDebug() << " error " << errno << " : " << msg;
-  }
-
-}
-
-void UnixEngine::sandbox()
-{
-  struct serial_rs485 rs485conf;
-  ::memset( &rs485conf, 0, sizeof(serial_rs485) );
-
-  int result = ::ioctl(mDescriptor, TIOCGRS485, &rs485conf);
-  if(result == -1){
-    const QString msg = QString::fromLocal8Bit( ::strerror(errno) );
-    qDebug() << " error " << errno << " : " << msg;
-  }
-
-}
+// void UnixEngine::sandbox()
+// {
+//   struct serial_rs485 rs485conf;
+//   ::memset( &rs485conf, 0, sizeof(serial_rs485) );
+// 
+//   int result = ::ioctl(mDescriptor, TIOCGRS485, &rs485conf);
+//   if(result == -1){
+//     const QString msg = QString::fromLocal8Bit( ::strerror(errno) );
+//     qDebug() << " error " << errno << " : " << msg;
+//   }
+// 
+// }
 
 }} // namespace Mdt{ namespace SerialPort{

@@ -4,18 +4,11 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2025-2025 Philippe Steinmann.
+ ** Copyright (C) 2025-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
-#include "AbstractEngine.h"
-#include <cassert>
+#include "Mdt/SerialPort/Engine.h"
+#include "catch2/catch.hpp"
+#include "Catch2QString.h"
 
-namespace Mdt{ namespace SerialPort{
-
-// AbstractEngine::AbstractEngine(Handle handle)
-// {
-//   assert( !handle.isNull() );
-// 
-// }
-
-}} // namespace Mdt{ namespace SerialPort{
+using namespace Mdt::SerialPort;

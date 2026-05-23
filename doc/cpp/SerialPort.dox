@@ -1,6 +1,18 @@
 
 /*! \page SerialPort_dox Serial port library
  *
+ * \todo Make an introduction + simple usage with Mdt::SerialPort::SerialPort.
+ * Then, explain that several components can be used as helpers with QSerialPort.
+ *
+ * \section SerialPort_SerialPortClass Serial port class
+ *
+ * \startuml "Serial port class"
+ * !include ClassDiagrams/SerialPort.puml
+ * \enduml
+ *
+ * \sa Mdt::SerialPort::SerialPort
+ *
+ *
  * \section SerialPort_SomeTechnicalInformations Some technical informations
  *
  * \sa https://en.wikipedia.org/wiki/RS-232
@@ -316,6 +328,13 @@
  * \sa Mdt::SerialPort::PortSetup
  *
  *
+ * \section SerialPort_UsbSupport USB support (userspace using MdtUsb, libusb)
+ *
+ * \todo Should USB support be optional ?
+ * What is it for:
+ * - Set interface of MoxaUPort when using Linux native driver
+ *
+ *
  * \section SerialPort_DeviceSpecifics Device sepcifics
  *
  * \sa \ref SerialPort_Device_MoxaUPort
@@ -327,13 +346,20 @@
  * like configure the interface of some serial port devices.
  * It is only a sandbox, and should be removed.
  *
+ * \todo AbstractEngine , UnixEngine, WindowsEngine
+ * Also Handle fromNativeHandle()
+ * OR: Engine and Engine_unix and Engine_Windows ?
+ *
  * \startuml "Engine overview"
  * !include ClassDiagrams/Engine.puml
  * \enduml
  *
- * \todo AbstractEngine , UnixEngine, WindowsEngine
- * Also Handle fromNativeHandle()
- * OR: Engine and Engine_unix and Engine_Windows ?
+ *
+ * \startuml "Basic serial port"
+ * !include ClassDiagrams/BasicSerialPort.puml
+ * \enduml
+ *
+ * \todo maybe implement like PortSetup (and like Qt does)
  *
  * \subsection SerialPort_LinuxSpecifics Linux specifics
  *
@@ -344,14 +370,6 @@
  *
  * \sa https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/ntddser/ns-ntddser-_serial_commprop
  *
- *
- * \section SerialPort_SerialPortClass Serial port class
- *
- * \startuml "Serial port class"
- * !include ClassDiagrams/SerialPort.puml
- * \enduml
- *
- * \sa Mdt::SerialPort::SerialPort
  *
  *
  * \section SerialPort_Testing Serial port testing
