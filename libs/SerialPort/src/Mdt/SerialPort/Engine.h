@@ -7,36 +7,42 @@
  ** Copyright (C) 2025-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
-#ifndef MDT_SERIAL_PORT_ABSTRACT_ENGINE_H
-#define MDT_SERIAL_PORT_ABSTRACT_ENGINE_H
+#ifndef MDT_SERIAL_PORT_ENGINE_H
+#define MDT_SERIAL_PORT_ENGINE_H
 
-// #include "Mdt/SerialPort/Handle.h"
+#include "Mdt/SerialPort/Handle.h"
 
-// #include "Mdt/SerialPort/Interface.h"
+#include "Mdt/SerialPort/PortInfo.h"
+
 #include "mdt_serialport_export.h"
 
 namespace Mdt{ namespace SerialPort{
 
-  /*! \brief Interface to implement platform specifics
+  /*! \brief 
+   *
+   * \todo maybe not useful 
    */
-  class MDT_SERIALPORT_EXPORT AbstractEngine
+  class MDT_SERIALPORT_EXPORT Engine
   {
    public:
 
-    /*! \brief Construct an engine
+    /*! \brief Open XXXX
      *
-     * \pre \a handle must refere to an open port
-     * (i.e. handle must not be null)
+     * \todo here, maybe do not depend on PortInfo 
      *
-     * \warning The handle must stay valid for the whole lifetime of this engine
+     * \exception 
+     *
+     * \pre 
      */
-    // explicit
-    // AbstractEngine(Handle handle);
+    Handle openPortReadOnly_XXXX_(const PortInfo & portInfo);
 
-    // virtual
-    // void configureInterface(const Interface & interface) = 0;
+    /*! \brief
+     *
+     * \pre 
+     */
+    void closePort(Handle handle);
   };
 
 }} // namespace Mdt{ namespace SerialPort{
 
-#endif // #ifndef MDT_SERIAL_PORT_ABSTRACT_ENGINE_H
+#endif // #ifndef MDT_SERIAL_PORT_ENGINE_H

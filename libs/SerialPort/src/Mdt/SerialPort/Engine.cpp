@@ -12,10 +12,5 @@
 
 namespace Mdt{ namespace SerialPort{
 
-// AbstractEngine::AbstractEngine(Handle handle)
-// {
-//   assert( !handle.isNull() );
-// 
-// }
 
 }} // namespace Mdt{ namespace SerialPort{
