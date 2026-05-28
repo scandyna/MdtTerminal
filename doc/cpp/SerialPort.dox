@@ -340,7 +340,7 @@
  * \sa \ref SerialPort_Device_MoxaUPort
  *
  *
- * \section SerialPort_PlatformSpecifics Platform sepcifics
+ * \section SerialPort_PlatformSpecifics Platform specifics
  *
  * \todo The Engine was a first attempt for specific tasks,
  * like configure the interface of some serial port devices.
@@ -350,16 +350,10 @@
  * Also Handle fromNativeHandle()
  * OR: Engine and Engine_unix and Engine_Windows ?
  *
- * \startuml "Engine overview"
- * !include ClassDiagrams/Engine.puml
+ * \startuml "Platform specifics overview"
+ * !include ClassDiagrams/PlatformSpecificsSandbox.puml
  * \enduml
  *
- *
- * \startuml "Basic serial port"
- * !include ClassDiagrams/BasicSerialPort.puml
- * \enduml
- *
- * \todo maybe implement like PortSetup (and like Qt does)
  *
  * \subsection SerialPort_LinuxSpecifics Linux specifics
  *

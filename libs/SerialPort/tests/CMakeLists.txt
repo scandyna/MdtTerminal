@@ -178,14 +178,6 @@ mdt_add_test(
 )
 
 mdt_add_test(
-  NAME SerialPortEngineTest
-  TARGET serialPortEngineTest
-  DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
-  SOURCE_FILES
-    src/EngineTest.cpp
-)
-
-mdt_add_test(
   NAME SerialPortSetupTest
   TARGET serialPortSetupTest
   DEPENDENCIES Mdt::SerialPort Mdt::SerialPortTestLib Mdt::Catch2Main Mdt::Catch2Qt
@@ -371,26 +363,7 @@ if(UNIX)
         src/UdevUsbSerialPortTest.cpp
     )
 
-    # TODO: does it work without HW ?
-    mdt_add_test(
-      NAME SerialPortEngine_UnixTest
-      TARGET serialPortEngine_UnixTest
-      DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
-      SOURCE_FILES
-        src/Engine_UnixTest.cpp
-    )
-
   endif()
-
-  # TODO this is just a sandbox and will not work on the CI 
-  # target_link_libraries(serialPortUnixEngineTest
-  #   PRIVATE
-  #     usb-1.0
-  # )
-  # target_include_directories(serialPortUnixEngineTest
-  #   PRIVATE
-  #     "/usr/include/libusb-1.0"
-  # )
 
 endif()
 

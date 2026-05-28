@@ -1,7 +1,0 @@
-@startuml
-!include Mdt/SerialPort/Engine.puml
-
-hide Mdt.SerialPort.PortInfo members
-hide QSerialPortInfo members
-
-@enduml

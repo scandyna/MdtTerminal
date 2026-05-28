@@ -35,7 +35,6 @@ add_library(Mdt_SerialPort
   Mdt/SerialPort/SettingsBuilder.cpp
   Mdt/SerialPort/SettingsStringFormat.cpp
   Mdt/SerialPort/UsbVendorIdProductId.cpp
-  Mdt/SerialPort/Engine.cpp
   Mdt/SerialPort/PortSetupError.cpp
   Mdt/SerialPort/PortSetup.cpp
   Mdt/SerialPort/SerialPort.cpp
@@ -59,7 +58,6 @@ if(UNIX)
   target_sources(Mdt_SerialPort
     PRIVATE
       Mdt/SerialPort/Handle_Unix.cpp
-      Mdt/SerialPort/Engine_Unix.cpp
   )
   if(BUILD_USB_SANDBOX)
     target_sources(Mdt_SerialPort
