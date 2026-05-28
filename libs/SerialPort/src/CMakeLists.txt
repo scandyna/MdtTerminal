@@ -76,6 +76,7 @@ if(LINUX)
     PRIVATE
       Mdt/SerialPort/Linux/MoxaUPort.cpp
       Mdt/SerialPort/PortSetup_Linux.cpp
+      Mdt/SerialPort/PortInfo_Linux.cpp
   )
   if(BUILD_USB_SANDBOX)
     target_sources(Mdt_SerialPort
@@ -86,6 +87,11 @@ if(LINUX)
         Mdt/SerialPort/Linux/UdevUsbSerialPort.cpp
     )
   endif()
+else()
+  target_sources(Mdt_SerialPort
+    PRIVATE
+      Mdt/SerialPort/PortInfo_Other.cpp
+  )
 endif()
 
 

@@ -163,6 +163,21 @@ namespace Mdt{ namespace SerialPort{
     std::optional<uint16_t> mProductIdentifier;
   };
 
+  /*! \internal Check if given port info represents an existing serial port
+   *
+   * QSerialPortInfo::availablePorts() does such checks,
+   * and should return only real serial ports.
+   * On some platforms, like Ubuntu-24.04,
+   * some changes (like Udev driver name changing from serial8250 to port)
+   * breaks some checks.
+   *
+   * This function is a workaround for such issues.
+   *
+   * \sa https://gitlab.com/scandyna/mdtterminal/-/work_items/9
+   */
+  MDT_SERIALPORT_EXPORT
+  bool isExistingSerialPort(const PortInfo & portInfo);
+
 }} // namespace Mdt{ namespace SerialPort{
 
 #endif // #ifndef MDT_SERIAL_PORT_PORT_INFO_H
