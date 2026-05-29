@@ -22,8 +22,11 @@ PortInfoListTableModel::PortInfoListTableModel(QObject *parent)
 void PortInfoListTableModel::doFetchAvailablePorts()
 {
   const auto availablePorts = QSerialPortInfo::availablePorts();
-  for(const auto & portInfo : availablePorts){
-    addPortInfo( PortInfo::fromQSerialPortInfo(portInfo) );
+  for(const auto & qPortInfo : availablePorts){
+    auto portInfo = PortInfo::fromQSerialPortInfo(qPortInfo);
+    if( isExistingSerialPort(portInfo) ){
+     addPortInfo(portInfo);
+    }
   }
 }
 

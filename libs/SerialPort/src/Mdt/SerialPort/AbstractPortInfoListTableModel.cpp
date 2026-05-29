@@ -54,9 +54,7 @@ void AbstractPortInfoListTableModel::addPortInfo(const PortInfo & portInfo) noex
 {
   assert( !portInfo.isNull() );
 
-  if( isExistingSerialPort(portInfo) ){
-    mList.containerMutable().push_back(portInfo);
-  }
+  mList.containerMutable().push_back(portInfo);
 }
 
 QVariant AbstractPortInfoListTableModel::displayRoleData(const QModelIndex & index) const noexcept
