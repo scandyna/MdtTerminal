@@ -18,11 +18,11 @@ TEST_CASE("BasicTest")
 {
   const auto portList = QSerialPortInfo::availablePorts();
   REQUIRE( !portList.isEmpty() );
+  const auto portInfo = PortInfo::fromQSerialPortInfo( portList.at(0) );
+  const auto interface = Interface::fromStandardAndParameterValue(InterfaceStandard::RS_232, 0);
 
-  PortSetup ps( PortInfo::fromQSerialPortInfo( portList.at(0) ) );
+  PortSetup ps;
 
-  if( ps.shouldConfigureInterfaceBeforeOpenPort() ){
-    const auto interface = Interface::fromStandardAndParameterValue(InterfaceStandard::RS_232, 0);
-    ps.configureInterfaceBeforeOpenPort(interface);
-  }
+  ps.fetchPortInformations(portInfo);
+  ps.configureInterfaceBeforeOpenPortIfRequired(interface);
 }
