@@ -9,6 +9,7 @@ add_library(Mdt_SerialPort_TestLib
   Mdt/SerialPort/TestLib/TestPinoutSignalsUiController.cpp
   Mdt/SerialPort/TestLib/PinoutSignalUiStateChangedSignalSpy.cpp
   Mdt/SerialPort/TestLib/TestByteByByteWriter.cpp
+  Mdt/SerialPort/TestLib/Helpers.cpp
 )
 
 add_library(Mdt::SerialPortTestLib ALIAS Mdt_SerialPort_TestLib)

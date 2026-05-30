@@ -4,10 +4,11 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2025-2025 Philippe Steinmann.
+ ** Copyright (C) 2025-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "Mdt/SerialPort/PinoutSignalsEventNotifier.h"
+#include "Mdt/SerialPort/TestLib/Helpers.h"
 #include <QtTest/QtTest>
 #include <QSerialPort>
 #include <QSerialPortInfo>
@@ -21,19 +22,7 @@ bool openFirstAvailableSerialPort(QSerialPort & serialPort)
 {
   assert( !serialPort.isOpen() );
 
-  const auto serialPortInfoList = QSerialPortInfo::availablePorts();
-  if( serialPortInfoList.isEmpty() ){
-    qDebug() << "could not find any serial port";
-    return false;
-  }
-
-  serialPort.setPort( serialPortInfoList.at(0) );
-  if( !serialPort.open(QSerialPort::ReadOnly) ){
-    qDebug() << "open serial port " << serialPort.portName() <<  " failed: " << serialPort.errorString();
-    return false;
-  }
-
-  return true;
+  return TestLib::openFirstAvailableSerialPort(serialPort, QSerialPort::ReadOnly);
 }
 
 
