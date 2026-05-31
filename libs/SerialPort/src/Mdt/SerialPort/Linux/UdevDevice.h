@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2025-2025 Philippe Steinmann.
+ ** Copyright (C) 2025-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #ifndef MDT_SERIAL_PORT_LINUX_UDEV_DEVICE_H
@@ -42,22 +42,6 @@ namespace Mdt{ namespace SerialPort{ namespace Linux{
 
     UdevDevice(UdevDevice &&) = delete;
     UdevDevice & operator=(UdevDevice &&) = delete;
-
-    /*! \brief Get the value for given attribute
-     *
-     *
-     * \pre \a attribute must not be empty
-     * \todo private impl that take a const char *
-     */
-    [[deprecated]]
-    std::string getSystemAttributeValue(const std::string & attribute) const noexcept;
-
-    /*! \brief
-     *
-     * \todo attribute empt vs error (string -> num conversion): exception
-     */
-    [[deprecated]]
-    std::optional<int> getSomeConcreteThing() const;
 
     /*! \brief Get the udev native pointer
      */

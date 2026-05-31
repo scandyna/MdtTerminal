@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2025-2025 Philippe Steinmann.
+ ** Copyright (C) 2025-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "UdevDevice.h"
@@ -29,12 +29,6 @@ QString udevDeviceTr(const char *sourceText) noexcept
 UdevDevice::~UdevDevice() noexcept
 {
   udev_device_unref(mDevice);
-}
-
-std::string UdevDevice::getSystemAttributeValue(const std::string & attribute) const noexcept
-{
-  assert( !attribute.empty() );
-
 }
 
 UdevDevice UdevDevice::from_devnum(std::shared_ptr<UdevContext> context, FileStatusFileType type, dev_t devnum)
