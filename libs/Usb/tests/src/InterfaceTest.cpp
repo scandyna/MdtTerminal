@@ -4,7 +4,7 @@
  ** MdtUsb
  ** Library to communicate with USB devices from user space.
  **
- ** Copyright (C) 2025-2025 Philippe Steinmann.
+ ** Copyright (C) 2025-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "Mdt/Usb/Interface.h"
@@ -16,8 +16,16 @@ using namespace Mdt::Usb;
 
 TEST_CASE("fromLibusbInterface")
 {
-  libusb_interface_descriptor defaultLibusbInterface;
+  libusb_endpoint_descriptor defaultLibusbEndpoint{};
+
+  libusb_endpoint_descriptor libusbEndpointList[1]
+  {
+    defaultLibusbEndpoint
+  };
+
+  libusb_interface_descriptor defaultLibusbInterface{};
   defaultLibusbInterface.bNumEndpoints = 1;
+  defaultLibusbInterface.endpoint = libusbEndpointList;
 
   libusb_interface_descriptor libusbInterfaceList[1]
   {

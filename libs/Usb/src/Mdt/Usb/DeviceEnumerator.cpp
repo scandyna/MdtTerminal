@@ -30,9 +30,9 @@ LibusbDeviceList DeviceEnumerator::scanForAttachedDevices()
   ssize_t cnt = libusb_get_device_list(mContext->libusbContext(), &list.mList);
   if(cnt < 0){
     const QString msg = tr("Scan for attached devices failed in libusb_get_device_list() with code %1: %2")
-                        .arg( LibusbError::errorNameFromInt(cnt) )
-                        .arg( LibusbError::strerrorFromInt(cnt) );
-    throw LibusbRuntimeError( msg, LibusbError::errorFromInt(cnt) );
+                        .arg( LibusbError::errorNameFrom_ssize_t(cnt) )
+                        .arg( LibusbError::strerrorFrom_ssize_t(cnt) );
+    throw LibusbRuntimeError( msg, LibusbError::errorFrom_ssize_t(cnt) );
   }
 
   assert(cnt >= 0);

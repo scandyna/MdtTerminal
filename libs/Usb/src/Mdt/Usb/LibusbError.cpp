@@ -4,19 +4,20 @@
  ** MdtUsb
  ** Library to communicate with USB devices from user space.
  **
- ** Copyright (C) 2025-2025 Philippe Steinmann.
+ ** Copyright (C) 2025-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "LibusbError.h"
 
 namespace Mdt{ namespace Usb{
 
-QString LibusbError::errorNameFromInt(int code) noexcept
+QString LibusbError::errorName(libusb_error code) noexcept
 {
+  assert(code <= 0);
   /*
-    * libusb_error_name() return ASCII
-    * We must not free returned pointer
-    */
+   * libusb_error_name() return ASCII
+   * We must not free returned pointer
+   */
   return QString::fromLatin1( libusb_error_name(code) );
 }
 
