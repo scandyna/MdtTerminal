@@ -64,7 +64,6 @@ if(UNIX)
       PRIVATE
         Mdt/SerialPort/Unix/FileStatus.cpp
         Mdt/SerialPort/Unix/FileStatusFileType.cpp
-        # Mdt/SerialPort/Unix/UdevBusDevicePortNumber.cpp TODO remove
     )
   endif()
 endif()

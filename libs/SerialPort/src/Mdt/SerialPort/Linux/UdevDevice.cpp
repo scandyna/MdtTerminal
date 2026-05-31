@@ -12,7 +12,6 @@
 #include <QString>
 #include <QCoreApplication>
 #include <errno.h>
-// #include <string.h>
 #include <cassert>
 
 namespace Mdt{ namespace SerialPort{ namespace Linux{
