@@ -4,7 +4,7 @@
  ** MdtTerminal
  ** Terminal to experiment with some devices using some ports, like serial port.
  **
- ** Copyright (C) 2024-2024 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #ifndef MDT_SERIAL_PORT_SERIAL_PORT_H
@@ -14,6 +14,8 @@
 
 namespace Mdt{ namespace SerialPort{
 
+  /*! \brief Helper around QSerialPort with some additions
+   */
   class MDT_SERIALPORT_EXPORT SerialPort
   {
   };
