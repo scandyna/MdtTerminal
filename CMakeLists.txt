@@ -35,11 +35,15 @@ include(MdtSanitizers)
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN YES)
 
-# TODO: for now, only works if libusb is installed UNIX system wide
-# On CI, it will probably also not work, and we should not add libusb dev into the Docker images
-# Once we have access to conancenter again (i.e. access to Conan 2),
-# une the Conan generated CMake files and use find_package()
-option(BUILD_USB_SANDBOX "Build USB sandbox" OFF)
+
+set(DEFAULT_ENABLE_SERIALPORT_USERSPACE_USB_SUPPORT OFF)
+if(LINUX)
+  set(DEFAULT_ENABLE_SERIALPORT_USERSPACE_USB_SUPPORT ON)
+endif()
+option(ENABLE_SERIALPORT_USERSPACE_USB_SUPPORT
+  "Enable USB user space support (can help to configure some attributes for usb serial devices when the driver lacks ioctl support)"
+  ${DEFAULT_ENABLE_SERIALPORT_USERSPACE_USB_SUPPORT}
+)
 
 # TODO: should be a dependent option only available if BUILD_TESTS is ON
 option(BUILD_TESTS_WITH_HW_USB "Build USB tests that depends on HW (like at least a device attached)" OFF)
@@ -133,7 +137,7 @@ find_package(Mdt0 REQUIRED COMPONENTS ItemModel)
   find_package(Qt6 REQUIRED COMPONENTS Widgets)
 # endif()
 
-if(BUILD_USB_SANDBOX)
+if(ENABLE_SERIALPORT_USERSPACE_USB_SUPPORT)
   find_package(libusb REQUIRED)
 endif()
 

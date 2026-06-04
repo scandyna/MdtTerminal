@@ -5,7 +5,7 @@ add_subdirectory(SerialPort)
 add_subdirectory(SerialPort_TestLib)
 add_subdirectory(SerialPort_Widgets)
 
-if(BUILD_USB_SANDBOX)
+if(ENABLE_SERIALPORT_USERSPACE_USB_SUPPORT)
   add_subdirectory(Usb)
 endif()
 

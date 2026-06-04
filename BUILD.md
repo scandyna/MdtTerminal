@@ -43,7 +43,7 @@ Some following sections will rely on Conan profiles.
 ### Conan install command
 
 ```bash
-conan install --output-folder . --profile:build $CONAN_PROFILE --profile:host $CONAN_PROFILE --settings:build build_type=Release --settings:host build_type=$BUILD_TYPE --options:host "&:shared=$BUILD_SHARED_LIBS"  ..
+conan install --output-folder . --profile:build $CONAN_PROFILE --profile:host $CONAN_PROFILE --settings:build build_type=Release --settings:host build_type=$BUILD_TYPE --options:host "&:shared=$BUILD_SHARED_LIBS" --options:host "&:enable_serialport_userspace_usb_support=True"  ..
 ```
 
 ## Build MdtTerminal

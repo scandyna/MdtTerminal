@@ -59,7 +59,7 @@ if(UNIX)
     PRIVATE
       Mdt/SerialPort/Handle_Unix.cpp
   )
-  if(BUILD_USB_SANDBOX)
+  if(ENABLE_SERIALPORT_USERSPACE_USB_SUPPORT)
     target_sources(Mdt_SerialPort
       PRIVATE
         Mdt/SerialPort/Unix/FileStatus.cpp
@@ -75,7 +75,7 @@ if(LINUX)
       Mdt/SerialPort/PortSetup_Linux.cpp
       Mdt/SerialPort/PortInfo_Linux.cpp
   )
-  if(BUILD_USB_SANDBOX)
+  if(ENABLE_SERIALPORT_USERSPACE_USB_SUPPORT)
     target_sources(Mdt_SerialPort
       PRIVATE
         Mdt/SerialPort/Linux/UdevContext.cpp
@@ -128,15 +128,25 @@ if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU")
   endif()
 endif()
 
-# TODO: cleanup once Usb is no more a sanbox
-# TODO: if want to use Udev, use a target.
-#       see https://api.kde.org/ecm/find-module/FindUDev.html
-#       and the target conan generates
-if(BUILD_USB_SANDBOX)
+
+if(ENABLE_SERIALPORT_USERSPACE_USB_SUPPORT)
   target_link_libraries(Mdt_SerialPort
     PUBLIC
       Mdt::Usb
+  )
+endif()
+
+# TODO: if want to use Udev, use a target.
+#       see https://api.kde.org/ecm/find-module/FindUDev.html
+#       and the target conan generates
+if(LINUX AND ENABLE_SERIALPORT_USERSPACE_USB_SUPPORT)
+  target_link_libraries(Mdt_SerialPort
+    PUBLIC
       udev
+  )
+  target_compile_definitions(Mdt_SerialPort
+    PRIVATE
+      HAS_UDEV_AND_LIBUSB_SUPPORT=1
   )
 endif()
 

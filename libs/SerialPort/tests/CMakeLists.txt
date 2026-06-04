@@ -312,7 +312,7 @@ if(UNIX)
       src/HandleTest_Unix.cpp
   )
 
-  if(BUILD_USB_SANDBOX)
+  if(ENABLE_SERIALPORT_USERSPACE_USB_SUPPORT)
 
     mdt_add_test(
       NAME UnixFileStatusTest
@@ -330,38 +330,33 @@ if(UNIX)
         src/FileStatusFileTypeTest.cpp
     )
 
-    mdt_add_test(
-      NAME UnixUdevContextTest
-      TARGET unixUdevContextTest
-      DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
-      SOURCE_FILES
-        src/UnixUdevContextTest.cpp
-    )
+    if(LINUX)
 
-    mdt_add_test(
-      NAME UnixUdevDeviceTest
-      TARGET unixUdevDeviceTest
-      DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
-      SOURCE_FILES
-        src/UdevDeviceTest.cpp
-    )
+      mdt_add_test(
+        NAME UnixUdevContextTest
+        TARGET unixUdevContextTest
+        DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+        SOURCE_FILES
+          src/UnixUdevContextTest.cpp
+      )
 
-    # TODO remove
-    # mdt_add_test(
-    #   NAME UnixUdevBusDevicePortNumberTest
-    #   TARGET unixUdevBusDevicePortNumberTest
-    #   DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
-    #   SOURCE_FILES
-    #     src/UdevBusDevicePortNumberTest.cpp
-    # )
+      mdt_add_test(
+        NAME UnixUdevDeviceTest
+        TARGET unixUdevDeviceTest
+        DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+        SOURCE_FILES
+          src/UdevDeviceTest.cpp
+      )
 
-    mdt_add_test(
-      NAME UnixUdevUsbSerialPortTest
-      TARGET unixUdevUsbSerialPortTest
-      DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
-      SOURCE_FILES
-        src/UdevUsbSerialPortTest.cpp
-    )
+      mdt_add_test(
+        NAME UnixUdevUsbSerialPortTest
+        TARGET unixUdevUsbSerialPortTest
+        DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+        SOURCE_FILES
+          src/UdevUsbSerialPortTest.cpp
+      )
+
+    endif()
 
   endif()
 

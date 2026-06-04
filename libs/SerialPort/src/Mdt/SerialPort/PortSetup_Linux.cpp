@@ -21,13 +21,6 @@
 #include <linux/serial.h>
 #include <string.h> // memset()
 
-
-/*! \internal
- *
- * \todo Remove once we have proper libraries support 
- */
-#define HAS_UDEV_AND_LIBUSB_SUPPORT true
-
 #if HAS_UDEV_AND_LIBUSB_SUPPORT
   #include "Linux/UdevUsbSerialPort.h"
   #include "Mdt/Usb/Context.h"
@@ -40,11 +33,11 @@
 
 namespace Mdt{ namespace SerialPort{
 
-/*! \internal
- *
- * \todo Remove once we have proper libraries support 
- */
-constexpr bool hasUdevAndLibusbSupport = HAS_UDEV_AND_LIBUSB_SUPPORT;
+#if HAS_UDEV_AND_LIBUSB_SUPPORT
+  constexpr bool hasUdevAndLibusbSupport = true;
+#else
+  constexpr bool hasUdevAndLibusbSupport = false;
+#endif
 
 
 class PortSetupImpl
