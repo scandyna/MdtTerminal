@@ -10,10 +10,20 @@
 #ifndef MDT_SERIAL_PORT_TEST_LIB_HELPERS_H
 #define MDT_SERIAL_PORT_TEST_LIB_HELPERS_H
 
+#include "Mdt/SerialPort/PortInfo.h"
 #include "mdt_serialport_testlib_export.h"
 #include <QSerialPort>
+#include <optional>
 
 namespace Mdt{ namespace SerialPort{ namespace TestLib{
+
+  /*! \brief Find the first available serial port
+   *
+   * This function also works around some issues,
+   * like https://gitlab.com/scandyna/mdtterminal/-/work_items/9
+   */
+  MDT_SERIALPORT_TESTLIB_EXPORT
+  std::optional<PortInfo> findFirstAvailableSerialPort();
 
   /*! \brief Open the first available serial port
    *
