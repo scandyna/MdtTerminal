@@ -27,6 +27,8 @@ namespace Mdt{ namespace SerialPort{
   } // namespace Ui{
 
   /*! \brief Serial port settings dialog
+   *
+   * \image html "SerialPortSettingsDialog.png" "Settings dialog"
    */
   class MDT_SERIALPORT_WIDGETS_EXPORT SettingsDialog : public QDialog
   {

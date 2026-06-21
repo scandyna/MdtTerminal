@@ -2,5 +2,6 @@
 !include Mdt/SerialPort/QRuntimeError.puml
 !include Mdt/SerialPort/FileOpenError.puml
 !include Mdt/SerialPort/PortSetupError.puml
+!include Mdt/SerialPort/PortOpenError.puml
 
 @enduml

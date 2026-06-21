@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2025-2025 Philippe Steinmann.
+ ** Copyright (C) 2025-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #ifndef MDT_SERIAL_PORT_PINOUT_SIGNALS_EVENT_NOTIFIER_H
@@ -65,6 +65,9 @@ namespace Mdt{ namespace SerialPort{
    * readyRead() RX ON. RX OFF: when ?
    * maybe QSerialPort::bytesAvailable() and QSerialPort::bytesToWrite()
    *
+   * For more information about pinout signals,
+   * see the dedicated section:
+   * \ref SerialPort_PinoutSignals
    *
    * \sa PinoutSignals
    * \sa PinoutSignalsUiController
@@ -80,6 +83,10 @@ namespace Mdt{ namespace SerialPort{
 
     /*! \brief Constructor
      *
+     * \note this notifier will use QSerialPort::aboutToClose() signal
+     * to know when the serial port closes
+     *
+     * \sa setPortOpen()
      * \pre \a serialPort must be a valid pointer
      */
     explicit

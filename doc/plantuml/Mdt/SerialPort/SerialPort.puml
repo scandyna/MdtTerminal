@@ -1,0 +1,23 @@
+!include Qt/SerialPort/QSerialPort.puml
+!include Mdt/SerialPort/Settings.puml
+!include Mdt/SerialPort/PortSetup.puml
+!include Mdt/SerialPort/Writer.puml
+!include Mdt/SerialPort/PinoutSignalsEventNotifier.puml
+
+namespace Mdt.SerialPort {
+
+  class SerialPort {
+    +setSettings(Settings s)
+    +bool hasSettings()
+    +setPinoutSignalsEventNotifierEnabled(bool enable)
+    .. signals ..
+    +pinoutSignalsChanged(PinoutSignals s)
+  }
+
+  SerialPort *--> Settings
+  SerialPort ..> PortSetup
+  SerialPort *--> Writer
+  SerialPort *--> PinoutSignalsEventNotifier
+}
+
+Mdt.SerialPort.SerialPort *--> QSerialPort

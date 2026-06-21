@@ -6,8 +6,10 @@
 
 
 
-hide QObject methods
-hide QWidget methods
+hide QObject
+hide QWidget members
+hide QTimer members
+hide QSerialPort members
 hide QPaintDevice
 hide QIODeviceBase
 hide QIODevice

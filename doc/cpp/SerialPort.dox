@@ -1,10 +1,23 @@
 
 /*! \page SerialPort_dox Serial port library
  *
- * \todo Make an introduction + simple usage with Mdt::SerialPort::SerialPort.
- * Then, explain that several components can be used as helpers with QSerialPort.
+ * A library, based on Qt Serial Port, and offers some additions:
+ * - Settings, settings list table models, settings editor and dialog
+ * - Pinout signals notifications
+ * - Serial device configuration, user space USB support to workaround some drivers lacks
+ *
+ * The several parts, documented below, can be used with QSerialPort.
+ *
+ * Some more high-level parts, based on the other ones, are also available:
+ * - Mdt::SerialPort::SerialPort
+ * - Mdt::SerialPort::SettingsDialog
+ *
+ * \sa https://doc.qt.io/qt-6/qtserialport-index.html
+ *
  *
  * \section SerialPort_SerialPortClass Serial port class
+ *
+ * This is a helper class, based on QSerialPort and other parts of current library.
  *
  * \startuml "Serial port class"
  * !include ClassDiagrams/SerialPort.puml
@@ -377,6 +390,10 @@
  *
  * \subsection SerialPort_Testing_WithHW Serial port testing with HW
  *
+ * \todo CMAKE variable
+ *
+ * \subsubsection SerialPort_Testing_WithBridgePlug Serial port testing with a bridge plug
+ *
  * Some tests will require a bridge plug.
  * Here is the pinout for a DB9 connector:
  *
@@ -386,7 +403,14 @@
  * |7-8|RTS &rarr; CTS|
  * |4-6|DTR &rarr; DSR|
  *
- * \todo CMAKE variable
+ * Those tests are enabled with the `BUILD_TESTS_WITH_BRIDGE_PLUG` CMake option.
+ *
+ * An environment variable has also to be provided,
+ * telling which serial port has the bridge plug attached.
+ *
+ * \sa Mdt::SerialPort::TestLib::serialPortNameWithBridgePlug()
+ * \sa Mdt::SerialPort::TestLib::findSerialPortWithBridgePlug()
+ * \sa Mdt::SerialPort::TestLib::openSerialPortWithBridgePlug()
  *
  */
 

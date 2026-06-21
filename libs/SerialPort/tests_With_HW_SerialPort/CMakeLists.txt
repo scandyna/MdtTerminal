@@ -32,3 +32,19 @@ mdt_add_test(
   SOURCE_FILES
     src/PinoutSignalsEventNotifierTest.cpp
 )
+
+mdt_add_test(
+  NAME SerialPort_With_HW_Test
+  TARGET serialPort_With_HW_Test
+  DEPENDENCIES Mdt::SerialPort Mdt::SerialPortTestLib Qt6::Test
+  SOURCE_FILES
+    src/SerialPortTest.cpp
+)
+
+mdt_add_test(
+  NAME SerialPort_With_HW_ErrorTest
+  TARGET serialPort_With_HW_ErrorTest
+  DEPENDENCIES Mdt::SerialPort Mdt::SerialPortTestLib Mdt::Catch2Main Mdt::Catch2Qt
+  SOURCE_FILES
+    src/SerialPortErrorTest.cpp
+)

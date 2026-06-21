@@ -1,0 +1,10 @@
+!include Mdt/SerialPort/QRuntimeError.puml
+
+namespace Mdt.SerialPort {
+
+  class PortOpenError {
+  }
+
+  QRuntimeError <|-- PortOpenError
+}
+

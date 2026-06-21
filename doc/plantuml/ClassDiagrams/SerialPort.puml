@@ -1,0 +1,22 @@
+@startuml
+!include Mdt/SerialPort/SerialPort.puml
+
+
+hide Mdt.SerialPort.SendByteByByteSettings members
+hide Mdt.SerialPort.PortInfo members
+hide Mdt.SerialPort.Settings attributes
+hide Mdt.SerialPort.PortSetup members
+hide Mdt.SerialPort.Writer members
+hide Mdt.SerialPort.AbstractWriter members
+remove Mdt.SerialPort.TestLib
+hide Mdt.SerialPort.PinoutSignals members
+hide Mdt.SerialPort.AbstractPinoutSignalsEventNotifier members
+hide Mdt.SerialPort.PinoutSignalsEventNotifier members
+hide QSerialPort attributes
+hide QSerialPortInfo
+hide QObject
+hide QIODevice
+hide QIODeviceBase
+remove QTimer
+
+@enduml

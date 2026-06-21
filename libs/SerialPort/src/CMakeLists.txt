@@ -8,6 +8,7 @@ add_library(Mdt_SerialPort
   Mdt/SerialPort/Platform.cpp
   Mdt/SerialPort/QRuntimeError.cpp
   Mdt/SerialPort/FileOpenError.cpp
+  Mdt/SerialPort/PortOpenError.cpp
   Mdt/SerialPort/FilesystemHelpers.cpp
   Mdt/SerialPort/BaudRateStringFormat.cpp
   Mdt/SerialPort/BaudRateListTableModel.cpp

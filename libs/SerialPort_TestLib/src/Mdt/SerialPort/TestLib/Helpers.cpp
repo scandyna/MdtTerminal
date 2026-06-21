@@ -8,6 +8,7 @@
  **
  *****************************************************************************************/
 #include "Helpers.h"
+#include <QtEnvironmentVariables>
 #include <QDebug>
 #include <cassert>
 
@@ -50,6 +51,61 @@ bool openFirstAvailableSerialPort(QSerialPort & serialPort, QSerialPort::OpenMod
   }
 
   return openSerialPort(serialPort, openMode, *portInfo);
+}
+
+QString serialPortNameWithBridgePlug()
+{
+  constexpr const char* envVarName = "MDT_SERIALPORT_TEST_PORT_NAME_WITH_BRIDGE_PLUG";
+
+  QString portName = qEnvironmentVariable(envVarName);
+  if( portName.isEmpty() ){
+    qDebug() << "A test called Mdt::SerialPort::TestLib::serialPortNameWithBridgePlug() "
+                "because it requires to open as serial port with a bridge plug.\n"
+                "To work, the " << envVarName << " environment variable has to be set.\n"
+                "Please set this variable with the port name having the bridge plug attached.\n"
+                "The port name should be like ttyS0 on Unix, or COM1 on Windows";
+  }
+
+  return portName;
+}
+
+std::optional<PortInfo> findSerialPortWithBridgePlug()
+{
+  const QString portName = serialPortNameWithBridgePlug();
+  if( portName.isEmpty() ){
+    return {};
+  }
+
+  const auto availablePorts = QSerialPortInfo::availablePorts();
+  for(const auto & qPortInfo : availablePorts){
+    if(qPortInfo.portName() == portName){
+      auto portInfo = PortInfo::fromQSerialPortInfo(qPortInfo);
+      if( isExistingSerialPort(portInfo) ){
+        return portInfo;
+      }
+    }
+  }
+
+  qDebug() << "could not find a serial port named " << portName;
+  return {};
+}
+
+bool openSerialPortWithBridgePlug(QSerialPort & serialPort)
+{
+  assert( !serialPort.isOpen() );
+
+  const QString portName = serialPortNameWithBridgePlug();
+  if( portName.isEmpty() ){
+    return false;
+  }
+
+  serialPort.setPortName(portName);
+  if( !serialPort.open(QSerialPort::ReadWrite) ){
+    qDebug() << "open serial port " << serialPort.portName() <<  " failed: " << serialPort.errorString();
+    return false;
+  }
+
+  return true;
 }
 
 }}} // namespace Mdt{ namespace SerialPort{ namespace TestLib{

@@ -4,15 +4,13 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2024 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #ifndef MDT_SERIAL_PORT_PLATFORM_H
 #define MDT_SERIAL_PORT_PLATFORM_H
 
-// #include "mdt_serialport_export.h"
-#include <QtGlobal>
-// #include <QtSystemDetection> Qt6
+#include <QtSystemDetection>
 
 namespace Mdt{ namespace SerialPort{
 
@@ -21,7 +19,19 @@ namespace Mdt{ namespace SerialPort{
   constexpr
   bool osIsWindows() noexcept
   {
-#if Q_OS_WINN
+#ifdef Q_OS_WINN
+    return true;
+#else
+    return false;
+#endif
+  }
+
+  /*! \brief Returns true when building for Linux
+   */
+  constexpr
+  bool osIsLinux() noexcept
+  {
+#ifdef Q_OS_LINUX
     return true;
 #else
     return false;
