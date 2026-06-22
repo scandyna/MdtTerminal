@@ -80,7 +80,7 @@ class MainWindow : public QMainWindow
   Mdt::SerialPort::Settings mSerialPortSettings;
   QSerialPort mSerialPort;
   Mdt::SerialPort::Writer mWriter;
-  Mdt::SerialPort::PinoutSignalsEventNotifier mPinoutSignalsEventNotifier;
+  ///Mdt::SerialPort::PinoutSignalsEventNotifier mPinoutSignalsEventNotifier;
   Mdt::SerialPort::PinoutSignalsUiController mPinoutSignalsUiController;
   MainWindowStateMachine mStateMachine;
   QMetaObject::Connection mOnSerialPortErrorOccuredConnection;

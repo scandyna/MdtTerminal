@@ -24,14 +24,16 @@
 using namespace Mdt::SerialPort;
 
 
+/// \todo Add about Qt
+
 MainWindow::MainWindow(QWidget* parent)
  : QMainWindow(parent),
    mCentralWidget(new CentralWidget),
    mStatusLabel(new QLabel),
    mPinoutSignalsWidget(new Mdt::SerialPort::PinoutSignalsWidget),
    mSerialPortSettings( Mdt::SerialPort::Settings::defaultSettings() ),
-   mWriter(&mSerialPort),
-   mPinoutSignalsEventNotifier(&mSerialPort)
+   mWriter(&mSerialPort)/**,
+   mPinoutSignalsEventNotifier(&mSerialPort)*/
 {
   mUi.setupUi(this);
   setCentralWidget(mCentralWidget);
@@ -63,7 +65,7 @@ MainWindow::MainWindow(QWidget* parent)
   connect(&mSerialPort, &QSerialPort::readyRead, this, &MainWindow::readFromPort);
 
   connect(&mSerialPort, &QSerialPort::aboutToClose, &mPinoutSignalsUiController, &PinoutSignalsUiController::setAboutToCloseEvent);
-  connect(&mPinoutSignalsEventNotifier, &PinoutSignalsEventNotifier::signalsChanged, &mPinoutSignalsUiController, &PinoutSignalsUiController::setSignals);
+  ///connect(&mPinoutSignalsEventNotifier, &PinoutSignalsEventNotifier::signalsChanged, &mPinoutSignalsUiController, &PinoutSignalsUiController::setSignals);
 
   connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::receiveDataChanged, mPinoutSignalsWidget, &PinoutSignalsWidget::setReceiveDataOn);
   connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::transmitDataChanged, mPinoutSignalsWidget, &PinoutSignalsWidget::setTransmitDataOn);
@@ -187,7 +189,7 @@ void MainWindow::openSerialPort()
 
   connectOnSerialPortErrorOccured();
 
-  mPinoutSignalsEventNotifier.setPortOpen();
+  ///mPinoutSignalsEventNotifier.setPortOpen();
   showPortOpenStatusMessage();
   mStateMachine.setPortOpenEvent();
 }
@@ -222,7 +224,9 @@ void MainWindow::submitCommand(const QString & command)
 
   // mCentralWidget->addTextToConsole(command);
 
-  mWriter.write( command.toLocal8Bit() );
+  const auto written = mWriter.write( command.toLocal8Bit() );
+
+  qDebug() << " written: " << written;
 
   /// \todo return value ?
   // mSerialPort.write( command.toLocal8Bit() );
@@ -234,8 +238,18 @@ void MainWindow::readFromPort()
   assert( mSerialPort.isOpen() );
 
   /// \todo sandboxing
+  // qDebug() << "readFromPort...";
+
+  // const auto size = mSerialPort.bytesAvailable();
+  // qDebug() << " size (bytesAvailable): " << size;
+
+  // // Don't do this so blindly in production code !
+  // QByteArray data(size, Qt::Uninitialized);
+  // const auto readen = mSerialPort.read(data.data(), size);
+  // qDebug() << " readen: " << readen;
 
   QByteArray data = mSerialPort.readAll();
+
   for(char c : data){
     qDebug() << "0x" << QString::number(c, 16);
     if(c == 0){
