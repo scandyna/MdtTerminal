@@ -12,6 +12,7 @@
 
 #include "Mdt/SerialPort/Settings.h"
 #include "Mdt/SerialPort/PortOpenError.h"
+#include "Mdt/SerialPort/Writer.h"
 #include "Mdt/SerialPort/PinoutSignals.h"
 #include "mdt_serialport_export.h"
 #include <QObject>
@@ -48,6 +49,8 @@ namespace Mdt{ namespace SerialPort{
    *   bool hasSerialPortSettings() const;
    *   void openSerialPort();
    *   void closeSerialPort();
+   *   void submitCommand(const QString & command);
+   *   void readFromPort();
    *
    *  private:
    *
@@ -58,7 +61,7 @@ namespace Mdt{ namespace SerialPort{
    * };
    * \endcode
    *
-   * Here are some includes in MainWindow.cpp:
+   * Here is the top part of MainWindow.cpp:
    * \code
    * #include <Mdt/SerialPort/SettingsDialog.h>
    * #include <cassert>
@@ -72,6 +75,8 @@ namespace Mdt{ namespace SerialPort{
    * MainWindow::MainWindow(QWidget* parent)
    *  : QMainWindow(parent)
    * {
+   *   ...
+   *   connect(&mSerialPort, &SerialPort::readyRead, this, &MainWindow::readFromPort);
    * }
    * \endcode
    *
@@ -80,7 +85,9 @@ namespace Mdt{ namespace SerialPort{
    * MainWindow::MainWindow(QWidget* parent)
    *  : QMainWindow(parent)
    * {
+   *   ...
    *   mSerialPort.setPinoutSignalsEventNotifierEnabled(true);
+   *   connect(&mSerialPort, &SerialPort::aboutToClose, &mPinoutSignalsUiController, &PinoutSignalsUiController::setAboutToCloseEvent);
    *   connect(&mSerialPort, &SerialPort::pinoutSignalsChanged, &mPinoutSignalsUiController, &PinoutSignalsUiController::setSignals);
    *
    *   // Connect the various pinout signals to your widgets, f.ex.:
@@ -176,7 +183,6 @@ namespace Mdt{ namespace SerialPort{
    * void MainWindow::submitCommand(const QByteArray & command)
    * {
    *   assert( mSerialPort.isOpen() );
-   *   assert( mSerialPort.isWritable() );
    *
    *   const auto written = mSerialPort.write(command);
    *   if(written < 0){
@@ -206,7 +212,6 @@ namespace Mdt{ namespace SerialPort{
    * void MainWindow::submitCommand(const QByteArray & command)
    * {
    *   assert( mSerialPort.isOpen() );
-   *   assert( mSerialPort.isWritable() );
    *
    *   const qsizetype written = mSerialPort.write(command);
    *   if( written < command.size() ){
@@ -295,7 +300,6 @@ namespace Mdt{ namespace SerialPort{
    * void MainWindow::submitCommand(const QByteArray & command)
    * {
    *   assert( mSerialPort.isOpen() );
-   *   assert( mSerialPort.isWritable() );
    *
    *   const qsizetype written = mSerialPort.write(command);
    *   if( written < command.size() ){
@@ -325,6 +329,9 @@ namespace Mdt{ namespace SerialPort{
    *   if(error == QSerialPort::NoError){
    *     return;
    *   }
+   *
+   *   QString serialPortErrorString = mSerialPort.errorString();
+   *
    *   if(error == QSerialPort::ResourceError){
    *     // This error can occur when using an usb-serial adapter,
    *     // and it has been unplugged.
@@ -334,17 +341,20 @@ namespace Mdt{ namespace SerialPort{
    *     closeSerialPort();
    *     QString text = tr("The port %1 is no more available.").arg( mSerialPort.portName() );
    *     QString informativeText = tr("The port is probably an usb-serial adapter that has been unplugged.");
-   *     displayErrorMessage(text, informativeText);
+   *     QString detailedText = tr("System returned: %1").arg(serialPortErrorString);
+   *     displayErrorMessage(text, informativeText, detailedText);
    *     return;
    *   }
+   *
    *   // We don't know how to handle other errors yet.
-   *   QString serialPortErrorString = mSerialPort.errorString();
    *   closeSerialPort();
    *   QString text = tr("An unexpected error occurred.");
    *   QString informativeText = tr("System returned: %1").arg(serialPortErrorString);
    *   displayErrorMessage(text, informativeText);
    * }
    * \endcode
+   *
+   * \sa https://doc.qt.io/qt-6/qserialport.html
    *
    * ## Some personal notes
    *
@@ -403,6 +413,20 @@ namespace Mdt{ namespace SerialPort{
     const Settings & settings() const noexcept
     {
       return mSettings;
+    }
+
+    /*! \brief Get the port name
+     */
+    QString portName() const
+    {
+      return mSettings.portName();
+    }
+
+    /*! \brief Get the flow control
+     */
+    QSerialPort::FlowControl flowControl() const
+    {
+      return mPort.flowControl();
     }
 
     /*! \brief Check if this port has required settings
@@ -494,7 +518,45 @@ namespace Mdt{ namespace SerialPort{
      */
     bool setDataTerminalReady(bool set);
 
+    /*! \brief Set Request To Send (RTS) high or low
+     *
+     * Returns true on success, false otherwise.
+     * If the flag is true then the RTS signal is set to high; otherwise low.
+     *
+     * \pre This port must be open
+     * \sa isOpen()
+     */
+    bool setRequestToSend(bool set);
+
+    /*! \brief Set transmission line break high or low
+     *
+     * Returns true on success, false otherwise.
+     * If the flag is true then the transmission line is in break state; otherwise is in non-break state.
+     *
+     * \pre This port must be open
+     * \sa isOpen()
+     */
+    bool setBreakEnabled(bool set = true);
+
+    /*! \brief Get the error status of the serial port
+     */
+    QSerialPort::SerialPortError error() const
+    {
+      return mPort.error();
+    }
+
+    /*! \brief Returns a human-readable description of the last serial port error that occurred
+     */
+    QString errorString() const
+    {
+      return mPort.errorString();
+    }
+
    Q_SIGNALS:
+
+    /*! \brief This signal is emitted when the serial port is about to close
+     */
+    void aboutToClose();
 
     /*! \brief This signal is emitted every time a payload of data has been written to the serial port
      */
@@ -512,11 +574,16 @@ namespace Mdt{ namespace SerialPort{
      */
     void pinoutSignalsChanged(const PinoutSignals & ps);
 
+    /*! \brief This signal is emitted when an error occurs in the serial port
+     */
+    void errorOccurred(QSerialPort::SerialPortError error);
+
    private:
 
     void throwPermissionPortOpenError();
 
     QSerialPort mPort;
+    Writer mWriter;
     Settings mSettings;
     std::unique_ptr<PinoutSignalsEventNotifier> mPinoutSignalsEventNotifier;
   };

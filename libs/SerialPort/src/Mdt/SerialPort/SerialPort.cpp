@@ -17,8 +17,11 @@ namespace Mdt{ namespace SerialPort{
 
 SerialPort::SerialPort(QObject *parent)
  : QObject(parent),
+   mWriter(&mPort),
    mSettings( Settings::defaultSettings() )
 {
+  connect(&mPort, &QSerialPort::aboutToClose, this, &SerialPort::aboutToClose);
+  connect(&mPort, &QSerialPort::errorOccurred, this, &SerialPort::errorOccurred);
   connect(&mPort, &QSerialPort::bytesWritten, this, &SerialPort::bytesWritten);
   connect(&mPort, &QSerialPort::readyRead, this, &SerialPort::readyRead);
 }
@@ -51,6 +54,7 @@ void SerialPort::setSettings(const Settings & settings)
   assert( !isOpen() );
 
   mSettings = settings;
+  mWriter.setSettings( settings.sendByteByByteSettings() );
 }
 
 void SerialPort::open(QIODeviceBase::OpenMode mode)
@@ -153,7 +157,7 @@ void SerialPort::close()
 
 qint64 SerialPort::write(const QByteArray &data)
 {
-  return mPort.write(data);
+  return mWriter.write(data);
 }
 
 QByteArray SerialPort::readAll()
@@ -166,6 +170,20 @@ bool SerialPort::setDataTerminalReady(bool set)
   assert( isOpen() );
 
   return mPort.setDataTerminalReady(set);
+}
+
+bool SerialPort::setRequestToSend(bool set)
+{
+  assert( isOpen() );
+
+  return mPort.setRequestToSend(set);
+}
+
+bool SerialPort::setBreakEnabled(bool set)
+{
+  assert( isOpen() );
+
+  return mPort.setBreakEnabled(set);
 }
 
 void SerialPort::throwPermissionPortOpenError()
