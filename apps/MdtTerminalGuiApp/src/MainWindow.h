@@ -10,18 +10,22 @@
 #ifndef MAIN_WINDOW_H
 #define MAIN_WINDOW_H
 
-#include "Mdt/SerialPort/Settings.h"
-#include "Mdt/SerialPort/PinoutSignalsEventNotifier.h"
+#include "Mdt/SerialPort/SerialPort.h"
+///#include "Mdt/SerialPort/Settings.h"
+///#include "Mdt/SerialPort/PinoutSignalsEventNotifier.h"
 #include "Mdt/SerialPort/PinoutSignalsUiController.h"
 #include "Mdt/SerialPort/PinoutSignalsWidget.h"
-#include "Mdt/SerialPort/Writer.h"
+#include "Mdt/SerialPort/QRuntimeError.h"
+///#include "Mdt/SerialPort/Writer.h"
 #include "ui_MainWindow.h"
 #include "MainWindowState.h"
 #include "MainWindowStateMachine.h"
 #include "CentralWidget.h"
 #include <QMainWindow>
 #include <QWidget>
-#include <QSerialPort>
+
+///#include <QSerialPort>
+
 #include <QString>
 #include <QLabel>
 
@@ -69,6 +73,7 @@ class MainWindow : public QMainWindow
 
   void showStatusMessage(const QString &message);
   void displayErrorMessage( const QString & text, const QString & informativeText = QString(), const QString & detailedText = QString() );
+  void displayError(const Mdt::SerialPort::QRuntimeError & error);
 
   void showPortOpenStatusMessage();
   void showPortClosedStatusMessage();
@@ -77,9 +82,10 @@ class MainWindow : public QMainWindow
   CentralWidget *mCentralWidget;
   QLabel *mStatusLabel;
   Mdt::SerialPort::PinoutSignalsWidget *mPinoutSignalsWidget;
-  Mdt::SerialPort::Settings mSerialPortSettings;
-  QSerialPort mSerialPort;
-  Mdt::SerialPort::Writer mWriter;
+  Mdt::SerialPort::SerialPort mSerialPort;
+  ///Mdt::SerialPort::Settings mSerialPortSettings;
+  ///QSerialPort mSerialPort;
+  ///Mdt::SerialPort::Writer mWriter;
   ///Mdt::SerialPort::PinoutSignalsEventNotifier mPinoutSignalsEventNotifier;
   Mdt::SerialPort::PinoutSignalsUiController mPinoutSignalsUiController;
   MainWindowStateMachine mStateMachine;

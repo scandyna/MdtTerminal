@@ -11,7 +11,9 @@
 #include "Mdt/SerialPort/SettingsDialog.h"
 #include "Mdt/SerialPort/SettingsStringFormat.h"
 #include "Mdt/SerialPort/FlowControlStringFormat.h"
-#include "Mdt/SerialPort/PortSetup.h"
+
+///#include "Mdt/SerialPort/PortSetup.h"
+
 #include "Mdt/SerialPort/QRuntimeError.h"
 #include <QAction>
 #include <QStatusBar>
@@ -30,9 +32,9 @@ MainWindow::MainWindow(QWidget* parent)
  : QMainWindow(parent),
    mCentralWidget(new CentralWidget),
    mStatusLabel(new QLabel),
-   mPinoutSignalsWidget(new Mdt::SerialPort::PinoutSignalsWidget),
+   mPinoutSignalsWidget(new Mdt::SerialPort::PinoutSignalsWidget)/**,
    mSerialPortSettings( Mdt::SerialPort::Settings::defaultSettings() ),
-   mWriter(&mSerialPort)/**,
+   mWriter(&mSerialPort),
    mPinoutSignalsEventNotifier(&mSerialPort)*/
 {
   mUi.setupUi(this);
@@ -62,9 +64,11 @@ MainWindow::MainWindow(QWidget* parent)
 
   connect(mCentralWidget, &CentralWidget::sendCommandRequested, this, &MainWindow::submitCommand);
 
-  connect(&mSerialPort, &QSerialPort::readyRead, this, &MainWindow::readFromPort);
+  connect(&mSerialPort, &SerialPort::readyRead, this, &MainWindow::readFromPort);
 
-  connect(&mSerialPort, &QSerialPort::aboutToClose, &mPinoutSignalsUiController, &PinoutSignalsUiController::setAboutToCloseEvent);
+  mSerialPort.setPinoutSignalsEventNotifierEnabled(true);
+  connect(&mSerialPort, &SerialPort::aboutToClose, &mPinoutSignalsUiController, &PinoutSignalsUiController::setAboutToCloseEvent);
+  connect(&mSerialPort, &SerialPort::pinoutSignalsChanged, &mPinoutSignalsUiController, &PinoutSignalsUiController::setSignals);
   ///connect(&mPinoutSignalsEventNotifier, &PinoutSignalsEventNotifier::signalsChanged, &mPinoutSignalsUiController, &PinoutSignalsUiController::setSignals);
 
   connect(&mPinoutSignalsUiController, &PinoutSignalsUiController::receiveDataChanged, mPinoutSignalsWidget, &PinoutSignalsWidget::setReceiveDataOn);
@@ -88,7 +92,7 @@ void MainWindow::setCurrentState(const MainWindowState & state)
   mUi.actionOpenPort->setEnabled( state.canOpenPort() );
   mUi.actionClosePort->setEnabled( state.canClosePort() );
   mUi.actionSetDTR->setEnabled( state.canSetDTR() );
-  mUi.actionSetRTS->setEnabled( state.canSetRTS() && (mSerialPortSettings.flowControl() != QSerialPort::HardwareControl) );
+  mUi.actionSetRTS->setEnabled( state.canSetRTS() && (mSerialPort.settings().flowControl() != QSerialPort::HardwareControl) );
   mUi.actionSetBreak->setEnabled( state.canSetBreak() );
   mUi.actionSendXON->setEnabled( state.canSendXON() );
   mUi.actionSendXOFF->setEnabled( state.canSendXOFF() );
@@ -100,22 +104,17 @@ void MainWindow::setupSerialPort()
 
   Mdt::SerialPort::SettingsDialog dialog(this);
 
-  dialog.setSettings(mSerialPortSettings);
+  dialog.setSettings( mSerialPort.settings() );
 
   const int result = dialog.exec();
   if(result == QDialog::Accepted){
-    mSerialPortSettings = dialog.buildSettings();
-    mWriter.setSettings( mSerialPortSettings.sendByteByByteSettings() );
+    mSerialPort.setSettings( dialog.buildSettings() );
   }
 }
 
 bool MainWindow::hasSerialPortSettings() const
 {
-  if( !mSerialPortSettings.hasPortInfo() ){
-    return false;
-  }
-
-  return true;
+  return mSerialPort.hasRequiredSettings();
 }
 
 void MainWindow::openSerialPort()
@@ -129,84 +128,91 @@ void MainWindow::openSerialPort()
     return;
   }
 
-  Mdt::SerialPort::PortSetup ps;
-
   try{
-    ps.fetchPortInformations( mSerialPortSettings.portInfo() );
-  }catch(const Mdt::SerialPort::QRuntimeError & error){
-    displayErrorMessage(
-      tr("Error while initializing port setup: %1")
-      .arg( error.text() )
-    );
+    mSerialPort.openReadWrite();
+  }catch(const Mdt::SerialPort::PortOpenError & error){
+    displayError(error);
     return;
   }
 
-  try{
-    ps.configureInterfaceBeforeOpenPortIfRequired( mSerialPortSettings.interface() );
-  }catch(const Mdt::SerialPort::QRuntimeError & error){
-      displayErrorMessage(
-        tr("Error while configuring interface for port %1 (before open)")
-        .arg( mSerialPortSettings.portName() )
-        , error.informativeText(), error.detailedText() );
-      return;
-  }
-
-  ps.setSettingsToPort(mSerialPortSettings, mSerialPort);
-  /// mSerialPort.setReadBufferSize(10);
-  if( !mSerialPort.open(QIODevice::ReadWrite) ){
-    /// \todo TODO: should be cleaner
-    if(mSerialPort.error() == QSerialPort::PermissionError){
-      const QString text = tr(
-        "Open serial port %1 failed due to permission error."
-      ).arg( mSerialPort.portName() );
-      const QString informativeText = tr(
-        "The device may already be locked by another program, or you don't have the permissions to open it.\n"
-        "System reported: %1"
-      ).arg( mSerialPort.errorString() );
-      /// \todo Should only be displayed on Linux
-      const QString linuxDetailedText = tr(
-        "On Linux, like Ubuntu, you may not be in the dialout group. Maybe try:\n"
-        "sudo adduser <user> dialout\n"
-        "Then logoff and login again (your groups can be listed with the groups command)."
-      );
-      displayErrorMessage(text, informativeText, linuxDetailedText);
-    }else{
-      displayErrorMessage(
-        tr("Error while open serial port %1. System reported: %2")
-        .arg( mSerialPort.portName(), mSerialPort.errorString() )
-      );
-    }
-    return;
-  }
-
-  try{
-    ps.configureInterfaceOncePortOpenIfRequired(mSerialPortSettings.interface(), mSerialPort);
-  }catch(const Mdt::SerialPort::QRuntimeError & error){
-      displayErrorMessage( error.text(), error.informativeText(), error.detailedText() );
-      mSerialPort.close();
-      return;
-  }
+  // Mdt::SerialPort::PortSetup ps;
+  // 
+  // try{
+  //   ps.fetchPortInformations( mSerialPortSettings.portInfo() );
+  // }catch(const Mdt::SerialPort::QRuntimeError & error){
+  //   displayErrorMessage(
+  //     tr("Error while initializing port setup: %1")
+  //     .arg( error.text() )
+  //   );
+  //   return;
+  // }
+  // 
+  // try{
+  //   ps.configureInterfaceBeforeOpenPortIfRequired( mSerialPortSettings.interface() );
+  // }catch(const Mdt::SerialPort::QRuntimeError & error){
+  //     displayErrorMessage(
+  //       tr("Error while configuring interface for port %1 (before open)")
+  //       .arg( mSerialPortSettings.portName() )
+  //       , error.informativeText(), error.detailedText() );
+  //     return;
+  // }
+  // 
+  // ps.setSettingsToPort(mSerialPortSettings, mSerialPort);
+  // /// mSerialPort.setReadBufferSize(10);
+  // if( !mSerialPort.open(QIODevice::ReadWrite) ){
+  //   /// \todo TODO: should be cleaner
+  //   if(mSerialPort.error() == QSerialPort::PermissionError){
+  //     const QString text = tr(
+  //       "Open serial port %1 failed due to permission error."
+  //     ).arg( mSerialPort.portName() );
+  //     const QString informativeText = tr(
+  //       "The device may already be locked by another program, or you don't have the permissions to open it.\n"
+  //       "System reported: %1"
+  //     ).arg( mSerialPort.errorString() );
+  //     /// \todo Should only be displayed on Linux
+  //     const QString linuxDetailedText = tr(
+  //       "On Linux, like Ubuntu, you may not be in the dialout group. Maybe try:\n"
+  //       "sudo adduser <user> dialout\n"
+  //       "Then logoff and login again (your groups can be listed with the groups command)."
+  //     );
+  //     displayErrorMessage(text, informativeText, linuxDetailedText);
+  //   }else{
+  //     displayErrorMessage(
+  //       tr("Error while open serial port %1. System reported: %2")
+  //       .arg( mSerialPort.portName(), mSerialPort.errorString() )
+  //     );
+  //   }
+  //   return;
+  // }
+  // 
+  // try{
+  //   ps.configureInterfaceOncePortOpenIfRequired(mSerialPortSettings.interface(), mSerialPort);
+  // }catch(const Mdt::SerialPort::QRuntimeError & error){
+  //     displayErrorMessage( error.text(), error.informativeText(), error.detailedText() );
+  //     mSerialPort.close();
+  //     return;
+  // }
 
   connectOnSerialPortErrorOccured();
 
-  ///mPinoutSignalsEventNotifier.setPortOpen();
+  // ///mPinoutSignalsEventNotifier.setPortOpen();
   showPortOpenStatusMessage();
   mStateMachine.setPortOpenEvent();
 }
 
 void MainWindow::closeSerialPort()
 {
-  if( !mSerialPort.isOpen() ){
-    return;
-  }
-
-  /*
-   * Some drivers/devices, like Moxa UPort Linux,
-   * do not cancel break.
-   */
-  if(mSerialPort.error() == QSerialPort::NoError){
-    setBreak(false);
-  }
+  // if( !mSerialPort.isOpen() ){
+  //   return;
+  // }
+  // 
+  // /*
+  //  * Some drivers/devices, like Moxa UPort Linux,
+  //  * do not cancel break.
+  //  */
+  // if(mSerialPort.error() == QSerialPort::NoError){
+  //   setBreak(false);
+  // }
 
   mSerialPort.close();
 
@@ -216,20 +222,33 @@ void MainWindow::closeSerialPort()
   mStateMachine.setPortClosedEvent();
 }
 
+/// \todo should use a text encoder
 void MainWindow::submitCommand(const QString & command)
 {
   assert( mSerialPort.isOpen() );
 
-  qDebug() << "submit command: " << command;
+  const QByteArray data = command.toLocal8Bit();
+  const qsizetype written = mSerialPort.write(data);
+  if( written < data.size() ){
+    const QString text = tr("Failed to write all data to port %1.\n"
+                            "Error: %2")
+                         .arg( mSerialPort.portName(), mSerialPort.errorString() );
+    displayErrorMessage(text);
+    return;
+  }
 
-  // mCentralWidget->addTextToConsole(command);
-
-  const auto written = mWriter.write( command.toLocal8Bit() );
-
-  qDebug() << " written: " << written;
-
-  /// \todo return value ?
-  // mSerialPort.write( command.toLocal8Bit() );
+  // assert( mSerialPort.isOpen() );
+  // 
+  // qDebug() << "submit command: " << command;
+  // 
+  // // mCentralWidget->addTextToConsole(command);
+  // 
+  // const auto written = mWriter.write( command.toLocal8Bit() );
+  // 
+  // qDebug() << " written: " << written;
+  // 
+  // /// \todo return value ?
+  // // mSerialPort.write( command.toLocal8Bit() );
 }
 
 /// \todo should use a text decoder
@@ -249,6 +268,12 @@ void MainWindow::readFromPort()
   // qDebug() << " readen: " << readen;
 
   QByteArray data = mSerialPort.readAll();
+  if(data.isEmpty() && mSerialPort.error() != QSerialPort::NoError){
+    QString text = tr("reading from port %1 failed.\nsystem returned: %2")
+                   .arg( mSerialPort.portName(), mSerialPort.errorString() );
+    displayErrorMessage(text);
+    return;
+  }
 
   for(char c : data){
     qDebug() << "0x" << QString::number(c, 16);
@@ -315,7 +340,7 @@ void MainWindow::sendXOFF()
 
 void MainWindow::connectOnSerialPortErrorOccured()
 {
-  mOnSerialPortErrorOccuredConnection = connect(&mSerialPort, &QSerialPort::errorOccurred, this, &MainWindow::onSerialPortErrorOccured);
+  mOnSerialPortErrorOccuredConnection = connect(&mSerialPort, &SerialPort::errorOccurred, this, &MainWindow::onSerialPortErrorOccured);
 }
 
 void MainWindow::disconnectOnSerialPortErrorOccured()
@@ -325,27 +350,55 @@ void MainWindow::disconnectOnSerialPortErrorOccured()
 
 void MainWindow::onSerialPortErrorOccured(QSerialPort::SerialPortError error)
 {
-  if(error != QSerialPort::NoError){
-    qDebug() << "serial port error: " << error;
-    if(error == QSerialPort::ResourceError){
-      /*
-       * If, f.ex. and USB adapter has been plugged out,
-       * this error will come again and again.
-       * The best we can do is to close the port and display the error.
-       * Also, when the user plugs the adapter again, it may have another port name.
-       */
-      closeSerialPort();
-    }
-    /** \todo
-     * If unplug an USB device, several QSerialPort::ReadError will be emitted.
-     * This is a bug in PinoutSignalsEventNotifier.
-     * https://gitlab.com/scandyna/mdtterminal/-/issues/5
-     */
-    displayErrorMessage(
-      tr("Unexpected serial port error occured: %1")
-      .arg( mSerialPort.errorString() )
-    );
+  if(error == QSerialPort::NoError){
+    return;
   }
+
+  QString serialPortErrorString = mSerialPort.errorString();
+
+  if(error == QSerialPort::ResourceError){
+    /*
+     * This error can occur when using an usb-serial adapter,
+     * and it has been unplugged.
+     * Once plugged in again, the system could map it to another serial port
+     * (like ttyUSB0 -> ttyUSB2, COM3 -> COM5).
+     * The best we can do is probably to close the port and show an error to the user.
+     */
+    closeSerialPort();
+    QString text = tr("The port %1 is no more available.").arg( mSerialPort.portName() );
+    QString informativeText = tr("The port is probably an usb-serial adapter that has been unplugged.");
+    QString detailedText = tr("System returned: %1").arg(serialPortErrorString);
+    displayErrorMessage(text, informativeText, detailedText);
+    return;
+  }
+
+  // We don't know how to handle other errors yet.
+  closeSerialPort();
+  QString text = tr("An unexpected error occurred.");
+  QString informativeText = tr("System returned: %1").arg(serialPortErrorString);
+  displayErrorMessage(text, informativeText);
+
+  // if(error != QSerialPort::NoError){
+  //   qDebug() << "serial port error: " << error;
+  //   if(error == QSerialPort::ResourceError){
+  //     /*
+  //      * If, f.ex. and USB adapter has been plugged out,
+  //      * this error will come again and again.
+  //      * The best we can do is to close the port and display the error.
+  //      * Also, when the user plugs the adapter again, it may have another port name.
+  //      */
+  //     closeSerialPort();
+  //   }
+  //   /** \todo
+  //    * If unplug an USB device, several QSerialPort::ReadError will be emitted.
+  //    * This is a bug in PinoutSignalsEventNotifier.
+  //    * https://gitlab.com/scandyna/mdtterminal/-/issues/5
+  //    */
+  //   displayErrorMessage(
+  //     tr("Unexpected serial port error occured: %1")
+  //     .arg( mSerialPort.errorString() )
+  //   );
+  // }
 }
 
 void MainWindow::sendAsciiControl(char c)
@@ -363,6 +416,7 @@ void MainWindow::showStatusMessage(const QString &message)
 
 void MainWindow::displayErrorMessage(const QString & text, const QString & informativeText, const QString & detailedText)
 {
+  /// \todo Should not use exec() !
   QMessageBox msgBox(this);
   msgBox.setWindowTitle( tr("Error") );
   msgBox.setIcon(QMessageBox::Critical);
@@ -379,12 +433,17 @@ void MainWindow::displayErrorMessage(const QString & text, const QString & infor
   // QMessageBox::critical(this, tr("Error"), text);
 }
 
+void MainWindow::displayError(const Mdt::SerialPort::QRuntimeError & error)
+{
+  displayErrorMessage( error.text(), error.informativeText(), error.detailedText() );
+}
+
 void MainWindow::showPortOpenStatusMessage()
 {
   showStatusMessage(
     tr("Port open: %1 %2 %3")
     .arg( mSerialPort.portName() )
-    .arg( Mdt::SerialPort::SettingsStringFormat::baudeRateAndDpsStringFromPort(mSerialPort) )
+    .arg( Mdt::SerialPort::SettingsStringFormat::baudeRateAndDpsStringFromSettings( mSerialPort.settings() ) )
     .arg( Mdt::SerialPort::FlowControlStringFormat::flowControlToShortString( mSerialPort.flowControl() ) )
   );
 }
