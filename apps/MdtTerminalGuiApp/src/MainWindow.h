@@ -11,21 +11,15 @@
 #define MAIN_WINDOW_H
 
 #include "Mdt/SerialPort/SerialPort.h"
-///#include "Mdt/SerialPort/Settings.h"
-///#include "Mdt/SerialPort/PinoutSignalsEventNotifier.h"
 #include "Mdt/SerialPort/PinoutSignalsUiController.h"
 #include "Mdt/SerialPort/PinoutSignalsWidget.h"
 #include "Mdt/SerialPort/QRuntimeError.h"
-///#include "Mdt/SerialPort/Writer.h"
 #include "ui_MainWindow.h"
 #include "MainWindowState.h"
 #include "MainWindowStateMachine.h"
 #include "CentralWidget.h"
 #include <QMainWindow>
 #include <QWidget>
-
-///#include <QSerialPort>
-
 #include <QString>
 #include <QLabel>
 
@@ -83,10 +77,6 @@ class MainWindow : public QMainWindow
   QLabel *mStatusLabel;
   Mdt::SerialPort::PinoutSignalsWidget *mPinoutSignalsWidget;
   Mdt::SerialPort::SerialPort mSerialPort;
-  ///Mdt::SerialPort::Settings mSerialPortSettings;
-  ///QSerialPort mSerialPort;
-  ///Mdt::SerialPort::Writer mWriter;
-  ///Mdt::SerialPort::PinoutSignalsEventNotifier mPinoutSignalsEventNotifier;
   Mdt::SerialPort::PinoutSignalsUiController mPinoutSignalsUiController;
   MainWindowStateMachine mStateMachine;
   QMetaObject::Connection mOnSerialPortErrorOccuredConnection;
