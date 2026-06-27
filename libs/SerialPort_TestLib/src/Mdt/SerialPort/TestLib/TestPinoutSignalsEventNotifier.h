@@ -47,12 +47,13 @@ namespace Mdt{ namespace SerialPort{ namespace TestLib{
     void readAndUpdatePinoutSignalsStates();
 
     bool portIsOpen() const override;
+    void startTimer();
     bool timerIsActive() const override;
+    void stopTimer() override;
 
    private:
 
-    void startTimer() override;
-    void stopTimer() override;
+    void doStartTimer() override;
 
     qint64 bytesAvailable() const override;
     qint64 bytesToWrite() const override;

@@ -103,19 +103,24 @@ bool TestPinoutSignalsEventNotifier::portIsOpen() const
   return mPortIsOpen;
 }
 
+void TestPinoutSignalsEventNotifier::startTimer()
+{
+  AbstractPinoutSignalsEventNotifier::startTimer();
+}
+
 bool TestPinoutSignalsEventNotifier::timerIsActive() const
 {
   return mTimerIsActive;
 }
 
-void TestPinoutSignalsEventNotifier::startTimer()
-{
-  mTimerIsActive = true;
-}
-
 void TestPinoutSignalsEventNotifier::stopTimer()
 {
   mTimerIsActive = false;
+}
+
+void TestPinoutSignalsEventNotifier::doStartTimer()
+{
+  mTimerIsActive = true;
 }
 
 qint64 TestPinoutSignalsEventNotifier::bytesAvailable() const

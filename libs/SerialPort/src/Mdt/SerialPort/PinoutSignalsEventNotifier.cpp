@@ -41,7 +41,7 @@ bool PinoutSignalsEventNotifier::portIsOpen() const
   return mSerialPort->isOpen();
 }
 
-void PinoutSignalsEventNotifier::startTimer()
+void PinoutSignalsEventNotifier::doStartTimer()
 {
   mTimer.start();
 }

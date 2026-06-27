@@ -42,6 +42,8 @@ TEST_CASE("readAndUpdatePinoutSignalsStates")
 {
   TestPinoutSignalsEventNotifier psn;
   QSerialPort::PinoutSignals qps;
+  psn.setPortOpen();
+  psn.stopTimer();
 
   SECTION("DTR ON")
   {
@@ -200,8 +202,6 @@ TEST_CASE("Break_changedEvent")
 }
 
 /*
- * TODO: canReadFromPort()
- *
  * BUG GL-5
  * https://gitlab.com/scandyna/mdtterminal/-/work_items/5
  *
@@ -231,4 +231,19 @@ TEST_CASE("GL-5 pinout signals should not continue reading from port once closed
   // Timer timeout event that has been queued
   psn.setTimerTimeoutEvent();
   CHECK( !psn.timerIsActive() );
+}
+
+TEST_CASE("GL-5 startTimer should check if port is open")
+{
+  TestPinoutSignalsEventNotifier psn;
+  psn.setPortOpen();
+  CHECK( psn.timerIsActive() );
+
+  psn.setAboutToCloseEvent();
+  CHECK( !psn.timerIsActive() );
+  CHECK( !psn.portIsOpen() );
+
+  psn.startTimer();
+  CHECK( !psn.timerIsActive() );
+  CHECK( !psn.portIsOpen() );
 }

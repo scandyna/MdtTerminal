@@ -112,14 +112,35 @@ namespace Mdt{ namespace SerialPort{
     virtual
     bool portIsOpen() const = 0;
 
+   protected:
+
     /*! \brief Start the timer
      *
-     * \todo GL-5
-     * Update the behaviour: this method should only start the timer if the port is open
+     * Bug GL-5
      * https://gitlab.com/scandyna/mdtterminal/-/work_items/5
+     *
+     * Many methods will call this one in some pattern like:
+     * \code
+     * stopTimer();
+     * doStuffThatMayClosePort();
+     * startTimer();
+     * \endcode
+     * In some case, doStuffThatMayClosePort() can produce an error.
+     * The typical one is a removable serial adapter (like an usb-serial device) that gets unplugged.
+     * At that point, QSerialPort::errorOccured() will be emitted,
+     * the application may close the serial port.
+     * Once doStuffThatMayClosePort() returns, the port is closed.
+     * If the timer is blindly started again,
+     * we end up reading from a closed port endlessly.
+     */
+    void startTimer();
+
+   private:
+
+    /*! \brief Start the timer
      */
     virtual
-    void startTimer() = 0;
+    void doStartTimer() = 0;
 
     /*! \brief Check the timer is active (running)
      */

@@ -157,8 +157,16 @@ void AbstractPinoutSignalsEventNotifier::updateTransmitDataState()
 void AbstractPinoutSignalsEventNotifier::readAndUpdatePinoutSignalsStates()
 {
   assert( !timerIsActive() );
+  assert( portIsOpen() );
 
   mCurrentPinoutSignals.setSignals( readPinoutSignals() );
+}
+
+void AbstractPinoutSignalsEventNotifier::startTimer()
+{
+  if( portIsOpen() ){
+   doStartTimer();
+  }
 }
 
 }} // namespace Mdt{ namespace SerialPort{
