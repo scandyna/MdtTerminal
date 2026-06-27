@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2025-2025 Philippe Steinmann.
+ ** Copyright (C) 2025-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "TestPinoutSignalsEventNotifier.h"
@@ -17,8 +17,15 @@ TestPinoutSignalsEventNotifier::TestPinoutSignalsEventNotifier(QObject *parent)
 {
 }
 
+void TestPinoutSignalsEventNotifier::setPortOpen()
+{
+  mPortIsOpen = true;
+  AbstractPinoutSignalsEventNotifier::setPortOpen();
+}
+
 void TestPinoutSignalsEventNotifier::setAboutToCloseEvent()
 {
+  mPortIsOpen = false;
   AbstractPinoutSignalsEventNotifier::setAboutToCloseEvent();
 }
 
@@ -89,6 +96,11 @@ void TestPinoutSignalsEventNotifier::updateTransmitDataState()
 void TestPinoutSignalsEventNotifier::readAndUpdatePinoutSignalsStates()
 {
   AbstractPinoutSignalsEventNotifier::readAndUpdatePinoutSignalsStates();
+}
+
+bool TestPinoutSignalsEventNotifier::portIsOpen() const
+{
+  return mPortIsOpen;
 }
 
 bool TestPinoutSignalsEventNotifier::timerIsActive() const

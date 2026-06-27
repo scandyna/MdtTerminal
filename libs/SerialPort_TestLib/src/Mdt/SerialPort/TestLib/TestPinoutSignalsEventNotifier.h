@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2025-2025 Philippe Steinmann.
+ ** Copyright (C) 2025-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #ifndef MDT_SERIAL_PORT_TEST_LIB_TEST_PINOUT_SIGNALS_EVENT_NOTIFIER_H
@@ -15,7 +15,7 @@
 
 namespace Mdt{ namespace SerialPort{ namespace TestLib{
 
-  /*! \brief
+  /*! \internal
    */
   class MDT_SERIALPORT_TESTLIB_EXPORT TestPinoutSignalsEventNotifier : public AbstractPinoutSignalsEventNotifier
   {
@@ -28,6 +28,7 @@ namespace Mdt{ namespace SerialPort{ namespace TestLib{
     explicit
     TestPinoutSignalsEventNotifier(QObject *parent = nullptr);
 
+    void setPortOpen();
     void setAboutToCloseEvent();
     void setTimerTimeoutEvent();
     void setReadyReadEvent();
@@ -45,8 +46,8 @@ namespace Mdt{ namespace SerialPort{ namespace TestLib{
     void updateTransmitDataState();
     void readAndUpdatePinoutSignalsStates();
 
+    bool portIsOpen() const override;
     bool timerIsActive() const override;
-    bool timerHasBeenReset() const;
 
    private:
 
@@ -61,6 +62,7 @@ namespace Mdt{ namespace SerialPort{ namespace TestLib{
     qint64 mBytesAvailable = 0;
     qint64 mBytesToWrite = 0;
 
+    bool mPortIsOpen = false;
     bool mTimerIsActive = false;
     QSerialPort::PinoutSignals mPortPinoutSignals = QSerialPort::NoSignal;
   };

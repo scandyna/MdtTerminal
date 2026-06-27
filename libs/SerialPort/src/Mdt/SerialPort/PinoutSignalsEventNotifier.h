@@ -94,6 +94,7 @@ namespace Mdt{ namespace SerialPort{
 
    private:
 
+    bool portIsOpen() const override;
     void startTimer() override;
     bool timerIsActive() const override;
     void stopTimer() override;

@@ -4,13 +4,12 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2025-2025 Philippe Steinmann.
+ ** Copyright (C) 2025-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "PinoutSignalsEventNotifier.h"
 #include <chrono>
 #include <cassert>
-
 
 using namespace std::chrono_literals;
 
@@ -33,6 +32,13 @@ PinoutSignalsEventNotifier::PinoutSignalsEventNotifier(QSerialPort *serialPort, 
   connect(&mTimer, &QTimer::timeout, this, &PinoutSignalsEventNotifier::setTimerTimeoutEvent);
   mTimer.setTimerType(Qt::CoarseTimer);
   mTimer.setInterval(20ms);
+}
+
+bool PinoutSignalsEventNotifier::portIsOpen() const
+{
+  assert( !mSerialPort.isNull() );
+
+  return mSerialPort->isOpen();
 }
 
 void PinoutSignalsEventNotifier::startTimer()

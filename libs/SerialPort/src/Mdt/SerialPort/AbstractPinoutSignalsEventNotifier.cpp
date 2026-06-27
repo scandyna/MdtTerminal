@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2025-2025 Philippe Steinmann.
+ ** Copyright (C) 2025-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "AbstractPinoutSignalsEventNotifier.h"
@@ -34,7 +34,23 @@ void AbstractPinoutSignalsEventNotifier::setAboutToCloseEvent()
 
 void AbstractPinoutSignalsEventNotifier::setTimerTimeoutEvent()
 {
+  /*
+   * Bug GL-5
+   * https://gitlab.com/scandyna/mdtterminal/-/work_items/5
+   *
+   * By calling functions that processes events (event loop),
+   * the port can be closed.
+   * setAboutToCloseEvent() will be called, and stops the timer.
+   * Then, we re-enter this method, and we start the timer again.
+   * We must make sure:
+   * - To stop the timer in all cases
+   * - Do not restart the timer when the port has been closed.
+   */
   stopTimer();
+  if( !portIsOpen() ){
+    return;
+  }
+
   mPreviousPinoutSignals = mCurrentPinoutSignals;
 
   updateReceiveDataState();

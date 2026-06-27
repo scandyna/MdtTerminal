@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2025-2025 Philippe Steinmann.
+ ** Copyright (C) 2025-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "Mdt/SerialPort/TestLib/TestPinoutSignalsEventNotifier.h"
@@ -19,6 +19,7 @@ TEST_CASE("initialState")
 {
   TestPinoutSignalsEventNotifier psn;
 
+  CHECK( !psn.portIsOpen() );
   CHECK( !psn.timerIsActive() );
   CHECK( !psn.shouldNotifySignalsChanged() );
 }
@@ -29,9 +30,11 @@ TEST_CASE("openClose")
   CHECK( !psn.timerIsActive() );
 
   psn.setPortOpen();
+  CHECK( psn.portIsOpen() );
   CHECK( psn.timerIsActive() );
 
   psn.setAboutToCloseEvent();
+  CHECK( !psn.portIsOpen() );
   CHECK( !psn.timerIsActive() );
 }
 
@@ -116,6 +119,7 @@ TEST_CASE("updateTransmitDataState")
 TEST_CASE("readyRead_sets_RX_ON_then_OFF_whenNoBytesAvailable")
 {
   TestPinoutSignalsEventNotifier psn;
+  psn.setPortOpen();
 
   psn.setBytesAvailable(10);
   psn.setReadyReadEvent();
@@ -139,6 +143,7 @@ TEST_CASE("readyRead_sets_RX_ON_then_OFF_whenNoBytesAvailable")
 TEST_CASE("bytesWritten_sets_TX_ON_then_OFF_when_NoBytesToWrite")
 {
   TestPinoutSignalsEventNotifier psn;
+  psn.setPortOpen();
 
   psn.setBytesToWrite(10);
   psn.setBytesWrittenEvent(5);
@@ -192,4 +197,38 @@ TEST_CASE("Break_changedEvent")
 
   CHECK( psn.currentSignals().breakIsOn() );
   CHECK( psn.shouldNotifySignalsChanged() );
+}
+
+/*
+ * TODO: canReadFromPort()
+ *
+ * BUG GL-5
+ * https://gitlab.com/scandyna/mdtterminal/-/work_items/5
+ *
+ * When a removable serial adapter (like usb-serial) is unplugged, and the port gets closed,
+ * AbstractPinoutSignalsEventNotifier::setTimerTimeoutEvent() continues to be called.
+ * When closing the port, AbstractPinoutSignalsEventNotifier::setAboutToCloseEvent() gets called, no issue here.
+ * It is to expect that a timer timeout event is queued in the event loop, setAboutToCloseEvent() stops the timer.
+ * Then, setTimerTimeoutEvent() is called again, and it starts the timer again.
+ *
+ * Steps to reproduce:
+ * - Open a serial port using a removable adapter (usb-serial)
+ * - Unplug the adapter
+ */
+TEST_CASE("GL-5 pinout signals should not continue reading from port once closed")
+{
+  TestPinoutSignalsEventNotifier psn;
+  psn.setPortOpen();
+  CHECK( psn.timerIsActive() );
+
+  // Normal case
+  psn.setTimerTimeoutEvent();
+  CHECK( psn.timerIsActive() );
+
+  psn.setAboutToCloseEvent();
+  CHECK( !psn.timerIsActive() );
+
+  // Timer timeout event that has been queued
+  psn.setTimerTimeoutEvent();
+  CHECK( !psn.timerIsActive() );
 }
