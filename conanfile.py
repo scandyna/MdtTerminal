@@ -22,7 +22,7 @@ class MdtTerminalConan(ConanFile):
 
   def requirements(self):
     self.requires("qt/6.8.3")
-    self.requires("mdtitemmodel/0.0.6@scandyna/testing")
+    self.requires("mdtitemmodel/0.0.7@scandyna/testing")
     if self.options.enable_serialport_userspace_usb_support:
       self.requires("libusb/1.0.29")
 
