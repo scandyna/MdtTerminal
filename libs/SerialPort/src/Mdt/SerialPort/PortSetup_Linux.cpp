@@ -188,18 +188,6 @@ void PortSetup::configureInterfaceBeforeOpenPort(const Interface & interface)
   mImpl->configureMoxaUPort_1250_1450_1650_UsingUserspaceUsb(interface);
 }
 
-void PortSetup::configureInterfaceBeforeOpenPortIfRequired(const Interface & interface)
-{
-  assert(mImpl != nullptr);
-
-  if( !interface.isConfigurable() ){
-    return;
-  }
-  if( shouldConfigureInterfaceBeforeOpenPort() ){
-    configureInterfaceBeforeOpenPort(interface);
-  }
-}
-
 void PortSetup::configureInterfaceOncePortOpen(const Interface & interface, QSerialPort & port)
 {
   assert( port.isOpen() );
@@ -225,20 +213,6 @@ void PortSetup::configureInterfaceOncePortOpen(const Interface & interface, QSer
                         .arg( QString::fromLocal8Bit( ::strerror(errno) ) );
     throw PortSetupError(msg);
   }
-}
-
-void PortSetup::configureInterfaceOncePortOpenIfRequired(const Interface & interface, QSerialPort & port)
-{
-  assert( port.isOpen() );
-  assert(mImpl != nullptr);
-
-  if( !interface.isConfigurable() ){
-    return;
-  }
-  if( shouldConfigureInterfaceBeforeOpenPort() ){
-    return;
-  }
-  configureInterfaceOncePortOpen(interface, port);
 }
 
 }} // namespace Mdt{ namespace SerialPort{

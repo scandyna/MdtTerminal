@@ -92,6 +92,12 @@ else()
   )
 endif()
 
+if(WIN32)
+  target_sources(Mdt_SerialPort
+    PRIVATE
+      Mdt/SerialPort/PortSetup_Windows.cpp
+  )
+endif()
 
 add_library(Mdt::SerialPort ALIAS Mdt_SerialPort)
 

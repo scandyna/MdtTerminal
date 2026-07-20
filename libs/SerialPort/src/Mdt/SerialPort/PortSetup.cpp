@@ -17,6 +17,32 @@
 
 namespace Mdt{ namespace SerialPort{
 
+void PortSetup::configureInterfaceBeforeOpenPortIfRequired(const Interface & interface)
+{
+  assert(mImpl != nullptr);
+
+  if( !interface.isConfigurable() ){
+    return;
+  }
+  if( shouldConfigureInterfaceBeforeOpenPort() ){
+    configureInterfaceBeforeOpenPort(interface);
+  }
+}
+
+void PortSetup::configureInterfaceOncePortOpenIfRequired(const Interface & interface, QSerialPort & port)
+{
+  assert( port.isOpen() );
+  assert(mImpl != nullptr);
+
+  if( !interface.isConfigurable() ){
+    return;
+  }
+  if( shouldConfigureInterfaceBeforeOpenPort() ){
+    return;
+  }
+  configureInterfaceOncePortOpen(interface, port);
+}
+
 void PortSetup::setSettingsToPort(const Settings & settings, QSerialPort & port)
 {
   assert( !port.isOpen() );
