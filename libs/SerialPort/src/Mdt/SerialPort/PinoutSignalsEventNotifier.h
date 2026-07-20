@@ -75,7 +75,7 @@ namespace Mdt{ namespace SerialPort{
    * \sa https://doc.qt.io/qt-6/qiodevice.html#readyRead
    * \sa https://doc.qt.io/qt-6/qiodevice.html#bytesWritten
    */
-  class MDT_SERIALPORT_EXPORT PinoutSignalsEventNotifier : public AbstractPinoutSignalsEventNotifier
+  class MDT_SERIALPORT_EXPORT PinoutSignalsEventNotifier final : public AbstractPinoutSignalsEventNotifier
   {
     Q_OBJECT
 
