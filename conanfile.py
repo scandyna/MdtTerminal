@@ -20,6 +20,10 @@ class MdtTerminalConan(ConanFile):
   }
   generators = "CMakeDeps", "VirtualBuildEnv"
 
+  def configure(self):
+    if self.settings.os == "Windows":
+      self.options.enable_serialport_userspace_usb_support = False
+
   def requirements(self):
     self.requires("qt/6.8.3")
     self.requires("mdtitemmodel/0.0.7@scandyna/testing")
