@@ -18,14 +18,6 @@ mdt_add_test(
 )
 
 mdt_add_test(
-  NAME SerialPortPortSetup_With_HW_LinuxTest
-  TARGET serialPortPortSetup_With_HW_LinuxTest
-  DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
-  SOURCE_FILES
-    src/PortSetupLinuxTest.cpp
-)
-
-mdt_add_test(
   NAME SerialPortPinoutSignalsEventNotifier_With_HW_Test
   TARGET serialPortPinoutSignalsEventNotifier_With_HW_Test
   DEPENDENCIES Mdt::SerialPort Mdt::SerialPortTestLib Qt6::Test
@@ -48,3 +40,23 @@ mdt_add_test(
   SOURCE_FILES
     src/SerialPortErrorTest.cpp
 )
+
+if(LINUX)
+  mdt_add_test(
+    NAME SerialPortPortSetup_With_HW_LinuxTest
+    TARGET serialPortPortSetup_With_HW_LinuxTest
+    DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+    SOURCE_FILES
+      src/PortSetupLinuxTest.cpp
+  )
+endif()
+
+if(WIN32)
+  mdt_add_test(
+    NAME SerialPortPortSetup_With_HW_WindowsTest
+    TARGET serialPortPortSetup_With_HW_WindowsTest
+    DEPENDENCIES Mdt::SerialPort Mdt::Catch2Main Mdt::Catch2Qt
+    SOURCE_FILES
+      src/PortSetupWindowsTest.cpp
+  )
+endif()
