@@ -4,14 +4,16 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2025-2025 Philippe Steinmann.
+ ** Copyright (C) 2025-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #ifndef MDT_SERIAL_PORT_DEVICE_MOXA_UPORT_H
 #define MDT_SERIAL_PORT_DEVICE_MOXA_UPORT_H
 
+#include "Mdt/SerialPort/InterfaceStandard.h"
 #include "mdt_serialport_export.h"
 #include <cstdint>
+#include <cassert>
 
 namespace Mdt{ namespace SerialPort{ namespace Device{
 
@@ -24,6 +26,7 @@ namespace Mdt{ namespace SerialPort{ namespace Device{
    * This module provides thoses functions:
    * - vendorIdentifierIsMoxa()
    * - productIdentifierIsMoxaUPort_1250_1450_1650()
+   * - interfaceStandardFromMoxaUport_1250_1450_1650_ParameterValue()
    *
    * \section SerialPort_Device_MoxaUPort_1200_1400_1600_Series Moxa UPort 1200, 1400, 1600 series (and also G2)
    *
@@ -116,6 +119,29 @@ namespace Mdt{ namespace SerialPort{ namespace Device{
     }
 
     return false;
+  }
+
+  /*! \brief Get the interface standard for given parameter value of an UPort 1250, 1450 or 1650 series
+   *
+   * \pre \a parameterValue must be a value in range 0 to 3
+   */
+  constexpr
+  InterfaceStandard interfaceStandardFromMoxaUport_1250_1450_1650_ParameterValue(uint16_t parameterValue) noexcept
+  {
+    assert(parameterValue <= 3);
+
+    switch(parameterValue){
+      case 0x0:
+        return InterfaceStandard::RS_232;
+      case 0x1:
+        return InterfaceStandard::RS_485_2W;
+      case 0x2:
+        return InterfaceStandard::RS_422;
+      case 0x3:
+        return InterfaceStandard::RS_485_4W;
+    }
+
+    return InterfaceStandard::RS_232;
   }
 
 }}} // namespace Mdt{ namespace SerialPort{ namespace Device{
