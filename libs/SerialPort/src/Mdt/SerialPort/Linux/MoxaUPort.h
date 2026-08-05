@@ -21,6 +21,7 @@ namespace Mdt{ namespace SerialPort{ namespace Linux{
 
   /*! \page SerialPort_Linux_MoxaUPort Moxa UPort on %Linux specifics
    *
+   * \sa \ref SerialPort_Device_MoxaUPort
    * \section SerialPort_Linux_MoxaUPort_ModuleFunctions Moxa UPort on Linux module functions
    *
    * This module provides thoses functions:

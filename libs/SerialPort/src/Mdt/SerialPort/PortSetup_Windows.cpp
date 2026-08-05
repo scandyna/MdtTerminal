@@ -25,12 +25,10 @@ PortSetup::PortSetup(QObject *parent)
 
 PortSetup::~PortSetup() noexcept = default;
 
-void PortSetup::fetchPortInformations(const PortInfo & portInfo)
+void PortSetup::fetchPortInformations(const PortInfo & /*portInfo*/)
 {
-  assert(mImpl != nullptr);
-  assert( !portInfo.systemLocation().isEmpty() );
-
-
+  // assert(mImpl != nullptr);
+  // assert( !portInfo.systemLocation().isEmpty() );
 }
 
 bool PortSetup::shouldConfigureInterfaceBeforeOpenPort() const
@@ -39,14 +37,13 @@ bool PortSetup::shouldConfigureInterfaceBeforeOpenPort() const
   return false;
 }
 
-void PortSetup::configureInterfaceBeforeOpenPort(const Interface & interface)
+void PortSetup::configureInterfaceBeforeOpenPort(const Interface & /*interface*/)
 {
-  assert(false);
 }
 
-void PortSetup::configureInterfaceOncePortOpen(const Interface & interface, QSerialPort & port)
+void PortSetup::configureInterfaceOncePortOpen(const Interface & /*interface*/, QSerialPort & /*port*/)
 {
-  assert( port.isOpen() );
+  // assert( port.isOpen() );
 }
 
 }} // namespace Mdt{ namespace SerialPort{

@@ -23,7 +23,7 @@ namespace Mdt{ namespace SerialPort{ namespace Device{
    *
    * \section SerialPort_Device_MoxaUPort_ModuleFunctions Moxa UPort module functions
    *
-   * This module provides thoses functions:
+   * This module provides theses functions:
    * - vendorIdentifierIsMoxa()
    * - productIdentifierIsMoxaUPort_1250_1450_1650()
    * - interfaceStandardFromMoxaUport_1250_1450_1650_ParameterValue()
@@ -90,6 +90,33 @@ namespace Mdt{ namespace SerialPort{ namespace Device{
    * |UPort 1150   |0x1???|  1  |  X   |  X   |  X   |
    * |UPort 1150I  |0x1???|  1  |  X   |  X   |  X   |
    *
+   *
+   * \section SerialPort_Device_MoxaUPort_LinuxSpecific Moxa UPort Linux specific
+   *
+   * See the dedicated page: \ref SerialPort_Linux_MoxaUPort
+   *
+   *
+   * \section SerialPort_Device_MoxaUPort_WindowsSpecific Moxa UPort Windows specific
+   *
+   * An attempt to set/get the interface has been done. See this commit :
+   * https://gitlab.com/scandyna/mdtterminal/-/commit/de5b6489d222d789120f84029d7ee2e30bc89a82
+   * This fails with error code 1: \c ERROR_INVALID_FUNCTION.
+   * \c DeviceIoControl calls to set/get the interface will not work on COM handle
+   * because the virtual port driver does not export configuration endpoints.
+   *
+   * The official Moxa Windows driver architecture separates data I/O from hardware topology configuration,
+   * routing physical layer changes through proprietary user-space DLLs (\c mxusport.dll / \c mxusbrd.dll)
+   * that interact with the Windows Registry.
+   * The driver persists the device setup, like the selected interface.
+   * After unplug / re-plug, or reboot, the driver will setup the device with the persisted state.
+   *
+   * There seems to be **no way** to read the setup from the device.
+   *
+   * To prevent race conditions, memory state inconsistencies within the OS,
+   * and brittle dependency chains on undocumented vendor DLLs, hardware configuration under Windows
+   * must be managed persistently by the OS via the %Device Manager (*Multi-port serial adapters* -> *Properties* -> *Port %Settings*).
+   *
+   * In the UI, the interface selection will be disabled, and display something like \a System instead of an interface, like RS-232.
    */
 
   /*! \brief Check if given vendor identifier is Moxa

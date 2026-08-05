@@ -80,12 +80,17 @@ namespace Mdt{ namespace SerialPort{
    * }
    * \endcode
    *
-   * \section SerialPort_PortSetup_ConfigureMoxaUportInterfaceLinux Configure a Moxa Uport interface on Linux
+   * \par Some Moxa UPort specific notes
+   *
+   * To see some specific informations, see this section:
+   * \ref SerialPort_Device_MoxaUPort
    *
    * Configure the interface on %Linux has some story,
    * explained here:
    * \ref SerialPort_Linux_MoxaUPort_ConfigureMoxaUportInterfaceLinux
    *
+   * Some choices also have been made for Windows, explained here:
+   * \ref SerialPort_Device_MoxaUPort_WindowsSpecific
    *
    * \sa shouldConfigureInterfaceBeforeOpenPort()
    * \sa configureInterfaceBeforeOpenPort()
