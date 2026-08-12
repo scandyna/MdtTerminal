@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2025-2025 Philippe Steinmann.
+ ** Copyright (C) 2025-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #ifndef MDT_SERIAL_PORT_INTERFACE_STANDARD_H
@@ -23,7 +23,10 @@ namespace Mdt{ namespace SerialPort{
     RS_232,     /*!< RS-232 */
     RS_422,     /*!< RS-422 */
     RS_485_2W,  /*!< RS-485 2 wire */
-    RS_485_4W   /*!< RS-485 4 wire */
+    RS_485_4W,  /*!< RS-485 4 wire */
+    System      /*!< Interface handled only by the system,
+                     not known to the application.
+                     \sa InterfaceList */
   };
 
 }} // namespace Mdt{ namespace SerialPort{

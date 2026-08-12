@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2025 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #ifndef MDT_SERIAL_PORT_INTERFACE_H
@@ -57,9 +57,16 @@ namespace Mdt{ namespace SerialPort{
     static
     Interface fromStandardAndParameterValue(InterfaceStandard standard, uint16_t value) noexcept;
 
+    /*! \brief Returns an interface handled by the system
+     *
+     * \sa InterfaceList
+     */
+    static
+    Interface systemHandledOnly();
+
    private:
 
-    Interface(InterfaceStandard standard, uint16_t value) noexcept;
+    Interface(InterfaceStandard standard, uint16_t value, bool isConfigurable) noexcept;
 
     InterfaceStandard mStandard = InterfaceStandard::RS_232;
     uint16_t mParameterValue = 0;

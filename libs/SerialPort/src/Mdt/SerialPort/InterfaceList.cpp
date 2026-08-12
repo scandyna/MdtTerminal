@@ -4,11 +4,12 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2025 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "InterfaceList.h"
 #include "Mdt/SerialPort/Device/MoxaUPort.h"
+#include "Mdt/SerialPort/Platform.h"
 #include <algorithm>
 #include <iterator>
 #include <cassert>
@@ -62,10 +63,19 @@ std::optional<InterfaceList::size_type> InterfaceList::findIndexOfStandard(Inter
 InterfaceList InterfaceList::fromVendorIdentifierAndProductIdentifier(quint16 vid, quint16 pid)
 {
   if( Device::vendorIdentifierIsMoxa(vid) ){
-    return fromMoxaProductIdentifier(pid);
+    if constexpr( osIsWindows() ){
+      return systemHandledOnly();
+    }else{
+      return fromMoxaProductIdentifier(pid);
+    }
   }
 
   return InterfaceList();
+}
+
+InterfaceList InterfaceList::systemHandledOnly()
+{
+  return InterfaceList({Interface::systemHandledOnly()});
 }
 
 InterfaceList InterfaceList::fromMoxaProductIdentifier(quint16 pid)

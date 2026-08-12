@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2025-2025 Philippe Steinmann.
+ ** Copyright (C) 2025-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "InterfaceListTableModel.h"
@@ -19,26 +19,31 @@ InterfaceListTableModel::InterfaceListTableModel(QObject *parent)
 
 void InterfaceListTableModel::setVendorIdentifierAndProductIdentifier(std::optional<quint16> vid, std::optional<quint16> pid)
 {
-  InterfaceList newList;
+  InterfaceList newList;  // RS-232
 
   if( vid.has_value() && pid.has_value() ){
     newList = InterfaceList::fromVendorIdentifierAndProductIdentifier(*vid, *pid);
   }
 
+  setList(newList);
+}
+
+void InterfaceListTableModel::setList(const InterfaceList & list)
+{
   bool shouldResetModel = true;
 
   if( mList.container().has_value() ){
-    if( newList.count() == mList.container()->count() ){
+    if( list.count() == mList.container()->count() ){
       shouldResetModel = false;
     }
   }
 
   if(shouldResetModel){
     beginResetModel();
-    mList.containerMutable() = newList;
+    mList.containerMutable() = list;
     endResetModel();
   }else{
-    mList.containerMutable() = newList;
+    mList.containerMutable() = list;
     const int count = rowCount();
     for(int row = 0; row < count; ++row){
       emitRowDataChanged(row);

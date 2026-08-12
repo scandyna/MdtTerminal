@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2025 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #ifndef MDT_SERIAL_PORT_INTERFACE_STRING_FORMAT_H
@@ -51,6 +51,11 @@ namespace Mdt{ namespace SerialPort{
      */
     static
     QString rs485FourWireName() noexcept;
+
+    /*! \brief Get the System name
+     */
+    static
+    QString systemName() noexcept;
   };
 
 }} // namespace Mdt{ namespace SerialPort{

@@ -4,10 +4,11 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2025 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "Mdt/SerialPort/InterfaceList.h"
+#include "Mdt/SerialPort/Platform.h"
 #include "catch2/catch.hpp"
 #include "Catch2QString.h"
 
@@ -20,6 +21,7 @@ TEST_CASE("default_constructed")
 
   CHECK( list.count() == 1 );
   CHECK( !list.canSelectInterface() );
+  CHECK( !list.isSystemHandledOnly() );
   CHECK( list.interfaceAt(0).standard() == InterfaceStandard::RS_232 );
   CHECK( !list.interfaceAt(0).isConfigurable() );
 }
@@ -50,6 +52,7 @@ TEST_CASE("moxaUPort_1250_1450_1650")
 
   CHECK( list.count() == 4 );
   CHECK( list.canSelectInterface() );
+  CHECK( !list.isSystemHandledOnly() );
   CHECK( list.interfaceAt(0).standard() == InterfaceStandard::RS_232 );
   CHECK( list.interfaceAt(0).parameterValue() == 0x00 );
   CHECK( list.interfaceAt(0).isConfigurable() );
@@ -86,22 +89,42 @@ TEST_CASE("findIndexOfParameterValue")
   }
 }
 
+TEST_CASE("systemHandledOnly")
+{
+  const auto list = InterfaceList::systemHandledOnly();
+
+  CHECK( list.count() == 1 );
+  CHECK( !list.canSelectInterface() );
+  CHECK( list.isSystemHandledOnly() );
+  CHECK( list.interfaceAt(0).standard() == InterfaceStandard::System );
+  CHECK( !list.interfaceAt(0).isConfigurable() );
+}
+
 TEST_CASE("fromVendorIdentifierAndProductIdentifier")
 {
   SECTION("Moxa UPort 1250")
   {
     const auto list = InterfaceList::fromVendorIdentifierAndProductIdentifier(0x110a, 0x1250);
 
-    CHECK( list.count() == 4 );
-    CHECK( list.canSelectInterface() );
-    CHECK( list.interfaceAt(0).standard() == InterfaceStandard::RS_232 );
-    CHECK( list.interfaceAt(0).isConfigurable() );
-    CHECK( list.interfaceAt(1).standard() == InterfaceStandard::RS_485_2W );
-    CHECK( list.interfaceAt(1).isConfigurable() );
-    CHECK( list.interfaceAt(2).standard() == InterfaceStandard::RS_422 );
-    CHECK( list.interfaceAt(2).isConfigurable() );
-    CHECK( list.interfaceAt(3).standard() == InterfaceStandard::RS_485_4W );
-    CHECK( list.interfaceAt(3).isConfigurable() );
+    if constexpr( osIsWindows() ) {
+      CHECK( list.count() == 1 );
+      CHECK( !list.canSelectInterface() );
+      CHECK( list.isSystemHandledOnly() );
+      CHECK( list.interfaceAt(0).standard() == InterfaceStandard::System );
+      CHECK( !list.interfaceAt(1).isConfigurable() );
+    }else{
+      CHECK( list.count() == 4 );
+      CHECK( list.canSelectInterface() );
+      CHECK( !list.isSystemHandledOnly() );
+      CHECK( list.interfaceAt(0).standard() == InterfaceStandard::RS_232 );
+      CHECK( list.interfaceAt(0).isConfigurable() );
+      CHECK( list.interfaceAt(1).standard() == InterfaceStandard::RS_485_2W );
+      CHECK( list.interfaceAt(1).isConfigurable() );
+      CHECK( list.interfaceAt(2).standard() == InterfaceStandard::RS_422 );
+      CHECK( list.interfaceAt(2).isConfigurable() );
+      CHECK( list.interfaceAt(3).standard() == InterfaceStandard::RS_485_4W );
+      CHECK( list.interfaceAt(3).isConfigurable() );
+    }
   }
 
   SECTION("unknown")

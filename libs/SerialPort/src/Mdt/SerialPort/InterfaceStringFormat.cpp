@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2025 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "InterfaceStringFormat.h"
@@ -23,6 +23,8 @@ QString InterfaceStringFormat::standardName(InterfaceStandard standard) noexcept
       return rs485TwoWireName();
     case InterfaceStandard::RS_485_4W:
       return rs485FourWireName();
+    case InterfaceStandard::System:
+      return systemName();
   }
 
   return QString();
@@ -46,6 +48,11 @@ QString InterfaceStringFormat::rs485TwoWireName() noexcept
 QString InterfaceStringFormat::rs485FourWireName() noexcept
 {
   return tr("RS-485 4 wire");
+}
+
+QString InterfaceStringFormat::systemName() noexcept
+{
+  return tr("System");
 }
 
 }} // namespace Mdt{ namespace SerialPort{

@@ -4,11 +4,12 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2025-2025 Philippe Steinmann.
+ ** Copyright (C) 2025-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "Mdt/SerialPort/InterfaceListTableModel.h"
 #include "Mdt/SerialPort/InterfaceStringFormat.h"
+#include "Mdt/SerialPort/Platform.h"
 #include "Mdt/ItemModel/Helpers.h"
 #include "catch2/catch.hpp"
 #include "Catch2QString.h"
@@ -26,6 +27,40 @@ TEST_CASE("DefaultList")
 
   CHECK( model.columnCount() == 2 );
   CHECK( model.rowCount() == 0 );
+}
+
+TEST_CASE("setList")
+{
+  InterfaceListTableModel model;
+  InterfaceList rs232Onlylist;
+  auto moxa4InterfaceList = InterfaceList::fromMoxaProductIdentifier(0x1250);
+
+  SECTION("Starting from no list set a 1 interface list")
+  {
+    model.setList(rs232Onlylist);
+
+    CHECK( model.rowCount() == 1 );
+  }
+
+  SECTION("Starting from a 1 element list")
+  {
+    model.setList(rs232Onlylist);
+    REQUIRE( model.rowCount() == 1 );
+
+    SECTION("Set a 1 element list")
+    {
+      model.setList(rs232Onlylist);
+
+      CHECK( model.rowCount() == 1 );
+    }
+
+    SECTION("Set a 4 element list")
+    {
+      model.setList(moxa4InterfaceList);
+
+      CHECK( model.rowCount() == 4 );
+    }
+  }
 }
 
 TEST_CASE("setVendorIdentifierAndProductIdentifier")
@@ -66,8 +101,22 @@ TEST_CASE("setVendorIdentifierAndProductIdentifier")
   {
     model.setVendorIdentifierAndProductIdentifier(0x110A, 0x1250);
 
-    CHECK( model.rowCount() == 4 );
+    if constexpr( osIsWindows() ){
+      CHECK( model.rowCount() == 1 );
+    }else{
+      CHECK( model.rowCount() == 4 );
+    }
   }
+}
+
+TEST_CASE("systemHandledOnly")
+{
+  InterfaceListTableModel model;
+
+  model.setList( InterfaceList::systemHandledOnly() );
+
+  REQUIRE( model.rowCount() == 1 );
+  CHECK( getModelData(model, 0, nameColumn) == InterfaceStringFormat::systemName() );
 }
 
 TEST_CASE("getData")
@@ -117,7 +166,7 @@ TEST_CASE("findRowOfStandard")
 
   SECTION("MOXA UPort 1250 with 4 interfaces")
   {
-    model.setVendorIdentifierAndProductIdentifier(0x110A, 0x1250);
+    model.setList( InterfaceList::fromMoxaProductIdentifier(0x1250) );
     REQUIRE( model.rowCount() == 4 );
 
     CHECK( model.findRowOfStandard(InterfaceStandard::RS_232) == 0 );

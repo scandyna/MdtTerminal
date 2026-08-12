@@ -84,7 +84,7 @@ namespace Mdt{ namespace SerialPort{ namespace Device{
    *
    * |  Name       | PID  |Ports|RS-232|RS-422|RS-485|
    * |:------------|:----:|:---:|:----:|:----:|:----:|
-   * |UPort 1110   |0x1???|  1  |      |      |      |
+   * |UPort 1110   |0x1???|  1  |  X   |      |      |
    * |UPort 1130   |0x1???|  1  |      |  X   |  X   |
    * |UPort 1130I  |0x1???|  1  |      |  X   |  X   |
    * |UPort 1150   |0x1???|  1  |  X   |  X   |  X   |

@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2024-2025 Philippe Steinmann.
+ ** Copyright (C) 2024-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #include "Mdt/SerialPort/Interface.h"
@@ -28,4 +28,12 @@ TEST_CASE("fromStandardAndParameterValue")
   CHECK( rs422.standard() == InterfaceStandard::RS_422 );
   CHECK( rs422.parameterValue() == 1 );
   CHECK( rs422.isConfigurable() );
+}
+
+TEST_CASE("systemHandledOnly")
+{
+  const auto interface = Interface::systemHandledOnly();
+
+  CHECK( interface.standard() == InterfaceStandard::System );
+  CHECK( !interface.isConfigurable() );
 }

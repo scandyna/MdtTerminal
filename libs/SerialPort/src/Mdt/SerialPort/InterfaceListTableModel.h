@@ -4,7 +4,7 @@
  ** MdtSerialPort
  ** Provides some functionality to configure and interact with serial ports.
  **
- ** Copyright (C) 2025-2025 Philippe Steinmann.
+ ** Copyright (C) 2025-2026 Philippe Steinmann.
  **
  *****************************************************************************************/
 #ifndef MDT_SERIAL_PORT_INTERFACE_LIST_TABLE_MODEL_H
@@ -48,6 +48,8 @@ namespace Mdt{ namespace SerialPort{
   };
 
   /*! \brief Access model to list available interfaces of a serial port
+   *
+   * \sa InterfaceList
    */
   class MDT_SERIALPORT_EXPORT InterfaceListTableModel : public Mdt::ItemModel::AbstractTableModel
   {
@@ -104,6 +106,10 @@ namespace Mdt{ namespace SerialPort{
      */
     void setVendorIdentifierAndProductIdentifier(std::optional<quint16> vid, std::optional<quint16> pid);
 
+    /*! \internal
+     */
+    void setList(const InterfaceList & list);
+
     /*! \brief Clear the interface list
      *
      * This can be used when no serial port exists,
@@ -124,7 +130,7 @@ namespace Mdt{ namespace SerialPort{
     /*! \brief Get the interface at given row
      *
      * \pre \a row must be in range.
-     * This also means that this model must refer to a list
+     * This also means that this model must refer to a list.
      */
     const Interface & interfaceAtRow(int row) const noexcept;
 
