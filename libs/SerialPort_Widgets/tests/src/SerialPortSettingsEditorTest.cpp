@@ -559,6 +559,24 @@ TEST_CASE("setSettings_PortSpecificSettings")
   }
 }
 
+/*
+ * Current implementation is very basic
+ */
+TEST_CASE("canBuildSettings")
+{
+  TestSettingsEditor editor;
+  const auto commonPort = TestPortInfo::fromPortNameAndSystemLocation("ttyS0", "/dev/ttyS0");
+
+  CHECK( !editor.hasPortInfoListCurrentRow() );
+  CHECK( !editor.canBuildSettings() );
+
+  editor.addAvailablePort(commonPort);
+  editor.fetchAvailablePorts();
+  editor.setPortInfoListCurrentRowFromUi(0);
+  CHECK( editor.hasPortInfoListCurrentRow() );
+  CHECK( editor.canBuildSettings() );
+}
+
 TEST_CASE("buildSettings")
 {
   TestSettingsEditor editor;
@@ -626,4 +644,23 @@ TEST_CASE("buildSettings")
     CHECK( settings.interfaceStandard() == InterfaceStandard::RS_485_2W );
     CHECK( !settings.sendByteByByteIsEnabled() );
   }
+}
+
+TEST_CASE("StateMachineIntegration")
+{
+  using StateEnum = SettingsEditorState::StateEnum;
+
+  TestSettingsEditor editor;
+  editor.startStateMachine();
+  CHECK( editor.stateMachine().currentEnumState() == StateEnum::Incomplete );
+
+  const auto ttyS0 = TestPortInfo::fromPortNameAndSystemLocation("ttyS0", "/dev/ttyS0");
+  editor.addAvailablePort(ttyS0);
+  editor.fetchAvailablePorts();
+  editor.fetchAvailablePortSettings();
+
+  const auto settings = Settings::defaultSettingsWithPortInfo(ttyS0);
+  editor.setSettings(settings);
+
+  CHECK( editor.stateMachine().currentEnumState() == StateEnum::Complete );
 }

@@ -14,6 +14,7 @@
 #include "Mdt/SerialPort/Settings.h"
 #include "Mdt/SerialPort/SettingsEditor.h"
 #include "Mdt/SerialPort/SettingsValidationError.h"
+#include "Mdt/SerialPort/SettingsEditorState.h"
 #include "mdt_serialport_widgets_export.h"
 #include <QString>
 #include <QDialog>
@@ -67,6 +68,7 @@ namespace Mdt{ namespace SerialPort{
 
    public Q_SLOTS:
 
+    void setCurrentState(const SettingsEditorState & state);
     void showPortInfo(const PortInfo & portInfo) noexcept;
 
    private Q_SLOTS:
@@ -76,6 +78,7 @@ namespace Mdt{ namespace SerialPort{
    private:
 
     void fillAvailablePortSettings() noexcept;
+    void setOkButtonEnabled(bool enable);
 
     SettingsEditor mEditor;
     std::unique_ptr<Ui::SettingsDialog> mUi;

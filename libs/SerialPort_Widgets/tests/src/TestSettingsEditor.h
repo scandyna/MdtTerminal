@@ -31,6 +31,11 @@ class TestSettingsEditor : public Mdt::SerialPort::AbstractSettingsEditor
 
   void removeAvailablePort(const Mdt::SerialPort::TestLib::TestPortInfo & port);
 
+  const Mdt::SerialPort::SettingsEditorStateMachine & stateMachine() const noexcept
+  {
+    return AbstractSettingsEditor::stateMachine();
+  }
+
  private:
 
   Mdt::SerialPort::AbstractPortInfoListTableModel *portInfoListTableModel() noexcept override

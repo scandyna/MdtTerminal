@@ -8,4 +8,6 @@ hide Mdt.SerialPort.AbstractPortInfoListTableModel members
 hide Mdt.SerialPort.PortInfoListTableModel members
 hide Mdt.SerialPort.TestLib.TestPortInfoListTableModel members
 
+hide QObject
+
 @enduml

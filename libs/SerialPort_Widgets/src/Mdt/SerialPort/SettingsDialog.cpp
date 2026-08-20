@@ -19,6 +19,8 @@
 #include <QToolButton>
 #include <QCheckBox>
 #include <QSpinBox>
+#include <QDialogButtonBox>
+#include <QPushButton>
 #include <cassert>
 
 namespace Mdt{ namespace SerialPort{
@@ -85,6 +87,9 @@ SettingsDialog::SettingsDialog(QWidget* parent)
   connect(&mEditor, &SettingsEditor::sendByteByByteIntervalInMillisecondsChanged, mUi->sendByteIntervalBox, &QSpinBox::setValue);
   connect(mUi->sendByteIntervalBox, &QSpinBox::valueChanged, &mEditor, &SettingsEditor::setSendByteByByteIntervalInMillisecondsFromUi);
 
+  connect(&mEditor, &SettingsEditor::currentStateChanged, this, &SettingsDialog::setCurrentState);
+
+  mEditor.startStateMachine();
   fetchAvailablePorts();
   fillAvailablePortSettings();
 }
@@ -99,6 +104,12 @@ void SettingsDialog::setSettings(const Settings & settings)
 Settings SettingsDialog::buildSettings() const
 {
   return mEditor.buildSettings();
+}
+
+void SettingsDialog::setCurrentState(const SettingsEditorState & state)
+{
+  setOkButtonEnabled( state.canBuildSettings() );
+  mUi->refreshSerialPortListButton->setEnabled( state.canFetchAvailablePorts() );
 }
 
 void SettingsDialog::showPortInfo(const PortInfo & portInfo) noexcept
@@ -119,6 +130,15 @@ void SettingsDialog::fetchAvailablePorts()
 void SettingsDialog::fillAvailablePortSettings() noexcept
 {
   mEditor.fetchAvailablePortSettings();
+}
+
+void SettingsDialog::setOkButtonEnabled(bool enable)
+{
+  assert(mUi != nullptr);
+
+  auto *okButton = mUi->buttonBox->button(QDialogButtonBox::Ok);
+  assert(okButton != nullptr);
+  okButton->setEnabled(enable);
 }
 
 }} // namespace Mdt{ namespace SerialPort{

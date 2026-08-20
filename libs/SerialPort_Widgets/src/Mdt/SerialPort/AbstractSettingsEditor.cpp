@@ -20,6 +20,12 @@ namespace Mdt{ namespace SerialPort{
 AbstractSettingsEditor::AbstractSettingsEditor(QObject* parent)
  : QObject(parent)
 {
+  connect(&mStateMachine, &SettingsEditorStateMachine::currentStateChanged, this, &AbstractSettingsEditor::currentStateChanged);
+}
+
+void AbstractSettingsEditor::startStateMachine()
+{
+  mStateMachine.start();
 }
 
 int AbstractSettingsEditor::portNameColumnInPortInfoListModelForView() const noexcept
@@ -45,12 +51,16 @@ const PortInfo & AbstractSettingsEditor::currentPortInfo() const noexcept
 
 void AbstractSettingsEditor::fetchAvailablePorts()
 {
+  mStateMachine.setStartFetchingSystemInfoEvent();
   doFetchAvailablePorts();
+  notifyCompletenessToStateMachine();
 }
 
 void AbstractSettingsEditor::fetchAvailablePortSettings()
 {
+  mStateMachine.setStartFetchingSystemInfoEvent();
   fetchStandardBaudRates();
+  notifyCompletenessToStateMachine();
 }
 
 void AbstractSettingsEditor::setSettings(const Settings & settings)
@@ -66,11 +76,17 @@ void AbstractSettingsEditor::setSettings(const Settings & settings)
   if( settings.sendByteByByteIsEnabled() ){
     setSendByteByByteIntervalInMilliseconds( settings.sendByteByByteSettings().rawIntervalInMilliseconds() );
   }
+  notifyCompletenessToStateMachine();
+}
+
+bool AbstractSettingsEditor::canBuildSettings() const
+{
+  return hasPortInfoListCurrentRow();
 }
 
 Settings AbstractSettingsEditor::buildSettings() const
 {
-  assert( hasPortInfoListCurrentRow() );
+  assert( canBuildSettings() );
 
   SettingsRawData settingsData;
   settingsData.portInfo = currentPortInfo();
@@ -365,6 +381,15 @@ void AbstractSettingsEditor::notifyPortInfoChanged(int row) const
   assert( constPortInfoListTableModel()->rowIndexIsInRange(row) );
 
   emit portInfoChanged( constPortInfoListTableModel()->portInfoAtRow(row) );
+}
+
+void AbstractSettingsEditor::notifyCompletenessToStateMachine()
+{
+  if( canBuildSettings() ){
+    mStateMachine.setSettingsCompleteEvent();
+  }else{
+    mStateMachine.setSettingsIncompleteEvent();
+  }
 }
 
 }} // namespace Mdt{ namespace SerialPort{

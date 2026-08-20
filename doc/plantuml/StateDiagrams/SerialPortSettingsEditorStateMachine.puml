@@ -1,0 +1,14 @@
+@startuml
+
+[*] --> Incomplete
+
+Incomplete --> FetchingSystemInfo : startFetchingSystemInfo
+Incomplete --> Complete : settingsComplete
+
+FetchingSystemInfo --> Incomplete : settingsIncomplete
+FetchingSystemInfo --> Complete : settingsComplete
+
+Complete --> Incomplete : settingsIncomplete
+Complete --> FetchingSystemInfo : startFetchingSystemInfo
+
+@enduml

@@ -1,0 +1,8 @@
+
+namespace Mdt.SerialPort {
+
+  class SettingsEditorState {
+    +bool canBuildSettings()
+  }
+
+}

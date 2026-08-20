@@ -22,6 +22,8 @@
 #include "Mdt/SerialPort/StopBitsListTableModel.h"
 #include "Mdt/SerialPort/InterfaceListTableModel.h"
 #include "Mdt/SerialPort/SettingsValidationError.h"
+#include "Mdt/SerialPort/SettingsEditorState.h"
+#include "Mdt/SerialPort/SettingsEditorStateMachine.h"
 #include "mdt_serialport_widgets_export.h"
 #include <QAbstractTableModel>
 #include <QSerialPort>
@@ -42,6 +44,14 @@ namespace Mdt{ namespace SerialPort{
      */
     explicit
     AbstractSettingsEditor(QObject *parent = nullptr);
+
+    /*! \brief Start the state machine
+     *
+     * \note We can't start the state machine in the constructor of this editor,
+     * because the user of this class will make the signal/slots connections
+     * after this editor has been constructed, so any initial state changed signals will be missed.
+     */
+    void startStateMachine();
 
     /*! \brief Get the port info list table model for the view
      *
@@ -217,11 +227,18 @@ namespace Mdt{ namespace SerialPort{
      */
     void setSettings(const Settings & settings);
 
+    /*! \brief Check if it is possible to build settings
+     *
+     * Returns true if this editor holds all the informations to be considered complete.
+     * As an example, a port has been selected.
+     */
+    bool canBuildSettings() const;
+
     /*! \brief Build settings with the current state of this editor
      *
      * \exception SettingsValidationError
-     * \pre A current port must have been set
-     * \sa hasPortInfoListCurrentRow()
+     * \pre It must be possible to build settings
+     * \sa canBuildSettings()
      */
     Settings buildSettings() const;
 
@@ -323,6 +340,17 @@ namespace Mdt{ namespace SerialPort{
      */
     void sendByteByByteIntervalInMillisecondsChanged(int interval) const;
 
+    /*! \brief Emitted every time current state changed
+     */
+    void currentStateChanged(const SettingsEditorState & state) const;
+
+   protected:
+
+    const SettingsEditorStateMachine & stateMachine() const noexcept
+    {
+      return mStateMachine;
+    }
+
    private:
 
     /*! \brief Fetch the available standard baud rates supported by the target platform
@@ -360,6 +388,8 @@ namespace Mdt{ namespace SerialPort{
      */
     void notifyPortInfoChanged(int row) const;
 
+    void notifyCompletenessToStateMachine();
+
     virtual
     AbstractPortInfoListTableModel *portInfoListTableModel() noexcept = 0;
 
@@ -384,6 +414,7 @@ namespace Mdt{ namespace SerialPort{
     FlowControlListTableModel mFlowControlListTableModel;
     StopBitsListTableModel mStopBitsListTableModel;
     InterfaceListTableModel mInterfaceListTableModel;
+    SettingsEditorStateMachine mStateMachine;
   };
 
 }} // namespace Mdt{ namespace SerialPort{

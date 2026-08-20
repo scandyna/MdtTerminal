@@ -5,6 +5,8 @@ include(MdtInstallLibrary)
 add_library(Mdt_SerialPort_Widgets
   Mdt/SerialPort/AbstractSettingsEditor.cpp
   Mdt/SerialPort/SettingsEditor.cpp
+  Mdt/SerialPort/SettingsEditorState.cpp
+  Mdt/SerialPort/SettingsEditorStateMachine.cpp
   Mdt/SerialPort/SettingsDialog.cpp
   Mdt/SerialPort/PinoutSignalsWidget.cpp
 )

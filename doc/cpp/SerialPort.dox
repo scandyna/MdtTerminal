@@ -330,6 +330,8 @@
  * \sa Mdt::SerialPort::Settings
  * \sa Mdt::SerialPort::SettingsBuilder
  * \sa Mdt::SerialPort::SettingsDialog
+ * \sa Mdt::SerialPort::SettingsEditor
+ * \sa Mdt::SerialPort::SettingsEditorStateMachine
  *
  *
  * \section SerialPort_PortSetup Port setup

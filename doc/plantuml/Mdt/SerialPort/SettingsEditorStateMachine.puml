@@ -1,0 +1,13 @@
+!include Mdt/SerialPort/SettingsEditorState.puml
+!include Qt/Core/QObject.puml
+
+namespace Mdt.SerialPort {
+
+  class SettingsEditorStateMachine {
+  }
+
+  SettingsEditorStateMachine ..> SettingsEditorState
+}
+
+Mdt.SerialPort.SettingsEditorStateMachine <|-- QObject
+

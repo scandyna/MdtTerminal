@@ -1,4 +1,6 @@
 !include Mdt/SerialPort/Settings.puml
+!include Mdt/SerialPort/SettingsEditorStateMachine.puml
+!include Qt/Core/QObject.puml
 
 namespace Mdt.SerialPort {
 
@@ -8,5 +10,8 @@ namespace Mdt.SerialPort {
   }
 
   AbstractSettingsEditor ..> Settings
+  AbstractSettingsEditor *--> SettingsEditorStateMachine
 
 }
+
+Mdt.SerialPort.AbstractSettingsEditor <|-- QObject
